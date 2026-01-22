@@ -20,6 +20,16 @@ namespace Nexus
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            string? developerConnectionString = builder.Configuration
+                .GetConnectionString("DeveloperConnection");
+
+            builder.Services.AddDbContext<NexusDbContext>(options =>
+            {
+                options.UseSqlServer(developerConnectionString);
+            });
+
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

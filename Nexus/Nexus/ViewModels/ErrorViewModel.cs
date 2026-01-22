@@ -1,4 +1,4 @@
-namespace Nexus.Models
+namespace Nexus.ViewModels
 {
     public class ErrorViewModel
     {

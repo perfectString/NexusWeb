@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.Models;
+using Nexus.ViewModels;
 
 namespace Nexus.Controllers
 {
