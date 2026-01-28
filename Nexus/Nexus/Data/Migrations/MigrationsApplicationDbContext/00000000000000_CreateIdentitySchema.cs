@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Nexus.Data.Migrations
+namespace Nexus.Data.Migrations.MigrationsApplicationDbContext
 {
     public partial class CreateIdentitySchema : Migration
     {
