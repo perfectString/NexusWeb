@@ -12,5 +12,6 @@ namespace Nexus.Models
         public string Name { get; set; } = null!;
         public ICollection<UserInterest> UserInterest { get; set; }
         = new HashSet<UserInterest>();
+
     }
 }

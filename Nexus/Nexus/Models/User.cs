@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+using Nexus.Models.Enums;
 
 namespace Nexus.Models
 {
     public class User
     {
+        
         [Key]
         public int Id { get; set; }
 
@@ -21,7 +24,13 @@ namespace Nexus.Models
         [MaxLength(85)]
         public string City { get; set; } = null!;
 
+        [MaxLength(500)]
+        public string? Bio { get; set; }
+
+        public ConnectionType DesiredConnection { get; set; }
+
         public ICollection<UserInterest> UserInterest { get; set; }
         = new HashSet<UserInterest>();
     }
+
 }

@@ -11,7 +11,7 @@ namespace Nexus.Data
         {
         }
 
-        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserInterest> Users { get; set; } = null!;
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<UserInterest> UsersInterests { get; set; } = null!;
         public virtual DbSet<FriendRequest> FriendRequests { get; set; } = null!;
@@ -55,6 +55,9 @@ namespace Nexus.Data
                .WithMany()
                .HasForeignKey(i => i.RecieverId)
                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .ApplyConfigurationsFromAssembly(typeof(NexusDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
 
