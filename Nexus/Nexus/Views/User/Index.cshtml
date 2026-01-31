@@ -1,0 +1,146 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">All Users</h2>
+        <div class="w-75">
+            <input id="userSearch" class="form-control" placeholder="Search by name, city or interest..." />
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle" id="usersTable" aria-describedby="Users list">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Age</th>
+                    <th scope="col">City</th>
+                    <th scope="col" class="d-none d-md-table-cell">Connection</th>
+                    <th scope="col">Interests</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var u in Model)
+                    {
+                        
+                        var interestList = new List<string>();
+                        if (u.Interests != null)
+                        {
+                            foreach (var it in u.Interests)
+                            {
+                                try
+                                {
+                                    interestList.Add((string)it.Name);
+                                }
+                                catch
+                                {
+                                   
+                                    interestList.Add(it?.ToString() ?? string.Empty);
+                                }
+                            }
+                        }
+                        var interestsText = string.Join(", ", interestList);
+                        var bioText = (u.Bio ?? string.Empty).ToString();
+                        var connectionText = (u.DesiredConnection ?? string.Empty).ToString();
+                        <tr>
+                            <td>
+                                <strong>@u.Name</strong>
+                            </td>
+                            <td class="d-none d-sm-table-cell">@u.Age</td>
+                            <td>@u.City</td>
+                            <td class="d-none d-md-table-cell">@connectionText</td>
+                            <td class="text-truncate" style="max-width:220px;" title="@interestsText">@interestsText</td>
+                            <td class="text-end">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#userDetailsModal"
+                                        data-name="@u.Name"
+                                        data-age="@u.Age"
+                                        data-city="@u.City"
+                                        data-connection="@connectionText"
+                                        data-interests="@interestsText"
+                                        data-bio="@bioText">
+                                    Details
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsTitle">User details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8" id="detailName"></dd>
+
+                    <dt class="col-sm-4">Age</dt>
+                    <dd class="col-sm-8" id="detailAge"></dd>
+
+                    <dt class="col-sm-4">City</dt>
+                    <dd class="col-sm-8" id="detailCity"></dd>
+
+                    <dt class="col-sm-4">Connection</dt>
+                    <dd class="col-sm-8" id="detailConnection"></dd>
+
+                    <dt class="col-sm-4">Interests</dt>
+                    <dd class="col-sm-8" id="detailInterests"></dd>
+
+                    <dt class="col-sm-4">Bio</dt>
+                    <dd class="col-sm-8" id="detailBio"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const searchInput = document.getElementById('userSearch');
+        const table = document.getElementById('usersTable');
+        const tbody = table.querySelector('tbody');
+
+        searchInput.addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            Array.from(tbody.rows).forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.indexOf(q) >= 0 ? '' : 'none';
+            });
+        });
+
+        const userDetailsModal = document.getElementById('userDetailsModal');
+        userDetailsModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            document.getElementById('userDetailsTitle').innerText = button.getAttribute('data-name') || 'User details';
+            document.getElementById('detailName').innerText = button.getAttribute('data-name') || '';
+            document.getElementById('detailAge').innerText = button.getAttribute('data-age') || '';
+            document.getElementById('detailCity').innerText = button.getAttribute('data-city') || '';
+            document.getElementById('detailConnection').innerText = button.getAttribute('data-connection') || '';
+            document.getElementById('detailInterests').innerText = button.getAttribute('data-interests') || '';
+            document.getElementById('detailBio').innerText = button.getAttribute('data-bio') || '';
+        });
+    })();
+</script>

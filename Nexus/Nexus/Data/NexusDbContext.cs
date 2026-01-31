@@ -11,11 +11,13 @@ namespace Nexus.Data
         {
         }
 
-        public virtual DbSet<UserInterest> Users { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<UserInterest> UsersInterests { get; set; } = null!;
         public virtual DbSet<FriendRequest> FriendRequests { get; set; } = null!;
 
+
+        //fluent api
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Control of navigational properties for users and their interests

@@ -28,8 +28,6 @@ namespace Nexus
                 options.UseSqlServer(developerConnectionString);
             });
 
-
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
