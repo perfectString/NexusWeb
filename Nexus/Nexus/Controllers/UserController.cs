@@ -16,6 +16,8 @@ namespace Nexus.Controllers
         {
             this.dbContext = dbContext;
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
             var allUsers = dbContext
@@ -38,6 +40,9 @@ namespace Nexus.Controllers
                     })
                     .ToArray()
                 })
+                .OrderBy(u => u.Age)
+                .ThenBy(u => u.Name)
+                .ThenBy(u => u.City)
                 .ToArray();
 
             return View(allUsers);

@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+using System.ComponentModel.DataAnnotations;
+using static Nexus.Common.ValidationConstants;
 using Nexus.Models.Enums;
 
 namespace Nexus.Models
@@ -11,20 +12,20 @@ namespace Nexus.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(1)]
-        [MaxLength(85)]
+        [MinLength(NameMinLen)]
+        [MaxLength(NameMaxLen)]
         
         public string Name { get; set; } = null!;
 
-        [Range(18, 99)]
+        [Range(AgeMinValue, AgeMaxValue)]
         public int Age { get; set; }
 
         [Required]
-        [MinLength(2)]
-        [MaxLength(85)]
+        [MinLength(CityMinLen)]
+        [MaxLength(CityMaxLen)]
         public string City { get; set; } = null!;
 
-        [MaxLength(500)]
+        [MaxLength(BioMaxLen)]
         public string? Bio { get; set; }
 
         public ConnectionType DesiredConnection { get; set; }

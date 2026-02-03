@@ -18,5 +18,6 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background: linear-gradient(MediumTurquoise, Green, Green );
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }

@@ -23,6 +23,10 @@ namespace Nexus
             string? developerConnectionString = builder.Configuration
                 .GetConnectionString("DeveloperConnection");
 
+            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            //{
+            //    options.UseSqlServer(connectionString);
+            //});
             builder.Services.AddDbContext<NexusDbContext>(options =>
             {
                 options.UseSqlServer(developerConnectionString);
