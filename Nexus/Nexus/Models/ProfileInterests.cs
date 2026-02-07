@@ -2,11 +2,11 @@
 
 namespace Nexus.Models
 {
-    public class UserInterest
+    public class ProfileInterests
     {
-        [ForeignKey(nameof(User))]
-        public int UserId { get; set; }
-        public User User { get; set; } = null!;
+        [ForeignKey(nameof(Profile))]
+        public int ProfileId { get; set; }
+        public Profile Profile { get; set; } = null!;
 
         [ForeignKey(nameof(Interest))]
         public int InterestId { get; set; }

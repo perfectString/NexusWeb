@@ -1,19 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Nexus.Models;
 
 namespace Nexus.Data
 {
-    public class NexusDbContext : DbContext
+    public class NexusDbContext : IdentityDbContext
     {
-        // generic constuctor in case i would be working with other databases at later date
         public NexusDbContext(DbContextOptions<NexusDbContext> options)
             : base(options)
         {
         }
-
-        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Profile> Profiles { get; set; } = null!;
         public virtual DbSet<Interest> Interests { get; set; } = null!;
-        public virtual DbSet<UserInterest> UsersInterests { get; set; } = null!;
+        public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
         public virtual DbSet<FriendRequest> FriendRequests { get; set; } = null!;
 
 
@@ -22,22 +21,22 @@ namespace Nexus.Data
         {
             //Control of navigational properties for users and their interests
 
-            modelBuilder.Entity<UserInterest>()
+            modelBuilder.Entity<ProfileInterests>()
                 .HasKey(x => new
                 {
-                    x.UserId,
+                    x.ProfileId,
                     x.InterestId
                 });
 
-            modelBuilder.Entity<UserInterest>()
-                .HasOne(u => u.User)
-                .WithMany(ui => ui.UserInterest)
-                .HasForeignKey(u => u.UserId)
+            modelBuilder.Entity<ProfileInterests>()
+                .HasOne(u => u.Profile)
+                .WithMany(ui => ui.ProfileInterest)
+                .HasForeignKey(u => u.ProfileId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<UserInterest>()
+            modelBuilder.Entity<ProfileInterests>()
                .HasOne(i => i.Interest)
-               .WithMany(ui => ui.UserInterest)
+               .WithMany(ui => ui.ProfileInterest)
                .HasForeignKey(i => i.InterestId)
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -47,13 +46,13 @@ namespace Nexus.Data
                 .HasKey(x => x.Id);
 
             modelBuilder.Entity<FriendRequest>()
-               .HasOne(i => i.UserSender)
+               .HasOne(i => i.ProfileSender)
                .WithMany()
                .HasForeignKey(i => i.SenderId)
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<FriendRequest>()
-               .HasOne(i => i.UserReciever)
+               .HasOne(i => i.ProfileReciever)
                .WithMany()
                .HasForeignKey(i => i.RecieverId)
                .OnDelete(DeleteBehavior.Restrict);
@@ -65,5 +64,7 @@ namespace Nexus.Data
 
         }
 
+
     }
 }
+

@@ -86,7 +86,7 @@
 		<div class="table-card">
 
 			<div class="d-flex justify-content-between align-items-center mb-4">
-				<h2 class="mb-0">All Users</h2>
+				<h2 class="mb-0">All Profiles</h2>
 				<div class="w-50">
 					<input id="userSearch"
 						   class="form-control"
@@ -120,7 +120,7 @@
 						var bioText = (u.Bio ?? string.Empty).ToString();
 						var connectionText = (u.DesiredConnection).ToString();
 
-						<div class="col-12 col-sm-6 col-lg-4 user-card">
+						<div class="col-12 col-sm-6 col-lg-4 profile-card">
 							<div class="card h-100 shadow-sm">
 
 								<div class="card-body">
@@ -148,7 +148,7 @@
 										<button type="button"
 												class="btn btn-sm btn-outline-primary w-40 d-sm-inline-block"
 												data-bs-toggle="modal"
-												data-bs-target="#userDetailsModal"
+												data-bs-target="#profileDetailsModal"
 												data-name="@u.Name"
 												data-age="@u.Age"
 												data-city="@u.City"
@@ -172,11 +172,11 @@
 </div>
 
 <!-- Details Modal -->
-<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="profileDetailsModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="userDetailsTitle">User details</h5>
+				<h5 class="modal-title" id="userDetailsTitle">Profile details</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -210,8 +210,8 @@
 <script>
 	(function () {
 
-		const searchInput = document.getElementById('userSearch');
-		const cards = Array.from(document.querySelectorAll('.user-card'));
+		const searchInput = document.getElementById('profileSearch');
+		const cards = Array.from(document.querySelectorAll('.profile-card'));
 
 		searchInput.addEventListener('input', function () {
 			const q = this.value.trim().toLowerCase();
@@ -222,13 +222,13 @@
 		});
 
 
-		const userDetailsModal = document.getElementById('userDetailsModal');
+		const userDetailsModal = document.getElementById('profileDetailsModal');
 		if (userDetailsModal) {
 			userDetailsModal.addEventListener('show.bs.modal', function (event) {
 				const button = event.relatedTarget;
 				if (!button) return;
 
-				document.getElementById('userDetailsTitle').innerText = button.getAttribute('data-name') || 'User details';
+				document.getElementById('profileDetailsTitle').innerText = button.getAttribute('data-name') || 'Profile details';
 				document.getElementById('detailName').innerText = button.getAttribute('data-name') || '';
 				document.getElementById('detailAge').innerText = button.getAttribute('data-age') || '';
 				document.getElementById('detailCity').innerText = button.getAttribute('data-city') || '';

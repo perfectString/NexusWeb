@@ -11,13 +11,13 @@ namespace Nexus.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(UserSender))]
+        [ForeignKey(nameof(ProfileSender))]
         public int SenderId { get; set; }
-        public User UserSender { get; set; } = null!;
+        public Profile ProfileSender { get; set; } = null!;
 
-        [ForeignKey(nameof(UserReciever))]
+        [ForeignKey(nameof(ProfileReciever))]
         public int RecieverId { get; set; }
-        public User UserReciever { get; set; } = null!;
+        public Profile ProfileReciever { get; set; } = null!;
         public RequestStatus Status { get; set; }
 
 

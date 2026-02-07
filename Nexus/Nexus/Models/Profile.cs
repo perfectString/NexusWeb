@@ -5,7 +5,7 @@ using Nexus.Models.Enums;
 
 namespace Nexus.Models
 {
-    public class User
+    public class Profile
     {
         
         [Key]
@@ -30,8 +30,8 @@ namespace Nexus.Models
 
         public ConnectionType DesiredConnection { get; set; }
 
-        public ICollection<UserInterest> UserInterest { get; set; }
-        = new HashSet<UserInterest>();
+        public ICollection<ProfileInterests> ProfileInterest { get; set; }
+        = new HashSet<ProfileInterests>();
     }
 
 }

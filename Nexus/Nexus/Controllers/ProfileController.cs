@@ -5,14 +5,14 @@ using Nexus.Models;
 
 namespace Nexus.Controllers
 {
-    public class UserController : Controller
+    public class ProfileController : Controller
     {
         /*  every time someone access this the app will call a ctor to access the dbcontext 
          and save it in the readonly
          ctor injection == makes the code more readable without rewriting the same code  */
 
         private readonly NexusDbContext dbContext;   
-        public UserController(NexusDbContext dbContext)
+        public ProfileController(NexusDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -20,9 +20,9 @@ namespace Nexus.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var allUsers = dbContext
-                .Users
-                .Include(u => u.UserInterest)
+            var allProfiles = dbContext
+                .Profiles
+                .Include(u => u.ProfileInterest)
                 .ThenInclude(u=> u.Interest)
                 .AsSplitQuery()
                 .Select(u => new
@@ -33,7 +33,7 @@ namespace Nexus.Controllers
                     u.City,
                     u.DesiredConnection,
                     u.Bio,
-                    Interests = u.UserInterest
+                    Interests = u.ProfileInterest
                     .Select(i => new
                     {
                         i.Interest.Name
@@ -45,7 +45,7 @@ namespace Nexus.Controllers
                 .ThenBy(u => u.City)
                 .ToArray();
 
-            return View(allUsers);
+            return View(allProfiles);
         }
     }
 }

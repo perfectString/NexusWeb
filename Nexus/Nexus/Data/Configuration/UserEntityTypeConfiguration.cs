@@ -5,11 +5,11 @@ using Nexus.Models.Enums;
 
 namespace Nexus.Data.Configuration
 {
-    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
-        private readonly User[] _users =
+        private readonly Profile[] _profiles =
         {
-            new User
+            new Profile
             {
                 Id = 1,
                 Name = "Alex",
@@ -18,7 +18,7 @@ namespace Nexus.Data.Configuration
                 Bio = "New in the city and looking for new connections!",
                 DesiredConnection = ConnectionType.Friends
             },
-            new User
+            new Profile
             {
                 Id = 2,
                 Name = "Lidya",
@@ -27,7 +27,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Looking for my person",
                 DesiredConnection = ConnectionType.Romantic
             },
-            new User
+            new Profile
             {
                 Id = 3,
                 Name = "Liam",
@@ -36,7 +36,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!", //add gaming as interest
                 DesiredConnection = ConnectionType.Groups
             },
-            new User
+            new Profile
             {
                 Id = 4,
                 Name = "Dean",
@@ -45,7 +45,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Work in the tech field.Into long night walks.", // add nature or smth as interest
                 DesiredConnection = ConnectionType.Romantic
             },
-            new User
+            new Profile
             {
                 Id = 5,
                 Name = "Peter",
@@ -54,7 +54,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Let's hang out?",
                 DesiredConnection = ConnectionType.Friends 
             },
-            new User
+            new Profile
             {
                 Id = 6,
                 Name = "Emma",
@@ -62,7 +62,7 @@ namespace Nexus.Data.Configuration
                 City = "Rome",
                 DesiredConnection = ConnectionType.Romantic
             },
-            new User
+            new Profile
             {
                 Id = 7,
                 Name = "Luca",
@@ -71,7 +71,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Heavy metal!!",
                 DesiredConnection = ConnectionType.Groups //music
             },
-            new User
+            new Profile
             {
                 Id = 8,
                 Name = "Alexandra",
@@ -80,7 +80,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Recommend me new music",
                 DesiredConnection = ConnectionType.Friends //music
             },
-            new User
+            new Profile
             {
                 Id = 9,
                 Name = "Olivia",
@@ -89,7 +89,7 @@ namespace Nexus.Data.Configuration
                 Bio = "Lets travel the world together!", // travel
                 DesiredConnection = ConnectionType.Romantic
             },
-            new User
+            new Profile
             {
                 Id = 10,
                 Name = "Dan",
@@ -100,10 +100,10 @@ namespace Nexus.Data.Configuration
             }
         };
 
-        public void Configure(EntityTypeBuilder<User> entity)
+        public void Configure(EntityTypeBuilder<Profile> entity)
         {
             entity
-                .HasData(this._users);
+                .HasData(this._profiles);
         }
     }
 }

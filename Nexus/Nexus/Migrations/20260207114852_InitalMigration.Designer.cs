@@ -9,11 +9,11 @@ using Nexus.Data;
 
 #nullable disable
 
-namespace Nexus.Migrations.ApplicationDb
+namespace Nexus.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260203163642_InitialIdentityConfiguration")]
-    partial class InitialIdentityConfiguration
+    [DbContext(typeof(NexusDbContext))]
+    [Migration("20260207114852_InitalMigration")]
+    partial class InitalMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -423,7 +423,7 @@ namespace Nexus.Migrations.ApplicationDb
                         });
                 });
 
-            modelBuilder.Entity("Nexus.Models.User", b =>
+            modelBuilder.Entity("Nexus.Models.Profile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -453,7 +453,7 @@ namespace Nexus.Migrations.ApplicationDb
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Profiles");
 
                     b.HasData(
                         new
@@ -547,169 +547,169 @@ namespace Nexus.Migrations.ApplicationDb
                         });
                 });
 
-            modelBuilder.Entity("Nexus.Models.UserInterest", b =>
+            modelBuilder.Entity("Nexus.Models.ProfileInterests", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("InterestId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "InterestId");
+                    b.HasKey("ProfileId", "InterestId");
 
                     b.HasIndex("InterestId");
 
-                    b.ToTable("UsersInterests");
+                    b.ToTable("ProfileInterests");
 
                     b.HasData(
                         new
                         {
-                            UserId = 1,
+                            ProfileId = 1,
                             InterestId = 2
                         },
                         new
                         {
-                            UserId = 1,
+                            ProfileId = 1,
                             InterestId = 5
                         },
                         new
                         {
-                            UserId = 1,
+                            ProfileId = 1,
                             InterestId = 6
                         },
                         new
                         {
-                            UserId = 2,
+                            ProfileId = 2,
                             InterestId = 6
                         },
                         new
                         {
-                            UserId = 2,
+                            ProfileId = 2,
                             InterestId = 11
                         },
                         new
                         {
-                            UserId = 2,
+                            ProfileId = 2,
                             InterestId = 3
                         },
                         new
                         {
-                            UserId = 3,
+                            ProfileId = 3,
                             InterestId = 4
                         },
                         new
                         {
-                            UserId = 3,
+                            ProfileId = 3,
                             InterestId = 16
                         },
                         new
                         {
-                            UserId = 3,
+                            ProfileId = 3,
                             InterestId = 9
                         },
                         new
                         {
-                            UserId = 4,
+                            ProfileId = 4,
                             InterestId = 7
                         },
                         new
                         {
-                            UserId = 4,
+                            ProfileId = 4,
                             InterestId = 15
                         },
                         new
                         {
-                            UserId = 4,
+                            ProfileId = 4,
                             InterestId = 17
                         },
                         new
                         {
-                            UserId = 5,
+                            ProfileId = 5,
                             InterestId = 23
                         },
                         new
                         {
-                            UserId = 5,
+                            ProfileId = 5,
                             InterestId = 22
                         },
                         new
                         {
-                            UserId = 5,
+                            ProfileId = 5,
                             InterestId = 21
                         },
                         new
                         {
-                            UserId = 6,
+                            ProfileId = 6,
                             InterestId = 14
                         },
                         new
                         {
-                            UserId = 6,
+                            ProfileId = 6,
                             InterestId = 13
                         },
                         new
                         {
-                            UserId = 6,
+                            ProfileId = 6,
                             InterestId = 26
                         },
                         new
                         {
-                            UserId = 7,
+                            ProfileId = 7,
                             InterestId = 2
                         },
                         new
                         {
-                            UserId = 7,
+                            ProfileId = 7,
                             InterestId = 24
                         },
                         new
                         {
-                            UserId = 7,
+                            ProfileId = 7,
                             InterestId = 22
                         },
                         new
                         {
-                            UserId = 8,
+                            ProfileId = 8,
                             InterestId = 2
                         },
                         new
                         {
-                            UserId = 8,
+                            ProfileId = 8,
                             InterestId = 19
                         },
                         new
                         {
-                            UserId = 8,
+                            ProfileId = 8,
                             InterestId = 15
                         },
                         new
                         {
-                            UserId = 9,
+                            ProfileId = 9,
                             InterestId = 17
                         },
                         new
                         {
-                            UserId = 9,
+                            ProfileId = 9,
                             InterestId = 16
                         },
                         new
                         {
-                            UserId = 9,
+                            ProfileId = 9,
                             InterestId = 19
                         },
                         new
                         {
-                            UserId = 10,
+                            ProfileId = 10,
                             InterestId = 29
                         },
                         new
                         {
-                            UserId = 10,
+                            ProfileId = 10,
                             InterestId = 27
                         },
                         new
                         {
-                            UserId = 10,
+                            ProfileId = 10,
                             InterestId = 30
                         });
                 });
@@ -767,50 +767,50 @@ namespace Nexus.Migrations.ApplicationDb
 
             modelBuilder.Entity("Nexus.Models.FriendRequest", b =>
                 {
-                    b.HasOne("Nexus.Models.User", "UserReciever")
+                    b.HasOne("Nexus.Models.Profile", "ProfileReciever")
                         .WithMany()
                         .HasForeignKey("RecieverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Nexus.Models.User", "UserSender")
+                    b.HasOne("Nexus.Models.Profile", "ProfileSender")
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("UserReciever");
+                    b.Navigation("ProfileReciever");
 
-                    b.Navigation("UserSender");
+                    b.Navigation("ProfileSender");
                 });
 
-            modelBuilder.Entity("Nexus.Models.UserInterest", b =>
+            modelBuilder.Entity("Nexus.Models.ProfileInterests", b =>
                 {
                     b.HasOne("Nexus.Models.Interest", "Interest")
-                        .WithMany("UserInterest")
+                        .WithMany("ProfileInterest")
                         .HasForeignKey("InterestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Nexus.Models.User", "User")
-                        .WithMany("UserInterest")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Nexus.Models.Profile", "Profile")
+                        .WithMany("ProfileInterest")
+                        .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Interest");
 
-                    b.Navigation("User");
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("Nexus.Models.Interest", b =>
                 {
-                    b.Navigation("UserInterest");
+                    b.Navigation("ProfileInterest");
                 });
 
-            modelBuilder.Entity("Nexus.Models.User", b =>
+            modelBuilder.Entity("Nexus.Models.Profile", b =>
                 {
-                    b.Navigation("UserInterest");
+                    b.Navigation("ProfileInterest");
                 });
 #pragma warning restore 612, 618
         }

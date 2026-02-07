@@ -4,177 +4,177 @@ using Nexus.Models;
 
 namespace Nexus.Data.Configuration
 {
-    public class UserInterestEntityTypeConfiguration : IEntityTypeConfiguration<UserInterest>
+    public class UserInterestEntityTypeConfiguration : IEntityTypeConfiguration<ProfileInterests>
     {
-        private readonly UserInterest[] _usersInterests =
+        private readonly ProfileInterests[] _profilesInterests =
         {
             //user1
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 1,
+                ProfileId = 1,
                 InterestId = 2,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 1,
+                ProfileId = 1,
                 InterestId = 5,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 1,
+                ProfileId = 1,
                 InterestId = 6,
             },
 
             //user 2
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 2,
+                ProfileId = 2,
                 InterestId = 6,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 2,
+                ProfileId = 2,
                 InterestId = 11,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 2,
+                ProfileId = 2,
                 InterestId = 3,
             },
             //user 3
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 3,
+                ProfileId = 3,
                 InterestId = 4,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 3,
+                ProfileId = 3,
                 InterestId = 16,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 3,
+                ProfileId = 3,
                 InterestId = 9,
             },
             //user 4
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 4,
+                ProfileId = 4,
                 InterestId = 7,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 4,
+                ProfileId = 4,
                 InterestId = 15,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 4,
+                ProfileId = 4,
                 InterestId = 17,
             },
             //user 5
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 5,
+                ProfileId = 5,
                 InterestId = 23,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 5,
+                ProfileId = 5,
                 InterestId = 22,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 5,
+                ProfileId = 5,
                 InterestId = 21,
             },
             //user 6
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 6,
+                ProfileId = 6,
                 InterestId = 14,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 6,
+                ProfileId = 6,
                 InterestId = 13,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 6,
+                ProfileId = 6,
                 InterestId = 26,
             },
             //user 7
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 7,
+                ProfileId = 7,
                 InterestId = 2,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 7,
+                ProfileId = 7,
                 InterestId = 24,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 7,
+                ProfileId = 7,
                 InterestId = 22,
             },
             //user 8
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 8,
+                ProfileId = 8,
                 InterestId = 2,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 8,
+                ProfileId = 8,
                 InterestId = 19,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 8,
+                ProfileId = 8,
                 InterestId = 15,
             },
             //user 9
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 9,
+                ProfileId = 9,
                 InterestId = 17,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 9,
+                ProfileId = 9,
                 InterestId = 16,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 9,
+                ProfileId = 9,
                 InterestId = 19,
             },
             //user 10
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 10,
+                ProfileId = 10,
                 InterestId = 29,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 10,
+                ProfileId = 10,
                 InterestId = 27,
             },
-            new UserInterest
+            new ProfileInterests
             {
-                UserId = 10,
+                ProfileId = 10,
                 InterestId = 30,
             },
 
         };
-        public void Configure(EntityTypeBuilder<UserInterest> entity)
+        public void Configure(EntityTypeBuilder<ProfileInterests> entity)
         {
             entity
-                .HasData(this._usersInterests);
+                .HasData(this._profilesInterests);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Nexus.Common
 {
     public class ValidationConstants
     {
-        //User
+        //Profile
         public const int NameMaxLen = 85;
         public const int NameMinLen = 1;
 

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Nexus.Migrations.ApplicationDb
+namespace Nexus.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialIdentityConfiguration : Migration
+    public partial class InitalMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,7 +66,7 @@ namespace Nexus.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Profiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -79,7 +79,7 @@ namespace Nexus.Migrations.ApplicationDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Profiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,39 +202,39 @@ namespace Nexus.Migrations.ApplicationDb
                 {
                     table.PrimaryKey("PK_FriendRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_Users_RecieverId",
+                        name: "FK_FriendRequests_Profiles_RecieverId",
                         column: x => x.RecieverId,
-                        principalTable: "Users",
+                        principalTable: "Profiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_Users_SenderId",
+                        name: "FK_FriendRequests_Profiles_SenderId",
                         column: x => x.SenderId,
-                        principalTable: "Users",
+                        principalTable: "Profiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersInterests",
+                name: "ProfileInterests",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ProfileId = table.Column<int>(type: "int", nullable: false),
                     InterestId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersInterests", x => new { x.UserId, x.InterestId });
+                    table.PrimaryKey("PK_ProfileInterests", x => new { x.ProfileId, x.InterestId });
                     table.ForeignKey(
-                        name: "FK_UsersInterests_Interests_InterestId",
+                        name: "FK_ProfileInterests_Interests_InterestId",
                         column: x => x.InterestId,
                         principalTable: "Interests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UsersInterests_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_ProfileInterests_Profiles_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -277,7 +277,7 @@ namespace Nexus.Migrations.ApplicationDb
                 });
 
             migrationBuilder.InsertData(
-                table: "Users",
+                table: "Profiles",
                 columns: new[] { "Id", "Age", "Bio", "City", "DesiredConnection", "Name" },
                 values: new object[,]
                 {
@@ -294,8 +294,8 @@ namespace Nexus.Migrations.ApplicationDb
                 });
 
             migrationBuilder.InsertData(
-                table: "UsersInterests",
-                columns: new[] { "InterestId", "UserId" },
+                table: "ProfileInterests",
+                columns: new[] { "InterestId", "ProfileId" },
                 values: new object[,]
                 {
                     { 2, 1 },
@@ -380,8 +380,8 @@ namespace Nexus.Migrations.ApplicationDb
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersInterests_InterestId",
-                table: "UsersInterests",
+                name: "IX_ProfileInterests_InterestId",
+                table: "ProfileInterests",
                 column: "InterestId");
         }
 
@@ -407,7 +407,7 @@ namespace Nexus.Migrations.ApplicationDb
                 name: "FriendRequests");
 
             migrationBuilder.DropTable(
-                name: "UsersInterests");
+                name: "ProfileInterests");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -419,7 +419,7 @@ namespace Nexus.Migrations.ApplicationDb
                 name: "Interests");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Profiles");
         }
     }
 }
