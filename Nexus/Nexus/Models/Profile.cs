@@ -2,20 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using static Nexus.Common.ValidationConstants;
 using Nexus.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Nexus.Models
 {
-    public class Profile
+    public class Profile : IdentityUser
     {
-        
-        [Key]
-        public int Id { get; set; }
 
         [Required]
-        [MinLength(NameMinLen)]
-        [MaxLength(NameMaxLen)]
+        [MinLength(DisplayNameMinLen)]
+        [MaxLength(DisplayNameMaxLen)]
         
-        public string Name { get; set; } = null!;
+        public string DisplayName { get; set; } = null!;
 
         [Range(AgeMinValue, AgeMaxValue)]
         public int Age { get; set; }

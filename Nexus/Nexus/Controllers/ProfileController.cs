@@ -28,7 +28,7 @@ namespace Nexus.Controllers
                 .Select(u => new
                 {
                     u.Id,
-                    u.Name,
+                   Name = u.DisplayName,
                     u.Age,
                     u.City,
                     u.DesiredConnection,

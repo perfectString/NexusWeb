@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Nexus.Models.Enums;
 
 namespace Nexus.Models
@@ -11,13 +12,13 @@ namespace Nexus.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(ProfileSender))]
-        public int SenderId { get; set; }
-        public Profile ProfileSender { get; set; } = null!;
+        [ForeignKey(nameof(Sender))]
+        public string SenderId { get; set; } = null!;
+        public Profile Sender { get; set; } = null!;
 
-        [ForeignKey(nameof(ProfileReciever))]
-        public int RecieverId { get; set; }
-        public Profile ProfileReciever { get; set; } = null!;
+        [ForeignKey(nameof(Reciever))]
+        public string RecieverId { get; set; } = null!;
+        public Profile Reciever { get; set; } = null!;
         public RequestStatus Status { get; set; }
 
 

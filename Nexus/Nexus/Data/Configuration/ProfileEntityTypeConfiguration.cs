@@ -5,14 +5,14 @@ using Nexus.Models.Enums;
 
 namespace Nexus.Data.Configuration
 {
-    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
+    public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
         private readonly Profile[] _profiles =
         {
             new Profile
             {
-                Id = 1,
-                Name = "Alex",
+                Id = "1",
+                DisplayName = "Alex",
                 Age = 21,
                 City = "Sofia",
                 Bio = "New in the city and looking for new connections!",
@@ -20,8 +20,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 2,
-                Name = "Lidya",
+                Id = "2",
+                DisplayName = "Lidya",
                 Age = 30,
                 City = "Berlin",
                 Bio = "Looking for my person",
@@ -29,8 +29,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 3,
-                Name = "Liam",
+                Id = "3",
+                DisplayName = "Liam",
                 Age = 19,
                 City = "Madrid",
                 Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!", //add gaming as interest
@@ -38,8 +38,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 4,
-                Name = "Dean",
+                Id = "4",
+                DisplayName = "Dean",
                 Age = 31,
                 City = "London",
                 Bio = "Work in the tech field.Into long night walks.", // add nature or smth as interest
@@ -47,8 +47,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 5,
-                Name = "Peter",
+                Id = "5",
+                DisplayName = "Peter",
                 Age = 27,
                 City = "Sofia",
                 Bio = "Let's hang out?",
@@ -56,16 +56,16 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 6,
-                Name = "Emma",
+                Id = "6",
+                DisplayName = "Emma",
                 Age = 44,
                 City = "Rome",
                 DesiredConnection = ConnectionType.Romantic
             },
             new Profile
             {
-                Id = 7,
-                Name = "Luca",
+                Id ="7",
+                DisplayName = "Luca",
                 Age = 20,
                 City = "Sofia",
                 Bio = "Heavy metal!!",
@@ -73,8 +73,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 8,
-                Name = "Alexandra",
+                Id = "8",
+                DisplayName = "Alexandra",
                 Age = 26,
                 City = "Madrid",
                 Bio = "Recommend me new music",
@@ -82,8 +82,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 9,
-                Name = "Olivia",
+                Id = "9",
+                DisplayName = "Olivia",
                 Age = 33,
                 City = "London",
                 Bio = "Lets travel the world together!", // travel
@@ -91,8 +91,8 @@ namespace Nexus.Data.Configuration
             },
             new Profile
             {
-                Id = 10,
-                Name = "Dan",
+                Id = "10",
+                DisplayName = "Dan",
                 Age = 19,
                 City = "London",
                 Bio = "I would like to find a local band. Can play bass pretty good!",
@@ -102,6 +102,14 @@ namespace Nexus.Data.Configuration
 
         public void Configure(EntityTypeBuilder<Profile> entity)
         {
+
+            // FLUENT API
+            // helping the db to find that ProfileId is string
+
+            entity.Property(p => p.Id)
+                .HasColumnType("NVARCHAR(450)")
+                .IsRequired();
+
             entity
                 .HasData(this._profiles);
         }

@@ -1,6 +1,6 @@
 ﻿namespace Nexus.ViewModels
 {
-    public class AllUsersViewModel
+    public class AllProfilesViewModel
     {
     }
 }

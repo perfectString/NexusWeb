@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<dynamic>
 
 @{
-	ViewData["Title"] = "Users";
+	ViewData["Title"] = "Profiles";
 }
 
 @section Styles {
@@ -44,12 +44,12 @@
 			border-radius: 20px;
 			color: #000;
 			border-color: #ffc107;
-			background-color: #ffc107; /* 👈 yellow always */
+			background-color: #ffc107; 
 			transition: all 0.2s ease;
 		}
 
 			.btn-outline-primary:hover {
-				background-color: #ffcd39; /* slightly darker yellow */
+				background-color: #ffcd39; 
 				border-color: #ffcd39;
 				color: #000;
 			}
@@ -88,7 +88,7 @@
 			<div class="d-flex justify-content-between align-items-center mb-4">
 				<h2 class="mb-0">All Profiles</h2>
 				<div class="w-50">
-					<input id="userSearch"
+					<input id="profileSearch"
 						   class="form-control"
 						   placeholder="Search by name, city or interest..." />
 				</div>
@@ -176,7 +176,7 @@
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="userDetailsTitle">Profile details</h5>
+				<h5 class="modal-title" id="profileDetailsTitle">Profile details</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -213,14 +213,15 @@
 		const searchInput = document.getElementById('profileSearch');
 		const cards = Array.from(document.querySelectorAll('.profile-card'));
 
-		searchInput.addEventListener('input', function () {
-			const q = this.value.trim().toLowerCase();
-			cards.forEach(card => {
-				const text = card.innerText.toLowerCase();
-				card.style.display = text.indexOf(q) >= 0 ? '' : 'none';
+		if (searchInput) {
+			searchInput.addEventListener('input', function () {
+				const q = this.value.trim().toLowerCase();
+				cards.forEach(card => {
+					const text = card.innerText.toLowerCase();
+					card.style.display = text.indexOf(q) >= 0 ? '' : 'none';
+				});
 			});
-		});
-
+		}
 
 		const userDetailsModal = document.getElementById('profileDetailsModal');
 		if (userDetailsModal) {
@@ -228,13 +229,21 @@
 				const button = event.relatedTarget;
 				if (!button) return;
 
-				document.getElementById('profileDetailsTitle').innerText = button.getAttribute('data-name') || 'Profile details';
-				document.getElementById('detailName').innerText = button.getAttribute('data-name') || '';
-				document.getElementById('detailAge').innerText = button.getAttribute('data-age') || '';
-				document.getElementById('detailCity').innerText = button.getAttribute('data-city') || '';
-				document.getElementById('detailConnection').innerText = button.getAttribute('data-connection') || '';
-				document.getElementById('detailInterests').innerText = button.getAttribute('data-interests') || '';
-				document.getElementById('detailBio').innerText = button.getAttribute('data-bio') || '';
+				const titleEl = document.getElementById('profileDetailsTitle');
+				const nameEl = document.getElementById('detailName');
+				const ageEl = document.getElementById('detailAge');
+				const cityEl = document.getElementById('detailCity');
+				const connectionEl = document.getElementById('detailConnection');
+				const interestsEl = document.getElementById('detailInterests');
+				const bioEl = document.getElementById('detailBio');
+
+				if (titleEl) titleEl.innerText = button.getAttribute('data-name') || 'Profile details';
+				if (nameEl) nameEl.innerText = button.getAttribute('data-name') || '';
+				if (ageEl) ageEl.innerText = button.getAttribute('data-age') || '';
+				if (cityEl) cityEl.innerText = button.getAttribute('data-city') || '';
+				if (connectionEl) connectionEl.innerText = button.getAttribute('data-connection') || '';
+				if (interestsEl) interestsEl.innerText = button.getAttribute('data-interests') || '';
+				if (bioEl) bioEl.innerText = button.getAttribute('data-bio') || '';
 			});
 		}
 	})();
