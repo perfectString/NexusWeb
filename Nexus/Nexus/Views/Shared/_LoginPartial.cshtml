@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Nexus.ViewModels
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using Nexus.Models
+@inject SignInManager<Profile> SignInManager
+@inject UserManager<Profile> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

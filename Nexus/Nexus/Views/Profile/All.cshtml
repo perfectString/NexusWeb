@@ -1,4 +1,4 @@
-﻿@model IEnumerable<dynamic>
+﻿@model IEnumerable<ProfileAllViewModel>
 
 @{
 	ViewData["Title"] = "Profiles";
@@ -14,6 +14,7 @@
 
 		/* TABLE CARD */
 		.table-card {
+			color: black;
 			background: Beige;
 			border-radius: 16px;
 			padding: 25px;
@@ -44,12 +45,12 @@
 			border-radius: 20px;
 			color: #000;
 			border-color: #ffc107;
-			background-color: #ffc107; 
+			background-color: #ffc107;
 			transition: all 0.2s ease;
 		}
 
 			.btn-outline-primary:hover {
-				background-color: #ffcd39; 
+				background-color: #ffcd39;
 				border-color: #ffcd39;
 				color: #000;
 			}
@@ -77,6 +78,19 @@
 			font-weight: 500;
 		}
 
+		/* Ensure modal text is readable (scoped to this modal) */
+		#profileDetailsModal .modal-content,
+		#profileDetailsModal .modal-header,
+		#profileDetailsModal .modal-body,
+		#profileDetailsModal .modal-footer {
+			color: #000 !important;
+			background-color: #fff;
+		}
+
+		#profileDetailsModal dd,
+		#profileDetailsModal dt {
+			color: #000 !important;
+		}
 	</style>
 }
 
@@ -100,23 +114,7 @@
 				{
 					foreach (var u in Model)
 					{
-						var interestList = new List<string>();
-						if (u.Interests != null)
-						{
-							foreach (var it in u.Interests)
-							{
-								try
-								{
-									interestList.Add((string)it.Name);
-								}
-								catch
-								{
-									interestList.Add(it?.ToString() ?? string.Empty);
-								}
-							}
-						}
-
-						var interestsText = string.Join(", ", interestList);
+						var interestsText = string.Join(", ", u.Interests ?? Enumerable.Empty<string>());
 						var bioText = (u.Bio ?? string.Empty).ToString();
 						var connectionText = (u.DesiredConnection).ToString();
 
@@ -125,7 +123,7 @@
 
 								<div class="card-body">
 									<h5 class="card-title mb-1">
-										@u.Name
+										@u.DisplayName
 									</h5>
 
 									<div class="text-muted small mb-2">
@@ -149,7 +147,7 @@
 												class="btn btn-sm btn-outline-primary w-40 d-sm-inline-block"
 												data-bs-toggle="modal"
 												data-bs-target="#profileDetailsModal"
-												data-name="@u.Name"
+												data-name="@u.DisplayName"
 												data-age="@u.Age"
 												data-city="@u.City"
 												data-connection="@connectionText"

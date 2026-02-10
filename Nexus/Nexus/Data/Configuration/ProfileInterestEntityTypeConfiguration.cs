@@ -195,15 +195,12 @@ namespace Nexus.Data.Configuration
             entity
                  .HasOne(u => u.Profile)
                 .WithMany(ui => ui.ProfileInterest)
-                .HasForeignKey(u => u.ProfileId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(u => u.ProfileId);
 
             entity
                 .HasOne(i => i.Interest)
                .WithMany(ui => ui.ProfileInterest)
-               .HasForeignKey(i => i.InterestId)
-               .OnDelete(DeleteBehavior.Restrict);
-
+               .HasForeignKey(i => i.InterestId);
 
             // SEEDING OF DATA
             entity

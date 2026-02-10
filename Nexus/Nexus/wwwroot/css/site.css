@@ -23,6 +23,7 @@ html
 
 body {
     background: #1a1a1a;
+    color: aliceblue;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
 
@@ -38,7 +39,7 @@ body {
 
 .footer {
     background-color: MediumTurquoise;
-    color: white;
+    color: white !important;
     padding: 0.5px 0;
     text-align: center;
 }

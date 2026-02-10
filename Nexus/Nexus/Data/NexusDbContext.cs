@@ -12,7 +12,6 @@ namespace Nexus.Data
 
         }
 
-        public virtual DbSet<Profile> Profiles { get; set; } = null!;
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
         public virtual DbSet<FriendRequest> FriendRequests { get; set; } = null!;
@@ -21,12 +20,12 @@ namespace Nexus.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
           
 
             modelBuilder
                 .ApplyConfigurationsFromAssembly(typeof(NexusDbContext).Assembly);
 
-            base.OnModelCreating(modelBuilder);
 
         }
 

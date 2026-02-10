@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nexus.Data;
 
@@ -11,9 +12,11 @@ using Nexus.Data;
 namespace Nexus.Migrations
 {
     [DbContext(typeof(NexusDbContext))]
-    partial class NexusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260207171539_InitialCreation")]
+    partial class InitialCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +93,7 @@ namespace Nexus.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -114,7 +117,7 @@ namespace Nexus.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -126,7 +129,7 @@ namespace Nexus.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -141,7 +144,7 @@ namespace Nexus.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
@@ -167,20 +170,20 @@ namespace Nexus.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("RecieverId")
+                    b.Property<string>("ReceiverId")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SenderId")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecieverId");
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
 
@@ -360,7 +363,7 @@ namespace Nexus.Migrations
             modelBuilder.Entity("Nexus.Models.Profile", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -449,13 +452,13 @@ namespace Nexus.Migrations
                             Age = 21,
                             Bio = "New in the city and looking for new connections!",
                             City = "Sofia",
-                            ConcurrencyStamp = "9eee8c16-aa15-4b34-a8db-91c766573c6a",
+                            ConcurrencyStamp = "76c1401c-7d0f-4778-a753-67eae57e6be9",
                             DesiredConnection = 0,
                             DisplayName = "Alex",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "699b3658-7d88-442f-acb8-0f868de5adda",
+                            SecurityStamp = "b9927da4-ea49-4019-9796-5590e91ac0cd",
                             TwoFactorEnabled = false
                         },
                         new
@@ -465,13 +468,13 @@ namespace Nexus.Migrations
                             Age = 30,
                             Bio = "Looking for my person",
                             City = "Berlin",
-                            ConcurrencyStamp = "fcd4cd59-5e62-4cf1-a297-82e698acdcd2",
+                            ConcurrencyStamp = "576e283c-7b9e-41ce-9f1f-1da33ff7563b",
                             DesiredConnection = 1,
                             DisplayName = "Lidya",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cea40cf9-84ce-4353-b23d-ebbd825afbb4",
+                            SecurityStamp = "b8b18e80-34e2-4724-a4ad-f08c9c010580",
                             TwoFactorEnabled = false
                         },
                         new
@@ -481,13 +484,13 @@ namespace Nexus.Migrations
                             Age = 19,
                             Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!",
                             City = "Madrid",
-                            ConcurrencyStamp = "db9bfa19-73f1-4104-8abb-37f898e60970",
+                            ConcurrencyStamp = "f74fa0d6-1d62-40bf-8da2-6b28cb4c34b7",
                             DesiredConnection = 2,
                             DisplayName = "Liam",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4524962-99d9-4c49-92d6-0d76fa94d2bd",
+                            SecurityStamp = "87f45c74-e2df-4683-adda-b1b0e5729844",
                             TwoFactorEnabled = false
                         },
                         new
@@ -497,13 +500,13 @@ namespace Nexus.Migrations
                             Age = 31,
                             Bio = "Work in the tech field.Into long night walks.",
                             City = "London",
-                            ConcurrencyStamp = "196d5ade-dcfc-4349-b7ed-b6888b769b41",
+                            ConcurrencyStamp = "e15c6b78-ae89-4d0d-a630-3f8794a4776d",
                             DesiredConnection = 1,
                             DisplayName = "Dean",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b992bbea-45d1-47a5-963f-5e06655bb4d5",
+                            SecurityStamp = "8c54415b-5995-414e-b5b7-3a1e421e9713",
                             TwoFactorEnabled = false
                         },
                         new
@@ -513,13 +516,13 @@ namespace Nexus.Migrations
                             Age = 27,
                             Bio = "Let's hang out?",
                             City = "Sofia",
-                            ConcurrencyStamp = "07c5bc61-2f8a-4bb3-acb2-89d770f49584",
+                            ConcurrencyStamp = "579239a7-2931-4400-9ec9-0c807fe6431f",
                             DesiredConnection = 0,
                             DisplayName = "Peter",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "52cc8469-9376-4e8b-9c64-07fa35bcffe0",
+                            SecurityStamp = "536f87c2-d503-4037-9cd2-ba6f5c0b76e1",
                             TwoFactorEnabled = false
                         },
                         new
@@ -528,13 +531,13 @@ namespace Nexus.Migrations
                             AccessFailedCount = 0,
                             Age = 44,
                             City = "Rome",
-                            ConcurrencyStamp = "b80d85e3-d67f-4538-930a-b43e9937b11e",
+                            ConcurrencyStamp = "5f113eb3-ee7d-48d1-8039-0c5630e2f043",
                             DesiredConnection = 1,
                             DisplayName = "Emma",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f35279b8-552e-4d19-80ed-9a1e3d770b39",
+                            SecurityStamp = "6a469e25-8749-478f-9843-6d3cbed490e1",
                             TwoFactorEnabled = false
                         },
                         new
@@ -544,13 +547,13 @@ namespace Nexus.Migrations
                             Age = 20,
                             Bio = "Heavy metal!!",
                             City = "Sofia",
-                            ConcurrencyStamp = "f454af75-fc20-47b6-ad6c-cbe09ae2c0af",
+                            ConcurrencyStamp = "7fdf558e-515f-47c5-8099-7bb4f42ee4fb",
                             DesiredConnection = 2,
                             DisplayName = "Luca",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "baffbe33-2d67-4d76-ad55-3e1f7b3b12e7",
+                            SecurityStamp = "491c8f10-53d4-4a05-9288-97ea04f893b9",
                             TwoFactorEnabled = false
                         },
                         new
@@ -560,13 +563,13 @@ namespace Nexus.Migrations
                             Age = 26,
                             Bio = "Recommend me new music",
                             City = "Madrid",
-                            ConcurrencyStamp = "d9286632-1fa3-4890-ab29-3d4f61e625ed",
+                            ConcurrencyStamp = "12b32e01-d3a2-4655-8bcb-1df3dda8d30c",
                             DesiredConnection = 0,
                             DisplayName = "Alexandra",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6aa41cd4-68b2-4480-aa57-2d3d3d3822a6",
+                            SecurityStamp = "2a0211f5-ca23-4aae-a87f-b74245766bb8",
                             TwoFactorEnabled = false
                         },
                         new
@@ -576,13 +579,13 @@ namespace Nexus.Migrations
                             Age = 33,
                             Bio = "Lets travel the world together!",
                             City = "London",
-                            ConcurrencyStamp = "2c00d0b3-b37c-40ef-944d-a5628885a4c3",
+                            ConcurrencyStamp = "f6a1dd53-41c5-4d5c-9926-41e5bd5c5c98",
                             DesiredConnection = 1,
                             DisplayName = "Olivia",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "05347c4c-39b4-4146-9917-604cb736949c",
+                            SecurityStamp = "32ef686c-ec50-439b-a1c3-fb593399c970",
                             TwoFactorEnabled = false
                         },
                         new
@@ -592,13 +595,13 @@ namespace Nexus.Migrations
                             Age = 19,
                             Bio = "I would like to find a local band. Can play bass pretty good!",
                             City = "London",
-                            ConcurrencyStamp = "cba69389-83db-45d3-8bcb-4e1a730927fe",
+                            ConcurrencyStamp = "ed39a2f7-e7ce-49b5-9c58-bc79accf117c",
                             DesiredConnection = 2,
                             DisplayName = "Dan",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a5e8227c-84cf-4463-802f-f622b94f72ba",
+                            SecurityStamp = "1713acdb-67e7-4a78-b5f6-e8fab18d18cf",
                             TwoFactorEnabled = false
                         });
                 });
@@ -606,7 +609,7 @@ namespace Nexus.Migrations
             modelBuilder.Entity("Nexus.Models.ProfileInterests", b =>
                 {
                     b.Property<string>("ProfileId")
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("InterestId")
                         .HasColumnType("int");
@@ -823,19 +826,19 @@ namespace Nexus.Migrations
 
             modelBuilder.Entity("Nexus.Models.FriendRequest", b =>
                 {
-                    b.HasOne("Nexus.Models.Profile", "Reciever")
-                        .WithMany()
-                        .HasForeignKey("RecieverId")
+                    b.HasOne("Nexus.Models.Profile", "Receiver")
+                        .WithMany("ReceivedFriendRequests")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Nexus.Models.Profile", "Sender")
-                        .WithMany()
+                        .WithMany("SentFriendRequests")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Reciever");
+                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });
@@ -845,13 +848,13 @@ namespace Nexus.Migrations
                     b.HasOne("Nexus.Models.Interest", "Interest")
                         .WithMany("ProfileInterest")
                         .HasForeignKey("InterestId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Nexus.Models.Profile", "Profile")
                         .WithMany("ProfileInterest")
                         .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Interest");
@@ -867,6 +870,10 @@ namespace Nexus.Migrations
             modelBuilder.Entity("Nexus.Models.Profile", b =>
                 {
                     b.Navigation("ProfileInterest");
+
+                    b.Navigation("ReceivedFriendRequests");
+
+                    b.Navigation("SentFriendRequests");
                 });
 #pragma warning restore 612, 618
         }

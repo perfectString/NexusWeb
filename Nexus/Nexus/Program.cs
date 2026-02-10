@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
+using Nexus.Models;
 
 namespace Nexus
 {
@@ -16,8 +17,13 @@ namespace Nexus
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services
+                .AddDefaultIdentity<Profile>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                })
                 .AddEntityFrameworkStores<NexusDbContext>();
+
             builder.Services.AddControllersWithViews();
 
             string? developerConnectionString = builder.Configuration
@@ -51,6 +57,7 @@ namespace Nexus
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

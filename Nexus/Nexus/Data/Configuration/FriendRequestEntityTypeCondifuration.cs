@@ -13,18 +13,15 @@ namespace Nexus.Data.Configuration
             //Control of navigational properties for friend requests
 
             entity
-                .HasKey(x => x.Id);
-
-            entity
-               .HasOne(i => i.Sender)
-               .WithMany()
-               .HasForeignKey(i => i.SenderId)
+               .HasOne(fr => fr.Sender)
+               .WithMany(fr => fr.SentFriendRequests)
+               .HasForeignKey(fr => fr.SenderId)
                .OnDelete(DeleteBehavior.Restrict);
 
             entity
-               .HasOne(i => i.Reciever)
-               .WithMany()
-               .HasForeignKey(i => i.RecieverId)
+               .HasOne(fr => fr.Receiver)
+               .WithMany(fr => fr.ReceivedFriendRequests)
+               .HasForeignKey(fr => fr.ReceiverId)
                .OnDelete(DeleteBehavior.Restrict);
 
         }

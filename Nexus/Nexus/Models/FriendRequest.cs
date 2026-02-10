@@ -16,9 +16,9 @@ namespace Nexus.Models
         public string SenderId { get; set; } = null!;
         public Profile Sender { get; set; } = null!;
 
-        [ForeignKey(nameof(Reciever))]
-        public string RecieverId { get; set; } = null!;
-        public Profile Reciever { get; set; } = null!;
+        [ForeignKey(nameof(Receiver))]
+        public string ReceiverId { get; set; } = null!;
+        public Profile Receiver { get; set; } = null!;
         public RequestStatus Status { get; set; }
 
 

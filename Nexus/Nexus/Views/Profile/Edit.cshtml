@@ -1,0 +1,99 @@
+﻿@model Nexus.ViewModels.Profile.ProfileEditViewModel
+
+@{
+    ViewData["Title"] = "Edit profile";
+}
+
+@section Styles {
+    <style>
+        .views-profile-edit .card,
+        .views-profile-edit .card * {
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+    </style>
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm text-dark bg-white">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">My Profile</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+
+                <div class="col-12 col-md-6">
+                    <label asp-for="DisplayName" class="form-label"></label>
+                    <input asp-for="DisplayName" class="form-control" />
+                    <span asp-validation-for="DisplayName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label asp-for="Age" class="form-label"></label>
+                    <input asp-for="Age" type="number" class="form-control" min="0" />
+                    <span asp-validation-for="Age" class="text-danger small"></span>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Bio" class="form-label"></label>
+                    <textarea asp-for="Bio" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label asp-for="DesiredConnection" class="form-label">Desired connection</label>
+                    <select asp-for="DesiredConnection" class="form-select">
+                        <option value="">Select</option>
+                        @foreach (var v in Enum.GetValues(typeof(Nexus.Models.Enums.ConnectionType)))
+                        {
+                            <option value="@( (int)v )" selected="@(Model.DesiredConnection.Equals(v) ? "selected" : null)">
+                                @v
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="DesiredConnection" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Interests</label>
+                    <div class="row g-2">
+                        @foreach (var interest in Model.AvailableInterests)
+                        {
+                            var isChecked = Model.InterestId?.Contains(interest.Id) ?? false;
+                            <div class="col-6 col-sm-4 col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="InterestId"
+                                           value="@interest.Id"
+                                           id="interest-@interest.Id"
+                                           @(isChecked ? "checked" : "") />
+                                    <label class="form-check-label" for="interest-@interest.Id">
+                                        @interest.Name
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

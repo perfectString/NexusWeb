@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using static Nexus.Common.ValidationConstants;
 using Nexus.Models.Enums;
 using Microsoft.AspNetCore.Identity;
+using NuGet.Configuration;
 
 namespace Nexus.Models
 {
@@ -13,7 +14,7 @@ namespace Nexus.Models
         [MinLength(DisplayNameMinLen)]
         [MaxLength(DisplayNameMaxLen)]
         
-        public string DisplayName { get; set; } = null!;
+        public string DisplayName { get; set; } = "no display name";
 
         [Range(AgeMinValue, AgeMaxValue)]
         public int Age { get; set; }
@@ -21,7 +22,7 @@ namespace Nexus.Models
         [Required]
         [MinLength(CityMinLen)]
         [MaxLength(CityMaxLen)]
-        public string City { get; set; } = null!;
+        public string City { get; set; } = "unknown";
 
         [MaxLength(BioMaxLen)]
         public string? Bio { get; set; }
@@ -30,6 +31,10 @@ namespace Nexus.Models
 
         public ICollection<ProfileInterests> ProfileInterest { get; set; }
         = new HashSet<ProfileInterests>();
+        public ICollection<FriendRequest> SentFriendRequests { get; set; } 
+            = new HashSet<FriendRequest>();
+        public ICollection<FriendRequest> ReceivedFriendRequests { get; set; }
+            = new HashSet<FriendRequest>();
     }
 
 }

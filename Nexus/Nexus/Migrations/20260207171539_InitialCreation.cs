@@ -31,7 +31,7 @@ namespace Nexus.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(85)", maxLength: 85, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(85)", maxLength: 85, nullable: false),
@@ -97,7 +97,7 @@ namespace Nexus.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -119,7 +119,7 @@ namespace Nexus.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,7 +136,7 @@ namespace Nexus.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -160,7 +160,7 @@ namespace Nexus.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -182,16 +182,16 @@ namespace Nexus.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
-                    RecieverId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FriendRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_RecieverId",
-                        column: x => x.RecieverId,
+                        name: "FK_FriendRequests_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -207,7 +207,7 @@ namespace Nexus.Migrations
                 name: "ProfileInterests",
                 columns: table => new
                 {
-                    ProfileId = table.Column<string>(type: "NVARCHAR(450)", nullable: false),
+                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     InterestId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -218,13 +218,13 @@ namespace Nexus.Migrations
                         column: x => x.ProfileId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProfileInterests_Interests_InterestId",
                         column: x => x.InterestId,
                         principalTable: "Interests",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -232,16 +232,16 @@ namespace Nexus.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Age", "Bio", "City", "ConcurrencyStamp", "DesiredConnection", "DisplayName", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, 21, "New in the city and looking for new connections!", "Sofia", "9eee8c16-aa15-4b34-a8db-91c766573c6a", 0, "Alex", null, false, false, null, null, null, null, null, false, "699b3658-7d88-442f-acb8-0f868de5adda", false, null },
-                    { "10", 0, 19, "I would like to find a local band. Can play bass pretty good!", "London", "cba69389-83db-45d3-8bcb-4e1a730927fe", 2, "Dan", null, false, false, null, null, null, null, null, false, "a5e8227c-84cf-4463-802f-f622b94f72ba", false, null },
-                    { "2", 0, 30, "Looking for my person", "Berlin", "fcd4cd59-5e62-4cf1-a297-82e698acdcd2", 1, "Lidya", null, false, false, null, null, null, null, null, false, "cea40cf9-84ce-4353-b23d-ebbd825afbb4", false, null },
-                    { "3", 0, 19, "Im heavy into gaming, i'd like to find people to play CS with!!!", "Madrid", "db9bfa19-73f1-4104-8abb-37f898e60970", 2, "Liam", null, false, false, null, null, null, null, null, false, "f4524962-99d9-4c49-92d6-0d76fa94d2bd", false, null },
-                    { "4", 0, 31, "Work in the tech field.Into long night walks.", "London", "196d5ade-dcfc-4349-b7ed-b6888b769b41", 1, "Dean", null, false, false, null, null, null, null, null, false, "b992bbea-45d1-47a5-963f-5e06655bb4d5", false, null },
-                    { "5", 0, 27, "Let's hang out?", "Sofia", "07c5bc61-2f8a-4bb3-acb2-89d770f49584", 0, "Peter", null, false, false, null, null, null, null, null, false, "52cc8469-9376-4e8b-9c64-07fa35bcffe0", false, null },
-                    { "6", 0, 44, null, "Rome", "b80d85e3-d67f-4538-930a-b43e9937b11e", 1, "Emma", null, false, false, null, null, null, null, null, false, "f35279b8-552e-4d19-80ed-9a1e3d770b39", false, null },
-                    { "7", 0, 20, "Heavy metal!!", "Sofia", "f454af75-fc20-47b6-ad6c-cbe09ae2c0af", 2, "Luca", null, false, false, null, null, null, null, null, false, "baffbe33-2d67-4d76-ad55-3e1f7b3b12e7", false, null },
-                    { "8", 0, 26, "Recommend me new music", "Madrid", "d9286632-1fa3-4890-ab29-3d4f61e625ed", 0, "Alexandra", null, false, false, null, null, null, null, null, false, "6aa41cd4-68b2-4480-aa57-2d3d3d3822a6", false, null },
-                    { "9", 0, 33, "Lets travel the world together!", "London", "2c00d0b3-b37c-40ef-944d-a5628885a4c3", 1, "Olivia", null, false, false, null, null, null, null, null, false, "05347c4c-39b4-4146-9917-604cb736949c", false, null }
+                    { "1", 0, 21, "New in the city and looking for new connections!", "Sofia", "76c1401c-7d0f-4778-a753-67eae57e6be9", 0, "Alex", null, false, false, null, null, null, null, null, false, "b9927da4-ea49-4019-9796-5590e91ac0cd", false, null },
+                    { "10", 0, 19, "I would like to find a local band. Can play bass pretty good!", "London", "ed39a2f7-e7ce-49b5-9c58-bc79accf117c", 2, "Dan", null, false, false, null, null, null, null, null, false, "1713acdb-67e7-4a78-b5f6-e8fab18d18cf", false, null },
+                    { "2", 0, 30, "Looking for my person", "Berlin", "576e283c-7b9e-41ce-9f1f-1da33ff7563b", 1, "Lidya", null, false, false, null, null, null, null, null, false, "b8b18e80-34e2-4724-a4ad-f08c9c010580", false, null },
+                    { "3", 0, 19, "Im heavy into gaming, i'd like to find people to play CS with!!!", "Madrid", "f74fa0d6-1d62-40bf-8da2-6b28cb4c34b7", 2, "Liam", null, false, false, null, null, null, null, null, false, "87f45c74-e2df-4683-adda-b1b0e5729844", false, null },
+                    { "4", 0, 31, "Work in the tech field.Into long night walks.", "London", "e15c6b78-ae89-4d0d-a630-3f8794a4776d", 1, "Dean", null, false, false, null, null, null, null, null, false, "8c54415b-5995-414e-b5b7-3a1e421e9713", false, null },
+                    { "5", 0, 27, "Let's hang out?", "Sofia", "579239a7-2931-4400-9ec9-0c807fe6431f", 0, "Peter", null, false, false, null, null, null, null, null, false, "536f87c2-d503-4037-9cd2-ba6f5c0b76e1", false, null },
+                    { "6", 0, 44, null, "Rome", "5f113eb3-ee7d-48d1-8039-0c5630e2f043", 1, "Emma", null, false, false, null, null, null, null, null, false, "6a469e25-8749-478f-9843-6d3cbed490e1", false, null },
+                    { "7", 0, 20, "Heavy metal!!", "Sofia", "7fdf558e-515f-47c5-8099-7bb4f42ee4fb", 2, "Luca", null, false, false, null, null, null, null, null, false, "491c8f10-53d4-4a05-9288-97ea04f893b9", false, null },
+                    { "8", 0, 26, "Recommend me new music", "Madrid", "12b32e01-d3a2-4655-8bcb-1df3dda8d30c", 0, "Alexandra", null, false, false, null, null, null, null, null, false, "2a0211f5-ca23-4aae-a87f-b74245766bb8", false, null },
+                    { "9", 0, 33, "Lets travel the world together!", "London", "f6a1dd53-41c5-4d5c-9926-41e5bd5c5c98", 1, "Olivia", null, false, false, null, null, null, null, null, false, "32ef686c-ec50-439b-a1c3-fb593399c970", false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -358,9 +358,9 @@ namespace Nexus.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_RecieverId",
+                name: "IX_FriendRequests_ReceiverId",
                 table: "FriendRequests",
-                column: "RecieverId");
+                column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FriendRequests_SenderId",
