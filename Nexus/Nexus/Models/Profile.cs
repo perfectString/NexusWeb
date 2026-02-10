@@ -31,10 +31,8 @@ namespace Nexus.Models
 
         public ICollection<ProfileInterests> ProfileInterest { get; set; }
         = new HashSet<ProfileInterests>();
-        public ICollection<FriendRequest> SentFriendRequests { get; set; } 
-            = new HashSet<FriendRequest>();
-        public ICollection<FriendRequest> ReceivedFriendRequests { get; set; }
-            = new HashSet<FriendRequest>();
+        public ICollection<QuestJoiner> JoinedQuests { get; set; } 
+            = new HashSet<QuestJoiner>();
     }
 
 }

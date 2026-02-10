@@ -1,0 +1,40 @@
+﻿@model Nexus.ViewModels.Quest.QuestAddViewModel
+
+@{
+    ViewData["Title"] = "Add Quest";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">Create Quest</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Add" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+
+                <div class="col-12">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a asp-action="All" class="btn btn-outline-secondary">Back</a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

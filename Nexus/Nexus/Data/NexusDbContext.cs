@@ -14,7 +14,8 @@ namespace Nexus.Data
 
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
-        public virtual DbSet<FriendRequest> FriendRequests { get; set; } = null!;
+        public virtual DbSet<Quest> Quests { get; set; } = null!;
+        public virtual DbSet<QuestJoiner> QuestJoiners { get; set; } = null!;
 
 
 

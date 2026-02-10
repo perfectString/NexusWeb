@@ -14,5 +14,7 @@ namespace Nexus.Models
         public ICollection<ProfileInterests> ProfileInterest { get; set; }
         = new HashSet<ProfileInterests>();
 
+
+        //Connect to Quests in the future
     }
 }

@@ -19,5 +19,12 @@ namespace Nexus.Common
         //Interest
         public const int InterestMaxName = 100;
 
+        //Quests
+        public const int TitleMaxLen = 25;
+        public const int TitleMinLen = 2;
+
+        public const int DescriptionMaxLen = 500;
+        public const int DescriptionMinLen = 5;
+
     }
 }
