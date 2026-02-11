@@ -24,6 +24,8 @@
             <form asp-action="Edit" method="post" class="row g-3">
                 @Html.AntiForgeryToken()
 
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
                 <div class="col-12 col-md-6">
                     <label asp-for="DisplayName" class="form-label"></label>
                     <input asp-for="DisplayName" class="form-control" />
@@ -83,6 +85,8 @@
                             </div>
                         }
                     </div>
+
+                    <span asp-validation-for="InterestId" class="text-danger small"></span>
                 </div>
 
                 <div class="col-12 d-flex justify-content-end gap-2">

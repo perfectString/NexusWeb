@@ -83,6 +83,13 @@ namespace Nexus.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ProfileEditViewModel myProfile)
         {
+            if (myProfile.InterestId.Count > 3)
+            {
+                ModelState.AddModelError(
+                    nameof(myProfile.InterestId),
+                    "You can select up to 3 interests."
+                );
+            }
             if (!ModelState.IsValid)
             {
                 myProfile.AvailableInterests = GetAvailableInterests();

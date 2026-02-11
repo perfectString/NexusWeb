@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Nexus.ViewModels.Quest.QuestAllViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Joined Quests";
+}
+
+@section Styles {
+    <style>
+      
+        .page-wrapper { min-height: 100vh; }
+        .card-quest { background: #fff; color: #000; border-radius: 8px; }
+        .card-quest .card-body { display: flex; flex-direction: column; }
+        .muted-small { color: #6c757d; font-size: .85rem; }
+        #questSearch { border-radius: 20px; padding-left: 12px; }
+    </style>
+}
+
+<div class="page-wrapper">
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">Quests you joined</h3>
+            <a asp-action="All" asp-controller="Quest" class="btn btn-sm btn-outline-secondary">All quests</a>
+        </div>
+
+        <div class="mb-3">
+            <input id="questSearch" class="form-control" placeholder="Search title, description or initiator..." />
+        </div>
+
+        <div class="row g-3">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var q in Model)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card card-quest h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@q.Title</h5>
+                                <div class="muted-small mb-2">By @q.QuestInitiator</div>
+                                <p class="card-text text-truncate" title="@q.Description">@q.Description</p>
+
+                                <div class="mt-auto d-flex gap-2">
+                                    <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info mb-0">You have not joined any quests yet.</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const input = document.getElementById('questSearch');
+            if (!input) return;
+            input.addEventListener('input', function () {
+                const q = this.value.trim().toLowerCase();
+                document.querySelectorAll('.row.g-3 > .col-12, .row.g-3 > .col-md-6').forEach(col => {
+                    const text = col.innerText.toLowerCase();
+                    col.style.display = q === '' || text.indexOf(q) >= 0 ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+}

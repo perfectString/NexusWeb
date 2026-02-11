@@ -4,6 +4,12 @@ using static Nexus.Common.ValidationConstants;
 
 namespace Nexus.Models
 {
+    /* id like to implement a logic that connects quests with interests
+     * and add an xp system in the long run but i feel like i wouldnt have time
+     * or i will make this project too difficult 
+     * for now im going to leave this like that and if i have time i will do it
+     * if i dont i will leave it for the next course
+     */
     public class Quest
     {
         [Key]

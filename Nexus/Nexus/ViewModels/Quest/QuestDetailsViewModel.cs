@@ -1,17 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Nexus.ViewModels.Profile;
 
 namespace Nexus.ViewModels.Quest
 {
-    public class QuestAllViewModel
+    public class QuestDetailsViewModel
     {
         public int Id { get; set; }
-
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string QuestInitiator { get; set; } = null!;
-
-        
         public string InitiatorId { get; set; } = null!;
+
+        public List<ProfileAllViewModel> JoinedProfiles { get; set; } = new();
     }
 }

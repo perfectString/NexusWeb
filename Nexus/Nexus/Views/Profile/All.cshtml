@@ -1,249 +1,156 @@
-﻿@model IEnumerable<ProfileAllViewModel>
+﻿@model IEnumerable<Nexus.ViewModels.Profile.ProfileAllViewModel>
 
 @{
-	ViewData["Title"] = "Profiles";
+    ViewData["Title"] = "Profiles";
 }
 
 @section Styles {
-	<style>
-
-		/* PAGE WRAPPER */
-		.page-wrapper {
-			min-height: 100vh;
-		}
-
-		/* TABLE CARD */
-		.table-card {
-			color: black;
-			background: Beige;
-			border-radius: 16px;
-			padding: 25px;
-			box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-		}
-
-		/* TABLE HEADER */
-		.table thead {
-			background: #f1f3f5;
-		}
-
-			.table thead th {
-				font-weight: 600;
-				border-bottom: none;
-			}
-
-		/* TABLE ROWS */
-		.table tbody tr {
-			transition: background 0.2s ease;
-		}
-
-			.table tbody tr:hover {
-				background: #fff0f3;
-			}
-
-		/* button DETAILS*/
-		.btn-outline-primary {
-			border-radius: 20px;
-			color: #000;
-			border-color: #ffc107;
-			background-color: #ffc107;
-			transition: all 0.2s ease;
-		}
-
-			.btn-outline-primary:hover {
-				background-color: #ffcd39;
-				border-color: #ffcd39;
-				color: #000;
-			}
-
-		/* SEARCH INPUT */
-		#userSearch {
-			border-radius: 20px;
-			padding-left: 15px;
-		}
-
-		/* Ensure card footer button looks good when full width */
-		.card-footer .btn {
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		/*connection type badge style*/
-
-		.badge-yellow {
-			background-color: DarkCyan;
-			color: white;
-			border-radius: 14px;
-			padding: 6px 10px;
-			font-weight: 500;
-		}
-
-		/* Ensure modal text is readable (scoped to this modal) */
-		#profileDetailsModal .modal-content,
-		#profileDetailsModal .modal-header,
-		#profileDetailsModal .modal-body,
-		#profileDetailsModal .modal-footer {
-			color: #000 !important;
-			background-color: #fff;
-		}
-
-		#profileDetailsModal dd,
-		#profileDetailsModal dt {
-			color: #000 !important;
-		}
-	</style>
+    <style>
+        .badge-connection {
+            background-color: DarkCyan;
+            color: #fff;
+            border-radius: 0.2rem;
+            padding: 0.35rem 0.6rem;
+            font-weight: 600;
+        }
+    </style>
 }
 
 <div class="page-wrapper">
-	<div class="container my-5">
+    <div class="container my-5">
+        <div class="card shadow-sm bg-white text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">All Profiles</h2>
 
-		<div class="table-card">
+                    <div class="w-50">
+                        <input id="profileSearch" class="form-control rounded-pill" placeholder="Search by name, city or interest..." />
+                    </div>
+                </div>
 
-			<div class="d-flex justify-content-between align-items-center mb-4">
-				<h2 class="mb-0">All Profiles</h2>
-				<div class="w-50">
-					<input id="profileSearch"
-						   class="form-control"
-						   placeholder="Search by name, city or interest..." />
-				</div>
-			</div>
+                <div class="row g-4">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var p in Model)
+                        {
+                            var interestsText = string.Join(", ", p.Interests ?? Enumerable.Empty<string>());
+                            var connectionText = p.DesiredConnection.ToString();
+                            <div class="col-12 col-sm-6 col-lg-4 profile-card">
+                                <div class="card h-100 shadow-sm bg-white text-dark">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title mb-1">@p.DisplayName</h5>
+                                        <div class="text-muted small mb-2">@p.Age years • @p.City</div>
 
-			<div class="row g-4">
+                                        <span class="badge-connection mb-2">@connectionText</span>
 
-				@if (Model != null)
-				{
-					foreach (var u in Model)
-					{
-						var interestsText = string.Join(", ", u.Interests ?? Enumerable.Empty<string>());
-						var bioText = (u.Bio ?? string.Empty).ToString();
-						var connectionText = (u.DesiredConnection).ToString();
+                                        <p class="card-text text-truncate" title="@interestsText">
+                                            <strong>Interests:</strong> @interestsText
+                                        </p>
 
-						<div class="col-12 col-sm-6 col-lg-4 profile-card">
-							<div class="card h-100 shadow-sm">
-
-								<div class="card-body">
-									<h5 class="card-title mb-1">
-										@u.DisplayName
-									</h5>
-
-									<div class="text-muted small mb-2">
-										@u.Age years • @u.City
-									</div>
-
-									<span class="badge badge-yellow mb-2">
-										@connectionText
-									</span>
-
-
-									<p class="card-text text-truncate" title="@interestsText">
-										<strong>Interests:</strong> @interestsText
-									</p>
-								</div>
-
-								<div class="card-footer bg-transparent border-0 p-3">
-									<div class="d-grid d-sm-flex justify-content-sm-end">
-
-										<button type="button"
-												class="btn btn-sm btn-outline-primary w-40 d-sm-inline-block"
-												data-bs-toggle="modal"
-												data-bs-target="#profileDetailsModal"
-												data-name="@u.DisplayName"
-												data-age="@u.Age"
-												data-city="@u.City"
-												data-connection="@connectionText"
-												data-interests="@interestsText"
-												data-bio="@bioText">
-											Details
-										</button>
-									</div>
-								</div>
-
-							</div>
-						</div>
-					}
-				}
-
-			</div>
-
-		</div>
-	</div>
+                                        <div class="mt-auto d-flex justify-content-end gap-2">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#profileDetailsModal"
+                                                    data-name="@p.DisplayName"
+                                                    data-age="@p.Age"
+                                                    data-city="@p.City"
+                                                    data-connection="@connectionText"
+                                                    data-interests="@interestsText"
+                                                    data-bio="@(p.Bio ?? string.Empty)">
+                                                Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="alert alert-info mb-0">No profiles found.</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Details Modal -->
+
 <div class="modal fade" id="profileDetailsModal" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="profileDetailsTitle">Profile details</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<dl class="row mb-0">
-					<dt class="col-sm-4">Name</dt>
-					<dd class="col-sm-8" id="detailName"></dd>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark bg-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileDetailsTitle">Profile details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8" id="detailName"></dd>
 
-					<dt class="col-sm-4">Age</dt>
-					<dd class="col-sm-8" id="detailAge"></dd>
+                    <dt class="col-sm-4">Age</dt>
+                    <dd class="col-sm-8" id="detailAge"></dd>
 
-					<dt class="col-sm-4">City</dt>
-					<dd class="col-sm-8" id="detailCity"></dd>
+                    <dt class="col-sm-4">City</dt>
+                    <dd class="col-sm-8" id="detailCity"></dd>
 
-					<dt class="col-sm-4">Connection</dt>
-					<dd class="col-sm-8" id="detailConnection"></dd>
+                    <dt class="col-sm-4">Connection</dt>
+                    <dd class="col-sm-8" id="detailConnection"></dd>
 
-					<dt class="col-sm-4">Interests</dt>
-					<dd class="col-sm-8" id="detailInterests"></dd>
+                    <dt class="col-sm-4">Interests</dt>
+                    <dd class="col-sm-8" id="detailInterests"></dd>
 
-					<dt class="col-sm-4">Biography</dt>
-					<dd class="col-sm-8" id="detailBio"></dd>
-				</dl>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
+                    <dt class="col-sm-4">Biography</dt>
+                    <dd class="col-sm-8" id="detailBio"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script>
-	(function () {
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById('profileSearch');
+            const cards = Array.from(document.querySelectorAll('.profile-card'));
 
-		const searchInput = document.getElementById('profileSearch');
-		const cards = Array.from(document.querySelectorAll('.profile-card'));
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    const q = this.value.trim().toLowerCase();
+                    cards.forEach(card => {
+                        const text = card.innerText.toLowerCase();
+                        card.style.display = q === '' || text.indexOf(q) >= 0 ? '' : 'none';
+                    });
+                });
+            }
 
-		if (searchInput) {
-			searchInput.addEventListener('input', function () {
-				const q = this.value.trim().toLowerCase();
-				cards.forEach(card => {
-					const text = card.innerText.toLowerCase();
-					card.style.display = text.indexOf(q) >= 0 ? '' : 'none';
-				});
-			});
-		}
+            const modal = document.getElementById('profileDetailsModal');
+            if (modal) {
+                modal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    if (!button) return;
 
-		const userDetailsModal = document.getElementById('profileDetailsModal');
-		if (userDetailsModal) {
-			userDetailsModal.addEventListener('show.bs.modal', function (event) {
-				const button = event.relatedTarget;
-				if (!button) return;
+                    const set = (id, attr) => {
+                        const el = document.getElementById(id);
+                        if (el) el.innerText = button.getAttribute(attr) || '';
+                    };
 
-				const titleEl = document.getElementById('profileDetailsTitle');
-				const nameEl = document.getElementById('detailName');
-				const ageEl = document.getElementById('detailAge');
-				const cityEl = document.getElementById('detailCity');
-				const connectionEl = document.getElementById('detailConnection');
-				const interestsEl = document.getElementById('detailInterests');
-				const bioEl = document.getElementById('detailBio');
-
-				if (titleEl) titleEl.innerText = button.getAttribute('data-name') || 'Profile details';
-				if (nameEl) nameEl.innerText = button.getAttribute('data-name') || '';
-				if (ageEl) ageEl.innerText = button.getAttribute('data-age') || '';
-				if (cityEl) cityEl.innerText = button.getAttribute('data-city') || '';
-				if (connectionEl) connectionEl.innerText = button.getAttribute('data-connection') || '';
-				if (interestsEl) interestsEl.innerText = button.getAttribute('data-interests') || '';
-				if (bioEl) bioEl.innerText = button.getAttribute('data-bio') || '';
-			});
-		}
-	})();
-</script>
+                    set('profileDetailsTitle', 'data-name');
+                    set('detailName', 'data-name');
+                    set('detailAge', 'data-age');
+                    set('detailCity', 'data-city');
+                    set('detailConnection', 'data-connection');
+                    set('detailInterests', 'data-interests');
+                    set('detailBio', 'data-bio');
+                });
+            }
+        })();
+    </script>
+}
 

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Nexus.ViewModels.Quest.QuestAllViewModel>
+﻿@using System.Security.Claims
+@model IEnumerable<Nexus.ViewModels.Quest.QuestAllViewModel>
 
 @{
     ViewData["Title"] = "Quests";
@@ -25,8 +26,10 @@
     <div class="row g-3">
         @if (Model != null && Model.Any())
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             foreach (var q in Model)
             {
+                var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body d-flex flex-column">
@@ -35,12 +38,20 @@
                             <p class="card-text text-truncate" title="@q.Description">@q.Description</p>
 
                             <div class="mt-auto d-flex gap-2">
-                                <a asp-action="Details" asp-route-title="@q.Title" class="btn btn-sm btn-outline-primary">Details</a>
-                                <form asp-action="Join" method="post" class="m-0">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="title" value="@q.Title" />
-                                    <button type="submit" class="btn btn-sm btn-primary">Join</button>
-                                </form>
+                                <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-primary">Details</a>
+
+                                @if (isInitiator)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                }
+                                else
+                                {
+                                    <form asp-action="Joined" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@q.Id" />
+                                        <button type="submit" class="btn btn-sm btn-primary">Join</button>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>
@@ -61,7 +72,6 @@
         (function () {
             const input = document.getElementById('questSearch');
             if (!input) return;
-            const cards = () => Array.from(document.querySelectorAll('.card h5, .card p, .card-subtitle'));
             input.addEventListener('input', function () {
                 const q = this.value.trim().toLowerCase();
                 document.querySelectorAll('.row.g-3 > .col-12, .row.g-3 > .col-md-6').forEach(col => {
