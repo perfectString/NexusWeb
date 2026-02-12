@@ -9,8 +9,7 @@ using Nexus.ViewModels.Profile;
 
 namespace Nexus.Controllers
 {
-    [Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         /*  every time someone access this the app will call a ctor to access the dbcontext 
          and save it in the readonly

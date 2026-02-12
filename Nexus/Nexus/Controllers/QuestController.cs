@@ -11,8 +11,7 @@ using System.Linq;
 
 namespace Nexus.Controllers
 {
-    [Authorize]
-    public class QuestController : Controller
+    public class QuestController : BaseController
     {
         private readonly NexusDbContext dbContext;
 

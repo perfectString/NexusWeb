@@ -13,8 +13,8 @@ namespace Nexus.Models
         [Required]
         [MinLength(DisplayNameMinLen)]
         [MaxLength(DisplayNameMaxLen)]
-        
-        public string DisplayName { get; set; } = "no display name";
+
+        public string DisplayName { get; set; } = null!;
 
         [Range(AgeMinValue, AgeMaxValue)]
         public int Age { get; set; }
@@ -22,7 +22,7 @@ namespace Nexus.Models
         [Required]
         [MinLength(CityMinLen)]
         [MaxLength(CityMaxLen)]
-        public string City { get; set; } = "unknown";
+        public string City { get; set; } = null!;
 
         [MaxLength(BioMaxLen)]
         public string? Bio { get; set; }

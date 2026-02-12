@@ -20,7 +20,7 @@ namespace Nexus
             builder.Services
                 .AddDefaultIdentity<Profile>(options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = false;
+                    ConfigureIdentity(options, builder.Configuration);
                 })
                 .AddEntityFrameworkStores<NexusDbContext>();
 
@@ -29,10 +29,6 @@ namespace Nexus
             string? developerConnectionString = builder.Configuration
                 .GetConnectionString("DeveloperConnection");
 
-            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            //{
-            //    options.UseSqlServer(connectionString);
-            //});
             builder.Services.AddDbContext<NexusDbContext>(options =>
             {
                 options.UseSqlServer(developerConnectionString);
@@ -66,6 +62,36 @@ namespace Nexus
             app.MapRazorPages();
 
             app.Run();
+        }
+
+        private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration)
+        {
+            // Settings for development
+
+            // Sign in settings
+            options.SignIn.RequireConfirmedAccount = configuration
+                .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
+            options.SignIn.RequireConfirmedPhoneNumber = configuration
+                .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedPhoneNumber");
+            options.SignIn.RequireConfirmedEmail = configuration
+                .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail");
+
+
+            // User settings
+            options.User.RequireUniqueEmail = configuration
+                .GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
+
+            // Password settings
+            options.Password.RequireUppercase = configuration
+                .GetValue<bool>("IdentityOptions:Password:RequireUppercase");
+            options.Password.RequireLowercase = configuration
+                .GetValue<bool>("IdentityOptions:Password:RequireLowercase");
+            options.Password.RequireDigit = configuration
+                .GetValue<bool>("IdentityOptions:Password:RequireDigit");
+            options.Password.RequireNonAlphanumeric = configuration
+                .GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
+            options.Password.RequiredLength = configuration
+                .GetValue<int>("IdentityOptions:Password:RequiredLength");
         }
     }
 }
