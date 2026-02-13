@@ -3,7 +3,7 @@ using Nexus.Models.Enums;
 
 namespace Nexus.ViewModels.Profile
 {
-    public class ProfileAllViewModel
+    public class ProfileViewModel
     {
 
         public string Id { get; set; } = null!;

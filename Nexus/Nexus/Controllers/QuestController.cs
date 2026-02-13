@@ -110,7 +110,7 @@ namespace Nexus.Controllers
                 QuestInitiator = quest.QuestInitiator?.DisplayName ?? string.Empty,
                 InitiatorId = quest.QuestInitiatorId,
                 JoinedProfiles = joinedProfiles
-                    .Select(p => new ProfileAllViewModel
+                    .Select(p => new ProfileViewModel
                     {
                         Id = p.Id,
                         DisplayName = p.DisplayName,

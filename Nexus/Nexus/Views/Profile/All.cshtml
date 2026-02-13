@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Nexus.ViewModels.Profile.ProfileAllViewModel>
+﻿@model IEnumerable<Nexus.ViewModels.Profile.ProfileViewModel>
 
 @{
     ViewData["Title"] = "Profiles";
@@ -34,7 +34,7 @@
                         foreach (var p in Model)
                         {
                             var interestsText = string.Join(", ", p.Interests ?? Enumerable.Empty<string>());
-                            var connectionText = p.DesiredConnection.ToString();
+                            var connectionText = p.DesiredConnection.ToString() ?? string.Empty;
                             <div class="col-12 col-sm-6 col-lg-4 profile-card">
                                 <div class="card h-100 shadow-sm bg-white text-dark">
                                     <div class="card-body d-flex flex-column">

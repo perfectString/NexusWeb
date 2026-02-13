@@ -10,6 +10,6 @@ namespace Nexus.ViewModels.Quest
         public string QuestInitiator { get; set; } = null!;
         public string InitiatorId { get; set; } = null!;
 
-        public List<ProfileAllViewModel> JoinedProfiles { get; set; } = new();
+        public List<ProfileViewModel> JoinedProfiles { get; set; } = new();
     }
 }

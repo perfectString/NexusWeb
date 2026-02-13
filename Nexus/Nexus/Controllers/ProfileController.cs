@@ -27,12 +27,12 @@ namespace Nexus.Controllers
         [HttpGet]
         public IActionResult All()
         {
-            IEnumerable<ProfileAllViewModel> allProfiles = dbContext
+            IEnumerable<ProfileViewModel> allProfiles = dbContext
                 .Users
                 .Include(u => u.ProfileInterest)
                 .ThenInclude(u=> u.Interest)
                 .AsNoTracking()
-                .Select(u => new ProfileAllViewModel 
+                .Select(u => new ProfileViewModel 
                 {
                    Id = u.Id,
                    DisplayName = u.DisplayName,

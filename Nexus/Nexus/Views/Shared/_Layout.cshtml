@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/Nexus.styles.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -22,29 +22,32 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
+                            <li class="nav-item me-2">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item me-2">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
                         }
                         else 
                         {
                        
-                        <li class="nav-item">
+                        <li class="nav-item me-2">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="All">Profiles</a>
                         </li>
-                        <li class="nav-item">
+                            <li class="nav-item me-2">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Edit">My Profile</a>
                         </li>
-                        <li class="nav-item">
+                            <li class="nav-item me-2">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="All">Quests</a>
                         </li>
-                        <li class="nav-item">
+                            <li class="nav-item me-2">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="Add">Add Quest</a>
                         </li>
-                        <li class="nav-item">
+                            <li class="nav-item me-2">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="Joined">My Joined Quests</a>
+                        </li>
+                            <li class="nav-item me-2">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         }
@@ -55,7 +58,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="flex-fill pb-3">
             @RenderBody()
         </main>
     </div>
