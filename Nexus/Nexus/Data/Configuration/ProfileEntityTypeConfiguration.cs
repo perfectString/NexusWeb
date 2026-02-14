@@ -12,7 +12,7 @@ namespace Nexus.Data.Configuration
     // for the profiles 
     public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
-        private readonly Profile[] _profiles =
+        private readonly Profile[] profiles =
         {
             new Profile
             {
@@ -50,65 +50,12 @@ namespace Nexus.Data.Configuration
                 Bio = "Work in the tech field.Into long night walks.", // add nature or smth as interest
                 DesiredConnection = ConnectionType.Romantic
             },
-            new Profile
-            {
-                Id = "5",
-                DisplayName = "Peter",
-                Age = 27,
-                City = "Sofia",
-                Bio = "Let's hang out?",
-                DesiredConnection = ConnectionType.Friends 
-            },
-            new Profile
-            {
-                Id = "6",
-                DisplayName = "Emma",
-                Age = 44,
-                City = "Rome",
-                DesiredConnection = ConnectionType.Romantic
-            },
-            new Profile
-            {
-                Id ="7",
-                DisplayName = "Luca",
-                Age = 20,
-                City = "Sofia",
-                Bio = "Heavy metal!!",
-                DesiredConnection = ConnectionType.Groups //music
-            },
-            new Profile
-            {
-                Id = "8",
-                DisplayName = "Alexandra",
-                Age = 26,
-                City = "Madrid",
-                Bio = "Recommend me new music",
-                DesiredConnection = ConnectionType.Friends //music
-            },
-            new Profile
-            {
-                Id = "9",
-                DisplayName = "Olivia",
-                Age = 33,
-                City = "London",
-                Bio = "Lets travel the world together!", // travel
-                DesiredConnection = ConnectionType.Romantic
-            },
-            new Profile
-            {
-                Id = "10",
-                DisplayName = "Dan",
-                Age = 19,
-                City = "London",
-                Bio = "I would like to find a local band. Can play bass pretty good!",
-                DesiredConnection = ConnectionType.Groups
-            }
         };
 
         public void Configure(EntityTypeBuilder<Profile> entity)
         {
             entity
-                .HasData(this._profiles);
+                .HasData(this.profiles);
         }
     }
 }

@@ -7,6 +7,9 @@ namespace Nexus.Data.Configuration
 {
     public class QuestJoinersEntityTypeCondifuration : IEntityTypeConfiguration<QuestJoiner>
     {
+    
+
+
         public void Configure(EntityTypeBuilder<QuestJoiner> entity)
         {
             //FLUENT API
@@ -26,6 +29,7 @@ namespace Nexus.Data.Configuration
                .HasForeignKey(qj => qj.ProfileId)
                .OnDelete(DeleteBehavior.NoAction);
 
+
         }
     }
-}
+    }

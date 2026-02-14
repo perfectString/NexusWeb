@@ -6,7 +6,7 @@ namespace Nexus.Data.Configuration
 {
     public class InterestEntityTypeConfiguration : IEntityTypeConfiguration<Interest>
     {
-        private readonly Interest[] _interests =
+        private readonly Interest[] interests =
         {
             new Interest
             {
@@ -165,7 +165,7 @@ namespace Nexus.Data.Configuration
         public void Configure(EntityTypeBuilder<Interest> entity)
         {
             entity
-                .HasData(this._interests);
+                .HasData(this.interests);
         }
     }
 

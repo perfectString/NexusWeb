@@ -17,6 +17,7 @@ namespace Nexus.Data
         // AspNetUsers in the db 
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
+
         public virtual DbSet<Quest> Quests { get; set; } = null!;
         public virtual DbSet<QuestJoiner> QuestJoiners { get; set; } = null!;
 

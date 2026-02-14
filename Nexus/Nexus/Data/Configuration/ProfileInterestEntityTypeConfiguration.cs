@@ -7,7 +7,7 @@ namespace Nexus.Data.Configuration
 {
     public class ProfileInterestEntityTypeConfiguration : IEntityTypeConfiguration<ProfileInterests>
     {
-        private readonly ProfileInterests[] _profilesInterests =
+        private readonly ProfileInterests[] profilesInterests =
         {
             //user1
             new ProfileInterests
@@ -77,107 +77,6 @@ namespace Nexus.Data.Configuration
                 InterestId = 17,
             },
 
-            //user 5
-            new ProfileInterests
-            {
-                ProfileId = "5",
-                InterestId = 23,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "5",
-                InterestId = 22,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "5",
-                InterestId = 21,
-            },
-
-            //user 6
-            new ProfileInterests
-            {
-                ProfileId = "6",
-                InterestId = 14,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "6",
-                InterestId = 13,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "6",
-                InterestId = 26,
-            },
-
-            //user 7
-            new ProfileInterests
-            {
-                ProfileId = "7",
-                InterestId = 2,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "7",
-                InterestId = 24,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "7",
-                InterestId = 22,
-            },
-
-            //user 8
-            new ProfileInterests
-            {
-                ProfileId = "8",
-                InterestId = 2,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "8",
-                InterestId = 19,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "8",
-                InterestId = 15,
-            },
-
-            //user 9
-            new ProfileInterests
-            {
-                ProfileId = "9",
-                InterestId = 17,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "9",
-                InterestId = 16,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "9",
-                InterestId = 19,
-            },
-
-            //user 10
-            new ProfileInterests
-            {
-                ProfileId = "10",
-                InterestId = 29,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "10",
-                InterestId = 27,
-            },
-            new ProfileInterests
-            {
-                ProfileId = "10",
-                InterestId = 30,
-            },
 
         };
         public void Configure(EntityTypeBuilder<ProfileInterests> entity)
@@ -204,7 +103,7 @@ namespace Nexus.Data.Configuration
 
             // SEEDING OF DATA
             entity
-                .HasData(this._profilesInterests);
+                .HasData(this.profilesInterests);
         }
     }
 }
