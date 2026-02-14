@@ -59,20 +59,31 @@ namespace Nexus.Controllers
 
             try
             {
+                var initiatorId = GetUserId();
+
                 Quest newQuest = new Quest()
                 {
 
                     Title = questModel.Title,
                     Description = questModel.Description,
-                    QuestInitiatorId = User.FindFirstValue(ClaimTypes.NameIdentifier)!
+                    QuestInitiatorId = initiatorId!
+                };
+
+
+                //since i want the quest initiator to automatically join the quest
+                QuestJoiner newJoiner = new QuestJoiner()
+                {
+                    Quest = newQuest,
+                    ProfileId = initiatorId!
                 };
 
                 dbContext.Quests.Add(newQuest);
+                dbContext.QuestJoiners.Add(newJoiner);
                 dbContext.SaveChanges();
 
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception ex)
+            catch
             {
                 ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
                 return View(questModel);
@@ -140,16 +151,19 @@ namespace Nexus.Controllers
                   .ThenInclude(qj => qj.QuestInitiator)
                   .AsNoTracking()
                   .Where(qj => qj.ProfileId.ToLower() == initiatorId.ToLower())
-                  .Select(q => q.Quest)
+                  .Select(qj => qj.Quest)
                   .Select(q => new QuestAllViewModel()
                   {
                       Id = q.Id,
                       Title = q.Title,
                       Description = q.Description,
-                      QuestInitiator = q.QuestInitiator.DisplayName!
+                      QuestInitiator = q.QuestInitiator.DisplayName!,
+                      InitiatorId = q.QuestInitiatorId
                   })
                   .OrderBy(q => q.Title)
                   .ToList();
+
+
 
             return View(allJoinedQuest);
         }
@@ -197,5 +211,123 @@ namespace Nexus.Controllers
             }
             return RedirectToAction(nameof(Joined));
         }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var initiatorId = GetUserId();
+
+            Quest? editQuest = dbContext
+                .Quests
+                .FirstOrDefault(q => q.Id == id);
+
+            if (editQuest == null) return NotFound();
+
+            if (editQuest.QuestInitiatorId.ToLower() != initiatorId!.ToLower())
+            {
+                return Unauthorized();
+            }
+
+            QuestAllViewModel questModel = new QuestAllViewModel()
+            {
+                Id = editQuest.Id,
+                Title = editQuest.Title,
+                Description = editQuest.Description,
+                InitiatorId = editQuest.QuestInitiatorId
+            };
+
+            return View(questModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromRoute] int id, QuestAllViewModel questModel)
+        {
+            var initiatorId = GetUserId();
+
+            Quest? editQuest = dbContext
+                .Quests
+                .FirstOrDefault(q => q.Id == id);
+
+            if (editQuest == null) return NotFound();
+
+            if (editQuest.QuestInitiatorId.ToLower() != initiatorId!.ToLower())
+            {
+                return Unauthorized();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(questModel);
+            }
+
+            try
+            {
+                editQuest.Title = questModel.Title;
+                editQuest.Description = questModel.Description;
+
+                dbContext.Quests.Update(editQuest);
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Quest/All");
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                return View(questModel);
+            }
+
+          
+            }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var initiatorId = GetUserId();
+
+            Quest? deleteQuest = dbContext
+                .Quests
+                .FirstOrDefault(q => q.Id == id);
+
+            if (deleteQuest == null) return NotFound();
+
+            if (deleteQuest.QuestInitiatorId.ToLower() != initiatorId!.ToLower())
+            {
+                return Unauthorized();
+            }
+
+            return View(deleteQuest);
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteConfirm(int id)
+        {
+            var initiatorId = GetUserId();
+
+            Quest? deleteQuest = dbContext
+                .Quests
+                .FirstOrDefault(q => q.Id == id);
+
+            if (deleteQuest == null) return NotFound();
+
+            if (deleteQuest.QuestInitiatorId.ToLower() != initiatorId!.ToLower())
+            {
+                return Unauthorized();
+            }
+
+            var joinedUsers = dbContext
+                .QuestJoiners
+                .Where(q => q.QuestId == id)
+                .ToList();
+
+            dbContext.QuestJoiners.RemoveRange(joinedUsers);
+
+            dbContext.Quests.Remove(deleteQuest);
+
+            dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(All));
+        }
     }
-}
+
+    }

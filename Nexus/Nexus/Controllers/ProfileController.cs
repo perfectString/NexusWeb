@@ -60,13 +60,13 @@ namespace Nexus.Controllers
 
             var interestId = dbContext
                 .ProfileInterests
-                .Where(pf => pf.ProfileId == user.Id)
+                .Where(pf => pf.ProfileId == user!.Id)
                 .Select(i => i.InterestId)
                 .ToList();
 
             ProfileEditViewModel myProfile = new ProfileEditViewModel
             {
-                DisplayName = user.DisplayName,
+                DisplayName = user!.DisplayName,
                 Age = user.Age,
                 City = user.City,
                 Bio = user.Bio,
@@ -105,7 +105,7 @@ namespace Nexus.Controllers
 
             try
             {
-                user.DisplayName = myProfile.DisplayName;
+                user!.DisplayName = myProfile.DisplayName;
                 user.Age = myProfile.Age;
                 user.City = myProfile.City;
                 user.Bio = myProfile.Bio;

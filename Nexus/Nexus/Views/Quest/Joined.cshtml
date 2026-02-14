@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<Nexus.ViewModels.Quest.QuestAllViewModel>
+@using System.Security.Claims
 
 @{
     Layout = "_Layout";
     ViewData["Title"] = "My Joined Quests";
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 @section Styles {
@@ -32,6 +34,7 @@
             {
                 foreach (var q in Model)
                 {
+                    var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card card-quest h-100 shadow-sm">
                             <div class="card-body">
@@ -41,6 +44,11 @@
 
                                 <div class="mt-auto d-flex gap-2">
                                     <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-primary">Details</a>
+
+                                    @if (isInitiator)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                                    }
                                 </div>
                             </div>
                         </div>

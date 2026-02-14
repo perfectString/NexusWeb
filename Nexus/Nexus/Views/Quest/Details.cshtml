@@ -21,7 +21,7 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12 col-lg-8">
-                    <h3 class="mb-1">@Model.Title</h3>
+                    <h3 class="mb-1">@Model!.Title</h3>
                     <div class="mb-2">
                         <span class="badge badge-initiator me-2">Initiator: @Model.QuestInitiator</span>
                         <span class="text-muted small">@(@Model.JoinedProfiles?.Count ?? 0) Current participants</span>
@@ -39,14 +39,6 @@
                         @if (isInitiator)
                         {
                             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
-                        }
-                        else
-                        {
-                            <form asp-action="Joined" asp-controller="Quest" method="post" class="m-0">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <button type="submit" class="btn btn-primary btn-sm">Join</button>
-                            </form>
                         }
                     </div>
                 </div>

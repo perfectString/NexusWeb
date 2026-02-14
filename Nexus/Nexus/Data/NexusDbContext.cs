@@ -26,11 +26,8 @@ namespace Nexus.Data
         {
             base.OnModelCreating(modelBuilder);
           
-
             modelBuilder
                 .ApplyConfigurationsFromAssembly(typeof(NexusDbContext).Assembly);
-
-
         }
 
 

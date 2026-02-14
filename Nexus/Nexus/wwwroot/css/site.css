@@ -21,24 +21,26 @@ html
     min-height: 100%;
 }
 
+/*style of the project, colors of the project*/
 body {
     background: #1a1a1a;
     color: black;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
 
-.navbar.navbar-light {
-    background-color: MediumTurquoise !important;
-}
+/*navigational bar colors*/
 
+.navbar.navbar-light,
 .navbar.navbar-light .navbar-brand,
 .navbar.navbar-light .nav-link 
     {
         color: white !important; 
+    background-color: cadetblue !important;
     }
 
+/*footer of the layout colors*/
 .footer {
-    background-color: MediumTurquoise;
+    background-color: cadetblue;
     color: white !important;
     padding: 1px 0;
     text-align: center;

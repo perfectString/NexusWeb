@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Quests";
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 @section Styles {
@@ -26,7 +27,6 @@
     <div class="row g-3">
         @if (Model != null && Model.Any())
         {
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             foreach (var q in Model)
             {
                 var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
@@ -43,6 +43,7 @@
                                 @if (isInitiator)
                                 {
                                     <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                                 }
                                 else
                                 {
