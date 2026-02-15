@@ -17,4 +17,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Nexus.Data.Models\Nexus.Data.Models.csproj" />
+    <ProjectReference Include="..\Nexus.Data.Services.Core\Nexus.Data.Services.Core.csproj" />
+    <ProjectReference Include="..\Nexus.GCommon\Nexus.GCommon.csproj" />
+    <ProjectReference Include="..\WebNexus.ViewModels\Nexus.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

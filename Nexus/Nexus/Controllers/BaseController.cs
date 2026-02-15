@@ -9,7 +9,7 @@ namespace Nexus.Controllers
     {
         protected string? GetUserId()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

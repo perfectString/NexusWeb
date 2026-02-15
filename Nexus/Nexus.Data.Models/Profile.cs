@@ -1,0 +1,36 @@
+﻿using System.ComponentModel.DataAnnotations;
+using static Nexus.GCommon.ValidationConstants;
+using Nexus.Data.Models.Enums;
+using Microsoft.AspNetCore.Identity;
+
+namespace Nexus.Data.Models
+{
+    public class Profile : IdentityUser
+    {
+
+        [Required]
+        [MinLength(DisplayNameMinLen)]
+        [MaxLength(DisplayNameMaxLen)]
+
+        public string DisplayName { get; set; } = null!;
+
+        [Range(AgeMinValue, AgeMaxValue)]
+        public int Age { get; set; }
+
+        [Required]
+        [MinLength(CityMinLen)]
+        [MaxLength(CityMaxLen)]
+        public string City { get; set; } = null!;
+
+        [MaxLength(BioMaxLen)]
+        public string? Bio { get; set; }
+
+        public ConnectionType DesiredConnection { get; set; }
+
+        public ICollection<ProfileInterests> ProfileInterest { get; set; }
+        = new HashSet<ProfileInterests>();
+        public ICollection<QuestJoiner> JoinedQuests { get; set; } 
+            = new HashSet<QuestJoiner>();
+    }
+
+}

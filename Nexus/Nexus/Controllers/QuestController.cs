@@ -4,41 +4,32 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
-using Nexus.Models;
+using Nexus.Data.Models;
 using Nexus.ViewModels.Profile;
 using Nexus.ViewModels.Quest;
 using System.Linq;
+using Nexus.Data.Services.Core.Interfaces;
 
 namespace Nexus.Controllers
 {
     public class QuestController : BaseController
     {
         private readonly NexusDbContext dbContext;
-
-        public QuestController(NexusDbContext dbContext)
+        private readonly IQuestService questService;
+        public QuestController(NexusDbContext dbContext, IQuestService questService)
         {
             this.dbContext = dbContext;
+            this.questService = questService;
 
         }
 
         [HttpGet]
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            var allQuests = dbContext
-                .Quests
-                .AsNoTracking()
-                .OrderBy(q => q.Title)
-                .Select(q => new QuestAllViewModel()
-                {
-                    Id = q.Id,
-                    Title = q.Title,
-                    Description = q.Description,
-                    QuestInitiator = q.QuestInitiator.DisplayName,
-                    InitiatorId = q.QuestInitiatorId
-                })
-                .ToList();
+            var allQuestsViewModel = await questService
+                .GetQuestsOrderByTitleAsync();
 
-            return View(allQuests);
+            return View(allQuestsViewModel);
         }
 
         [HttpGet]
@@ -145,14 +136,14 @@ namespace Nexus.Controllers
         public IActionResult Joined()
         {
             var initiatorId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            IEnumerable<QuestAllViewModel> allJoinedQuest = dbContext
+            IEnumerable<QuestViewModel> allJoinedQuest = dbContext
                   .QuestJoiners
                   .Include(qj => qj.Quest)
                   .ThenInclude(qj => qj.QuestInitiator)
                   .AsNoTracking()
                   .Where(qj => qj.ProfileId.ToLower() == initiatorId.ToLower())
                   .Select(qj => qj.Quest)
-                  .Select(q => new QuestAllViewModel()
+                  .Select(q => new QuestViewModel()
                   {
                       Id = q.Id,
                       Title = q.Title,
@@ -228,7 +219,7 @@ namespace Nexus.Controllers
                 return Unauthorized();
             }
 
-            QuestAllViewModel questModel = new QuestAllViewModel()
+            QuestViewModel questModel = new QuestViewModel()
             {
                 Id = editQuest.Id,
                 Title = editQuest.Title,
@@ -240,7 +231,7 @@ namespace Nexus.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, QuestAllViewModel questModel)
+        public IActionResult Edit([FromRoute] int id, QuestViewModel questModel)
         {
             var initiatorId = GetUserId();
 

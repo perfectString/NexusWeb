@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Nexus.Models;
-using static Nexus.Common.ValidationConstants;
+using Nexus.Data.Models;
+using static Nexus.GCommon.ValidationConstants;
 
 namespace Nexus.Areas.Identity.Pages.Account
 {

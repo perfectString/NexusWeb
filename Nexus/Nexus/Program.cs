@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
-using Nexus.Models;
+using Nexus.Data.Models;
+using Nexus.Data.Services.Core;
+using Nexus.Data.Services.Core.Interfaces;
 
 namespace Nexus
 {
@@ -17,6 +19,7 @@ namespace Nexus
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // Identity
             builder.Services
                 .AddDefaultIdentity<Profile>(options =>
                 {
@@ -24,8 +27,16 @@ namespace Nexus
                 })
                 .AddEntityFrameworkStores<NexusDbContext>();
 
+            
+            // Profile service
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            
+            // Quest service
+            builder.Services.AddScoped<IQuestService, QuestService>();
+
             builder.Services.AddControllersWithViews();
 
+            // Connection String
             string? developerConnectionString = builder.Configuration
                 .GetConnectionString("DeveloperConnection");
 
@@ -33,6 +44,8 @@ namespace Nexus
             {
                 options.UseSqlServer(developerConnectionString);
             });
+
+
 
             var app = builder.Build();
 
@@ -44,7 +57,6 @@ namespace Nexus
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -64,9 +76,10 @@ namespace Nexus
             app.Run();
         }
 
+        // Identity Configuration
+        // Dev settings
         private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration)
         {
-            // Settings for development
 
             // Sign in settings
             options.SignIn.RequireConfirmedAccount = configuration

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nexus.Data.Models\Nexus.Data.Models.csproj" />
+    <ProjectReference Include="..\Nexus.Data\Nexus.Data.csproj" />
+    <ProjectReference Include="..\Nexus.GCommon\Nexus.GCommon.csproj" />
+  </ItemGroup>
+
+</Project>

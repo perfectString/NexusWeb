@@ -5,7 +5,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Nexus.Models;
+using Nexus.Data.Models;
 
 namespace Nexus.Areas.Identity.Pages.Account
 {
