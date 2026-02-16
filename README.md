@@ -73,7 +73,6 @@ Install the following tools:
 
 ```bash
 git clone https://github.com/perfectString/NexusWeb.git
-cd Nexus
 ````
 
 ### Restore packages
@@ -93,6 +92,42 @@ dotnet ef database update
 ```bash
 dotnet run
 ```
+### Another way of running my app:
+
+Im going to provide detailed instructions for running my app with the Visual Studio terminal.
+1. Open visual studio and click on clone a repo.
+<img width="410" height="169" alt="image" src="https://github.com/user-attachments/assets/f82c1b4f-2789-4015-a077-9bd4a6c61ab4" />
+
+and put this repository location: 
+```
+https://github.com/perfectString/NexusWeb.git
+```
+2. Open the solution and find the Web folder. Inside right click on Nexus and open a new terminal 
+<img width="406" height="473" alt="image" src="https://github.com/user-attachments/assets/58a8053b-c931-4e12-86a2-05351acb9cb3" />
+<img width="503" height="311" alt="image" src="https://github.com/user-attachments/assets/3e35b42c-92c3-4495-8224-77825556d7c3" />
+
+developer powershell will open and the next step will be to restore the packages. 
+
+3.Restore packages using:
+
+```
+dotnet restore
+```
+
+4. After the nugget packages are restored you can update the database using
+```
+dotnet ef database update
+```
+or in the package manager console
+
+```
+Update-Database
+```
+
+### Using my app: 
+
+After you restored the packages its time to run the app. 
+Apply any corrections to the connection string if you need to (you can find more info about this if you scroll down on my readme file).
 
 The application runs at:
 
@@ -103,6 +138,21 @@ or
 http://localhost:5014
 
 ---
+
+Start the application and open your browser and you should see the home page. 
+<img width="1857" height="932" alt="image" src="https://github.com/user-attachments/assets/f3e0ad68-a843-4f8d-9eef-03d4010f5aa6" />
+
+When you are ready you will be taken to your profile and you will be able to customize it:
+<img width="1872" height="935" alt="image" src="https://github.com/user-attachments/assets/288f0ab1-e117-47f0-acc7-37fb19c1715d" />
+
+When you are ready you can take a look through the existing users in the database:
+<img width="1873" height="931" alt="image" src="https://github.com/user-attachments/assets/1ab56435-fdae-4f7e-8723-782ddcf9db62" />
+
+Feel free to explore, create, join quests!
+<img width="1848" height="927" alt="image" src="https://github.com/user-attachments/assets/e5b4e83f-a73a-491e-b7bd-6cc70eafeb71" />
+
+In the future an xp sistem will be implemented where you will be able to gain exp through completing quests.
+Also you will be able to explore quests based on your interests!
 
 ## Project Structure
 
