@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Nexus.Data.Models.Enums;
+﻿using Nexus.Data.Models.Enums;
 
 namespace Nexus.ViewModels.Profile
 {

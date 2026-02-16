@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Nexus.GCommon
 {
     public class ValidationConstants

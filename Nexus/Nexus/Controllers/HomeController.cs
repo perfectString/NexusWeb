@@ -8,11 +8,11 @@ namespace Nexus.Controllers
 
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> homeLogger)
         {
-            _logger = logger;
+            this.logger = homeLogger;
         }
 
         [AllowAnonymous]

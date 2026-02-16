@@ -5,11 +5,8 @@ using Nexus.Data.Models.Enums;
 
 namespace Nexus.Data.Configuration
 {
-    // The id seeding of the profiles is with numbers regardless of the fact
-    // im using identity, im going to be using numbers as string 
-    // because id like to have more people in the database for testing purposes
-    // If at some point i decide to delete few profiles i will generate guids 
-    // for the profiles 
+    // For testing purposes the id of the profiles is beeing seeded 
+    // with numbers regardless of the fact im using identity
     public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
         private readonly Profile[] profiles =

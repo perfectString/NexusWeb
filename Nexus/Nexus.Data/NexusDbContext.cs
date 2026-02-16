@@ -12,9 +12,9 @@ namespace Nexus.Data
 
         }
 
-        // im not adding a navigational prop for Profiles here since
-        // it inherits from IdentityUser so the data will be stored in
-        // AspNetUsers in the db 
+        // im not adding a navigational prop for Profiles
+        // it inherits from IdentityUser the data will be stored in
+        // AspNetUsers in the DB
         public virtual DbSet<Interest> Interests { get; set; } = null!;
         public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
 

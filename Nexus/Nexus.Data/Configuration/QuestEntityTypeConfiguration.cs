@@ -27,6 +27,8 @@ namespace Nexus.Data.Configuration
 
         public void Configure(EntityTypeBuilder<Quest> entity)
         {
+
+            // SEEDING OF DATA
             entity
                 .HasData(this.quests);
         }

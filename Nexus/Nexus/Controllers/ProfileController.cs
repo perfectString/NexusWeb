@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Nexus.Data;
-using Nexus.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.ViewModels.Profile;
 
@@ -12,9 +8,11 @@ namespace Nexus.Controllers
     {
 
         private readonly IProfileService profileService;
-        public ProfileController(IProfileService profileService)
+        private readonly ILogger<ProfileController> logger;
+        public ProfileController(IProfileService profileService, ILogger<ProfileController> profileLogger)
         {
             this.profileService = profileService;
+            this.logger = profileLogger;
         }
 
         [HttpGet]
@@ -27,7 +25,6 @@ namespace Nexus.Controllers
         }
 
         [HttpGet]
-
         public async Task<IActionResult> Edit()
         {
             string? userId = GetUserId();
@@ -44,6 +41,7 @@ namespace Nexus.Controllers
         {
             if (myProfileViewModel.InterestId.Count > 3)
             {
+                logger.LogError("An error occurred while editing the profile!");
                 ModelState.AddModelError(
                     nameof(myProfileViewModel.InterestId),
                     "You can select up to 3 interests."
@@ -65,6 +63,7 @@ namespace Nexus.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "An error occurred while editing the profile!");
                 Console.WriteLine(ex);
             }
 

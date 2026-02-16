@@ -5,6 +5,8 @@ namespace Nexus.ViewModels.Quest
 {
     public class QuestAddViewModel
     {
+        public int Id { get; set; }
+
         [Required]
         [MaxLength(TitleMaxLen)]
         [MinLength(TitleMinLen)]

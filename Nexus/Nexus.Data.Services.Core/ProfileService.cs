@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.ViewModels.Profile;
@@ -50,10 +44,10 @@ namespace Nexus.Data.Services.Core
         }
         public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(string userId)
         {
-            var userFetch = dbContext
+            Profile? userFetch = await dbContext
                 .Users
                 .AsNoTracking()
-                .FirstOrDefault(u=> u.Id == userId);
+                .SingleOrDefaultAsync(u=> u.Id == userId);
 
             //Even if there is always going to be user to be found in the Db.
             if (userFetch == null)
@@ -61,7 +55,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("This profile was not found!");
             }
             
-            var interestId = await dbContext
+            List<int>interestId = await dbContext
                 .ProfileInterests
                 .Where(pf => pf.ProfileId == userId)
                 .Select(i => i.InterestId)
@@ -98,9 +92,9 @@ namespace Nexus.Data.Services.Core
 
         public async Task EditProfileAsync(string userId, ProfileEditViewModel profileViewModel)
         {
-            var userFetch = dbContext
+            Profile? userFetch = await dbContext
                 .Users
-                .FirstOrDefault(u => u.Id == userId);
+                .SingleOrDefaultAsync(u => u.Id == userId);
 
             //Even if there is always going to be user to be found in the Db.
             if (userFetch == null)
@@ -114,7 +108,7 @@ namespace Nexus.Data.Services.Core
             userFetch.Bio = profileViewModel.Bio;
             userFetch.DesiredConnection = profileViewModel.DesiredConnection;
 
-            var oldInterests = dbContext
+            List<ProfileInterests> oldInterests = dbContext
                 .ProfileInterests
                 .Where(p => p.ProfileId == userFetch.Id)
                 .ToList();
@@ -123,7 +117,7 @@ namespace Nexus.Data.Services.Core
                 .ProfileInterests
                 .RemoveRange(oldInterests);
 
-            var newInterests = profileViewModel
+            IEnumerable<ProfileInterests> newInterests = profileViewModel
                 .InterestId
                 .Select(i => new ProfileInterests
                 {
