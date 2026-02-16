@@ -69,7 +69,7 @@ Install the following tools:
 
 ##  Getting Started
 
-### Clone repository
+### Clone repository using any kind of terminal
 
 ```bash
 git clone https://github.com/perfectString/NexusWeb.git
