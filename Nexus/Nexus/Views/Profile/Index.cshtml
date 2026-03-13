@@ -1,5 +1,229 @@
-﻿@*
-   THIS IS GONNA BE A VIEW OF MY PROFILE
-*@
+﻿@model Nexus.ViewModels.Profile.ProfileViewModel
+@using System.Security.Claims
+@inject Nexus.Data.Services.Core.Interfaces.IQuestService QuestService
+
 @{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Profile";
+
+    // Level and XP calculation:
+    // next level requires 100 * (Level + 1) XP.
+    var currentLevel = Model.Level;
+    var totalXp = Model.ExperiencePoints;
+    var baseXp = currentLevel * 100;
+    var nextLevelXp = (currentLevel + 1) * 100;
+    var xpIntoLevel = Math.Max(0, totalXp - baseXp);
+    var xpNeeded = Math.Max(0, nextLevelXp - totalXp);
+    var levelRange = Math.Max(1, nextLevelXp - baseXp);
+    var progressPercent = (int)Math.Round((double)xpIntoLevel / levelRange * 100);
+
+    // Quest counts (created and joined)
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+    var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userId);
+    var joinedCount = joinedQuests?.Count() ?? 0;
+    var allQuests = await QuestService.GetAllQuestsOrderByTitleAsync();
+    var createdCount = allQuests?.Count(q => string.Equals(q.InitiatorId, userId, StringComparison.OrdinalIgnoreCase)) ?? 0;
 }
+
+@section Styles {
+    <style>
+        
+        .profile-hero {
+            background: linear-gradient(135deg, rgba(8, 102, 121, 0.95), rgba(29, 161, 242, 0.9));
+            color: #fff;
+            padding: 3rem 1rem; 
+            border-radius: 12px;
+            margin-bottom: 1.6rem;
+            box-shadow: 0 8px 30px rgba(2,6,23,0.35);
+        }
+
+        .profile-glass {
+            background: rgba(255,255,255,0.85);
+            color: #0b0b0b;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            font-size:2.4rem;
+            color:#fff;
+            background: linear-gradient(135deg, #0b6b75, #2672ff);
+            box-shadow: 0 6px 18px rgba(2,6,23,0.2);
+            flex-shrink:0;
+        }
+
+        .profile-name { font-size: 1.9rem; font-weight: 700; margin-bottom: .5rem; } /* added spacing under name */
+
+        .muted-small { color: black; font-size:.95rem; }
+
+        .interest-badge {
+            display:inline-block;
+            background: #eef6ff;
+            color:#0b3a66;
+            padding:.45rem .7rem;
+            border-radius:999px;
+            margin:.25rem .35rem .25rem 0;
+            font-weight:600;
+            font-size:.9rem;
+        }
+
+        #xpProgress { height: 18px; border-radius: 999px; overflow: hidden; background: rgba(0,0,0,0.06); }
+        #xpProgress > .bar { height:100%; background: linear-gradient(90deg,#00b4d8,#0077b6); border-radius:999px; transition: width .6s ease; }
+
+        .stats {
+            display:flex;
+            gap:1.5rem; 
+            align-items:center;
+            flex-wrap:wrap;
+            justify-content:center; 
+            width:100%;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.06);
+            padding:.9rem 1rem; 
+            border-radius:.75rem;
+            min-width:140px; 
+            text-align:center;
+            color:#fff;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.03);
+        }
+
+        .stat-value { font-weight:700; font-size:1.15rem; display:block; }
+        .profile-actions { display:flex; gap:.6rem; align-items:center; }
+
+        .cta-card {
+            background: #e9f8ff;
+            border-radius: .75rem;
+            padding: 1rem;
+            margin-top: .75rem;
+        }
+    </style>
+}
+
+<div class="container-fluid mt-2 mb-4"> 
+    <div class="profile-hero">
+        <div class="row align-items-center gx-4">
+            <div class="col-12 col-lg-8 d-flex align-items-start gap-4">
+                <div class="profile-avatar" aria-hidden="true">
+                    @(string.IsNullOrEmpty(Model.DisplayName) ? "U" : Model.DisplayName.Substring(0, 1).ToUpper())
+                </div>
+
+                <div class="flex-grow-1">
+                    <h1 class="profile-name mt-1">@(!string.IsNullOrEmpty(Model.DisplayName) ? Model.DisplayName : "Unnamed profile")</h1>
+                    <div class="muted-small mb-2">
+                        @Model.City @if (Model.Age > 0) { <span>&middot; @Model.Age years</span> }
+                    </div>
+
+                    
+                    <div class="d-block mt-2">
+                        <div class="stats">
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.Level</span>
+                                <small>Level</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">@Model.ExperiencePoints</span>
+                                <small>XP</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">@joinedCount</span>
+                                <small>Joined Quests</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">@createdCount</span>
+                                <small>Created Quests</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <div class="profile-actions justify-content-end">
+                    <a asp-controller="Profile" asp-action="Edit" class="btn btn-light btn-lg">Edit Profile</a>
+                    <a asp-controller="Quest" asp-action="All" class="btn btn-outline-light btn-lg">Browse Quests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-8">
+            <div class="profile-glass">
+                <h5 class="mb-3">About</h5>
+                <p class="mb-3">@(!string.IsNullOrEmpty(Model.Bio) ? Model.Bio : "No bio provided.")</p>
+
+                <h5 class="mb-2">Interests</h5>
+                @if (Model.Interests != null && Model.Interests.Any())
+                {
+                    <div class="mb-3">
+                        @foreach (var interest in Model.Interests)
+                        {
+                            <span class="interest-badge">@interest</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="muted-small mb-3">No interests listed.</div>
+                }
+
+                <h5 class="mb-2">Desired connection</h5>
+                <div class="mb-3">
+                    <span class="interest-badge">@Model.DesiredConnection</span>
+                </div>
+
+                
+                @if (joinedCount < 3)
+                {
+                    <div class="cta-card">
+                        <strong>Looking for more activity?</strong>
+                        <div class="muted-small mb-3">Create a quest to get participants and level up faster.</div>
+                        <a asp-controller="Quest" asp-action="Add" class="btn btn-primary">Create a Quest</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="profile-glass">
+                <h6>Progress to next level</h6>
+                <div class="muted-small mb-2">XP: @totalXp (@xpIntoLevel of @levelRange) — @xpNeeded XP to level @(@Model.Level + 1)</div>
+                <div id="xpProgress" class="mb-3">
+                    <div class="bar" style="width:@progressPercent%"></div>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="mb-1">Quick actions</h6>
+                    <div class="d-flex flex-column gap-2">
+                        <a asp-controller="Quest" asp-action="All" class="btn btn-outline-primary w-100">Find Quests</a>
+                        <a asp-action="All" asp-controller="Profile" class="btn btn-outline-secondary w-100">View all profiles</a>
+
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="m-0">
+                            <button type="submit" class="btn btn-outline-danger w-100">Logout</button> 
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="mb-1">Profile details</h6>
+                    <ul class="list-unstyled muted-small mb-0">
+                        <li><strong>ID:</strong> @Model.Id</li>
+                        <li><strong>Level:</strong> @Model.Level</li>
+                        <li><strong>XP:</strong> @Model.ExperiencePoints</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

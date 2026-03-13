@@ -13,5 +13,9 @@ namespace Nexus.Data.Services.Core.Interfaces
        Task<List<AvailableInterestViewModel>> GetAllInterestsAsync();
 
        Task EditProfileAsync(string userId, ProfileEditViewModel profileViewModel);
+
+        // My Profile
+
+        Task<ProfileViewModel> GetCurrentUserProfile(string userId);
     }
 }

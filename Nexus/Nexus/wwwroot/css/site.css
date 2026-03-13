@@ -23,7 +23,7 @@ html
 
 /*style of the project, colors of the project*/
 body {
-    background: #1a1a1a;
+    background: /*#eee7b9f4*/ /*#6b7cdd*/ /*#67bed1*/ #7f9ee0;
     color: black;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
@@ -34,12 +34,12 @@ body {
 .navbar.navbar-light .navbar-brand,
 .navbar.navbar-light .nav-link {
     color: black !important;
-    background-color: goldenrod  !important;
+    background-color: /*goldenrod*/ #4e41be  !important;
 }
 
 /*footer of the layout colors*/
 .footer {
-    background-color: goldenrod;
+    background-color: #4e41be /*goldenrod*/;
     color: black !important;
     padding: 1px 0;
     text-align: center;

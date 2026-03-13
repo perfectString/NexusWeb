@@ -25,6 +25,9 @@ namespace Nexus.Data.Models
         [MaxLength(BioMaxLen)]
         public string? Bio { get; set; }
 
+        public int ExperiencePoints { get; set; }
+        public int Level { get; set; }
+
         public ConnectionType DesiredConnection { get; set; }
 
         public ICollection<ProfileInterests> ProfileInterest { get; set; }

@@ -8,6 +8,8 @@ namespace Nexus.Data.Services.Core
     public class ProfileService : IProfileService
     {
 
+        //FIX display of level of the users 
+
         private readonly NexusDbContext dbContext;
         public ProfileService(NexusDbContext dbContext)
         {
@@ -69,7 +71,8 @@ namespace Nexus.Data.Services.Core
                 Bio = userFetch.Bio,
                 DesiredConnection = userFetch.DesiredConnection,
                 AvailableInterests = await GetAllInterestsAsync(),
-                InterestId = interestId
+                InterestId = interestId,
+               
 
 
             };
@@ -130,6 +133,38 @@ namespace Nexus.Data.Services.Core
                 .AddRange(newInterests);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ProfileViewModel> GetCurrentUserProfile(string userId)
+        {
+            Profile? userFetch = await dbContext
+             .Users
+                .Include(p => p.ProfileInterest)
+                    .ThenInclude(i => i.Interest)
+             .AsNoTracking()
+             .SingleOrDefaultAsync(u => u.Id == userId);
+
+            if (userFetch == null)
+            {
+                throw new ArgumentException("Not found.");
+            }
+
+            ProfileViewModel profileViewModel = new ProfileViewModel()
+            {
+                Id = userFetch.Id,
+                DisplayName = userFetch.DisplayName, 
+                Age = userFetch.Age,
+                City = userFetch.City,
+                Bio = userFetch.Bio,
+                DesiredConnection = userFetch.DesiredConnection,
+                ExperiencePoints = userFetch.ExperiencePoints,
+                Level = userFetch.Level,
+                Interests = userFetch.ProfileInterest
+                    .Select(i => i.Interest.Name)
+                    .ToList()
+            };
+
+            return profileViewModel;
         }
     }
 }

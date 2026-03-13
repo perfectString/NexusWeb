@@ -6,6 +6,8 @@ using Nexus.ViewModels.Quest;
 
 namespace Nexus.Data.Services.Core
 {
+
+    // i need to update the view model so it displays quest rewards and etc
     public class QuestService : IQuestService
     {
 

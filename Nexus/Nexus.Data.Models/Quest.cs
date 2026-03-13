@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Nexus.Data.Models.Enums;
 using static Nexus.GCommon.ValidationConstants;
 
 namespace Nexus.Data.Models
@@ -20,6 +21,10 @@ namespace Nexus.Data.Models
         [MaxLength(DescriptionMaxLen)]
         [MinLength(DescriptionMinLen)]
         public string Description { get; set; } = null!;
+
+        public QuestDifficulty Difficulty { get; set; }
+
+        //i should adjust the xp through controller and difficulty 
 
         [ForeignKey(nameof(QuestInitiator))]
         public string QuestInitiatorId { get; set; } = null!;

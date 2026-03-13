@@ -18,7 +18,9 @@ namespace Nexus.Data.Configuration
                 Age = 21,
                 City = "Sofia",
                 Bio = "New in the city and looking for new connections!",
-                DesiredConnection = ConnectionType.Friends
+                DesiredConnection = ConnectionType.Friends,
+                Level = 2,
+                ExperiencePoints = 200,
             },
             new Profile
             {
@@ -27,7 +29,9 @@ namespace Nexus.Data.Configuration
                 Age = 30,
                 City = "Berlin",
                 Bio = "Looking for my person",
-                DesiredConnection = ConnectionType.Romantic
+                DesiredConnection = ConnectionType.Romantic,
+                Level = 1,
+                ExperiencePoints = 100
             },
             new Profile
             {
@@ -36,7 +40,9 @@ namespace Nexus.Data.Configuration
                 Age = 19,
                 City = "Madrid",
                 Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!", //add gaming as interest
-                DesiredConnection = ConnectionType.Groups
+                DesiredConnection = ConnectionType.Groups,
+                Level = 3,
+                ExperiencePoints = 350
             },
             new Profile
             {
@@ -45,7 +51,9 @@ namespace Nexus.Data.Configuration
                 Age = 31,
                 City = "London",
                 Bio = "Work in the tech field.Into long night walks.", // add nature or smth as interest
-                DesiredConnection = ConnectionType.Romantic
+                DesiredConnection = ConnectionType.Romantic,
+                Level = 1,
+                ExperiencePoints = 100
             },
         };
 

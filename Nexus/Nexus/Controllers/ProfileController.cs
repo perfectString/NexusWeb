@@ -70,5 +70,17 @@ namespace Nexus.Controllers
                 return RedirectToAction(nameof(All));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            string? userId = GetUserId();
+
+
+            ProfileViewModel myProfileViewModel = await profileService
+                .GetCurrentUserProfile(userId!);
+
+            return View(myProfileViewModel);
+        }
+
     }
 }

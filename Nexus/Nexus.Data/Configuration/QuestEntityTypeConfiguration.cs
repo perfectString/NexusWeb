@@ -14,14 +14,24 @@ namespace Nexus.Data.Configuration
                 Id = 1,
                 Title = "Camping near the river",
                 Description = "Join us for some fishing, cooking and camping near the river!",
-                QuestInitiatorId = "4"
+                QuestInitiatorId = "4",
+                Difficulty = QuestDifficulty.Hard,
             },
             new Quest
             {
                 Id = 2,
                 Title = "Gaming night",
                 Description = "Im looking for people to play cs with so i'd love for us to form a squad!",
-                QuestInitiatorId = "3"
+                QuestInitiatorId = "3",
+                Difficulty = QuestDifficulty.Easy,
+            },
+            new Quest
+            {
+                Id = 3,
+                Title = "Community Work",
+                Description = "Let's clean the city!",
+                QuestInitiatorId = "1",
+                Difficulty = QuestDifficulty.Medium,
             },
         };
 

@@ -31,25 +31,54 @@
                         }
                         else 
                         {
-                       
+
+                            <li class="nav-item dropdown me-2">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" data-bs-toggle="dropdown">
+                                    Profile
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                            My Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Profile" asp-action="Edit">
+                                            Edit Profile
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
                             <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Edit">MyProfile</a>
-                        </li>
-                        <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="All">Users</a>
-                        </li>
+                                <a class="nav-link text-dark" asp-controller="Profile" asp-action="All">Users</a>
+                            </li>
+
+                            <li class="nav-item dropdown me-2">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" data-bs-toggle="dropdown">
+                                    Quests
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Quest" asp-action="All">All Quests</a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Quest" asp-action="Add">Add Quest</a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Quest" asp-action="Joined">Joined Quests</a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="All">Quests</a>
-                        </li>
-                            <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="Add">AddQuest</a>
-                        </li>
-                            <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Quest" asp-action="Joined">JoinedQuests</a>
-                        </li>
-                            <li class="nav-item me-2">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
                         }
                     </ul>
                     <partial name="_LoginPartial" />

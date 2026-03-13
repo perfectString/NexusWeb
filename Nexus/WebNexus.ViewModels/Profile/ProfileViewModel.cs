@@ -14,6 +14,10 @@ namespace Nexus.ViewModels.Profile
 
         public string? Bio { get; set; }
 
+        public int Level { get; set; }
+        public int ExperiencePoints { get; set; }
+
+
         public ConnectionType DesiredConnection { get; set; }
 
         public List<string> Interests { get; set; }

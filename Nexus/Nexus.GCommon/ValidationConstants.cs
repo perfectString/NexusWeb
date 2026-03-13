@@ -25,5 +25,9 @@ namespace Nexus.GCommon
         public const int DescriptionMaxLen = 500;
         public const int DescriptionMinLen = 5;
 
+        //Identity
+
+        public const int PasswordMinLength = 5;
+
     }
 }
