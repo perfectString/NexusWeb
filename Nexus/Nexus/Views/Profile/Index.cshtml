@@ -6,7 +6,7 @@
     Layout = "_Layout";
     ViewData["Title"] = "My Profile";
 
-    // Level and XP calculation:
+    // Level and XP calculation
     // next level requires 100 * (Level + 1) XP.
     var currentLevel = Model.Level;
     var totalXp = Model.ExperiencePoints;
@@ -17,7 +17,7 @@
     var levelRange = Math.Max(1, nextLevelXp - baseXp);
     var progressPercent = (int)Math.Round((double)xpIntoLevel / levelRange * 100);
 
-    // Quest counts (created and joined)
+    // Quest counts 
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
     var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userId);
     var joinedCount = joinedQuests?.Count() ?? 0;
@@ -43,6 +43,8 @@
             border-radius: 12px;
             padding: 1.25rem;
             box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .profile-avatar {
@@ -60,7 +62,7 @@
             flex-shrink:0;
         }
 
-        .profile-name { font-size: 1.9rem; font-weight: 700; margin-bottom: .5rem; } /* added spacing under name */
+        .profile-name { font-size: 1.9rem; font-weight: 700; margin-bottom: .5rem; } 
 
         .muted-small { color: black; font-size:.95rem; }
 

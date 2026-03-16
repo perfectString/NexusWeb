@@ -2,25 +2,105 @@
 
 @{
     ViewData["Title"] = "Edit profile";
+    var _availableInterestsJson = System.Text.Json.JsonSerializer.Serialize(
+        Model.AvailableInterests.Select(i => new { i.Id, i.Name })
+    );
+    var _initialSelectedIds = System.Text.Json.JsonSerializer.Serialize(Model.InterestId ?? new List<int>());
 }
 
 @section Styles {
     <style>
-        .views-profile-edit .card,
-        .views-profile-edit .card * {
-            color: #000 !important;
-            background-color: #fff !important;
+        .profile-edit-wrap {
+            margin-top: 0.5rem;
+        }
+
+        .profile-glass {
+            background: rgba(255,255,255,0.94);
+            color: #0b0b0b;
+            border-radius: 5px;
+            padding: 1.25rem;
+            box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+        }
+
+        .muted-small { color:black; font-size:.95rem; }
+
+        .interests-wrap {
+            display:flex;
+            flex-direction:column;
+            gap:.5rem;
+            max-width:720px;
+        }
+
+        .interest-search {
+            display:flex;
+            gap:.5rem;
+            align-items:center;
+        }
+
+        .interest-search input {
+            flex:1;
+            padding:.45rem .6rem;
+            border-radius:.5rem;
+            border:1px solid rgba(7,58,87,0.06);
+            font-size:.95rem;
+        }
+
+        .interest-grid {
+            display:flex;
+            flex-wrap:wrap;
+            gap:.5rem;
+            padding:.5rem;
+            border-radius:.5rem;
+            border:1px solid rgba(7,58,87,0.06);
+            background:#fff;
+            max-height:220px;
+            overflow:auto;
+        }
+
+        .interest-card {
+            display:inline-flex;
+            align-items:center;
+            gap:.5rem;
+            padding:.35rem .6rem;
+            border-radius:999px;
+            background:#f7fbff;
+            color:#073a57;
+            font-weight:600;
+            font-size:.9rem;
+            border:1px solid rgba(7,58,87,0.04);
+            cursor:pointer;
+            user-select:none;
+        }
+
+        .interest-card.selected {
+            background: linear-gradient(90deg,#00b4d8,#0077b6);
+            color:#fff;
+            box-shadow: 0 4px 10px rgba(2,6,23,0.06);
+        }
+
+        .interest-count {
+            font-size:.85rem;
+            color:#6c757d;
+        }
+
+        .form-actions {
+            display:flex;
+            gap:.6rem;
+            justify-content:flex-end;
+            align-items:center;
+        }
+
+        @@media (min-width: 992px) {
+            .profile-edit-wrap { margin-top: 1rem; }
         }
     </style>
 }
 
 <div class="container my-4">
-    <div class="card shadow-sm text-dark bg-white">
-        <div class="card-header bg-white">
-            <h4 class="mb-0">My Profile</h4>
-        </div>
+    <div class="profile-edit-wrap">
+        <div class="profile-glass">
+            <h4 class="mb-3">Edit profile</h4>
 
-        <div class="card-body">
             <form asp-action="Edit" method="post" class="row g-3">
                 @Html.AntiForgeryToken()
 
@@ -28,7 +108,7 @@
 
                 <div class="col-12 col-md-6">
                     <label asp-for="DisplayName" class="form-label"></label>
-                    <input asp-for="DisplayName" class="form-control" />
+                    <input asp-for="DisplayName" class="form-control form-control-lg" />
                     <span asp-validation-for="DisplayName" class="text-danger small"></span>
                 </div>
 
@@ -66,32 +146,29 @@
 
                 <div class="col-12">
                     <label class="form-label">Interests</label>
-                    <div class="row g-2">
-                        @foreach (var interest in Model.AvailableInterests)
-                        {
-                            var isChecked = Model.InterestId?.Contains(interest.Id) ?? false;
-                            <div class="col-6 col-sm-4 col-md-3">
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           name="InterestId"
-                                           value="@interest.Id"
-                                           id="interest-@interest.Id"
-                                           @(isChecked ? "checked" : "") />
-                                    <label class="form-check-label" for="interest-@interest.Id">
-                                        @interest.Name
-                                    </label>
-                                </div>
-                            </div>
-                        }
+
+                    <div class="interests-wrap">
+                        <div class="interest-search">
+                            <input id="interestFilter" type="text" placeholder="Filter interests (shows all results)..." aria-label="Filter interests" />
+                            <div class="interest-count" id="interestCount"></div>
+                        </div>
+
+                        <div id="interestGrid" class="interest-grid" role="list">
+                            <!-- all interest cards will be rendered here by script -->
+                        </div>
+                    </div>
+
+                    <div id="interestHiddenInputs" class="mt-2">
                     </div>
 
                     <span asp-validation-for="InterestId" class="text-danger small"></span>
                 </div>
 
-                <div class="col-12 d-flex justify-content-end gap-2">
-                    <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-success">Save changes</button>
+                <div class="col-12">
+                    <div class="form-actions">
+                        <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-lg">Save changes</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -100,4 +177,116 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const available = @Html.Raw(_availableInterestsJson);
+            const initialSelectedIds = @Html.Raw(_initialSelectedIds);
+
+            const grid = document.getElementById('interestGrid');
+            const filter = document.getElementById('interestFilter');
+            const hiddenInputs = document.getElementById('interestHiddenInputs');
+            const countEl = document.getElementById('interestCount');
+
+            let selected = [];
+
+            function renderAll() {
+                grid.innerHTML = '';
+                for (const item of available) {
+                    const card = document.createElement('div');
+                    card.className = 'interest-card';
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('data-id', item.Id);
+                    card.tabIndex = 0;
+                    card.innerText = item.Name;
+
+                    card.addEventListener('click', function () {
+                        toggleSelect(item.Id, item.Name, card);
+                    });
+
+                    card.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleSelect(item.Id, item.Name, card);
+                        }
+                    });
+
+                    grid.appendChild(card);
+                }
+                updateCount();
+            }
+
+            function updateCount() {
+                countEl.textContent = `${selected.length}/3 selected`;
+            }
+
+            function toggleSelect(id, name, cardEl) {
+                const idx = selected.indexOf(id);
+                if (idx === -1) {
+                    if (selected.length >= 3) {
+                        cardEl.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 180 });
+                        return;
+                    }
+                    selected.push(id);
+                    cardEl.classList.add('selected');
+                } else {
+                    selected.splice(idx, 1);
+                    cardEl.classList.remove('selected');
+                }
+                updateHiddenInputs();
+                updateCount();
+            }
+
+            function updateHiddenInputs() {
+                hiddenInputs.innerHTML = '';
+                for (const id of selected) {
+                    const inputEl = document.createElement('input');
+                    inputEl.type = 'hidden';
+                    inputEl.name = 'InterestId';
+                    inputEl.value = id;
+                    hiddenInputs.appendChild(inputEl);
+                }
+            }
+
+            function initSelected() {
+                if (!Array.isArray(initialSelectedIds)) return;
+                for (const id of initialSelectedIds) {
+                    const card = grid.querySelector(`.interest-card[data-id="${id}"]`);
+                    if (card) {
+                        selected.push(id);
+                        card.classList.add('selected');
+                    }
+                }
+                updateHiddenInputs();
+                updateCount();
+            }
+
+            function applyFilter(q) {
+                const ql = (q || '').trim().toLowerCase();
+                const cards = Array.from(grid.children);
+                let visible = 0;
+                for (const c of cards) {
+                    const text = c.textContent.toLowerCase();
+                    const show = ql === '' || text.includes(ql);
+                    c.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                }
+
+                const total = available.length;
+                countEl.textContent = `${selected.length}/3 selected • ${visible} / ${total} visible`;
+            }
+
+            filter.addEventListener('input', function () {
+                applyFilter(this.value);
+            });
+
+            renderAll();
+            initSelected();
+
+            window.__interestGrid = {
+                selected() { return selected.slice(); },
+                selectAll() { available.forEach(a => { const el = grid.querySelector(`.interest-card[data-id="${a.Id}"]`); if (el && !selected.includes(a.Id) && selected.length < 3) toggleSelect(a.Id, a.Name, el); }); }
+            };
+        })();
+    </script>
 }

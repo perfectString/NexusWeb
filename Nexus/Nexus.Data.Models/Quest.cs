@@ -24,7 +24,7 @@ namespace Nexus.Data.Models
 
         public QuestDifficulty Difficulty { get; set; }
 
-        //i should adjust the xp through controller and difficulty 
+        //public int RewardXp { get; set; }
 
         [ForeignKey(nameof(QuestInitiator))]
         public string QuestInitiatorId { get; set; } = null!;

@@ -8,82 +8,263 @@
 
 @section Styles {
     <style>
-        .mb-3 {
-            color: ghostwhite;
+        .quests-wrap { max-width: 1200px; margin: 0 auto; }
+
+        .quests-hero {
+            background: linear-gradient(135deg, rgba(10,84,101,0.96), rgba(29,161,242,0.95));
+            color: #fff;
+            padding: 1.6rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 12px 36px rgba(2,6,23,0.18);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:1rem;
+            flex-wrap:wrap;
         }
 
-        #questSearch {
-            border-radius: 20px;
-            padding-left: 12px;
+        .quests-hero .title { font-size: 1.25rem; font-weight:700; margin:0; }
+        .quests-hero .subtitle { color: rgba(255,255,255,0.92); font-size:.95rem; margin:0; }
+
+        .quests-controls { display:flex; gap:.75rem; align-items:center; width:100%; max-width:720px; }
+        .quests-search { flex:1 1 320px; }
+        .quests-search .form-control { border-radius: 999px; padding-left:1rem; padding-right:1rem; }
+
+        .quest-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+            gap:1rem;
+        }
+
+        .quest-card {
+            background: #fff;
+            border-radius:10px;
+            padding:1rem;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+            display:flex;
+            flex-direction:column;
+            min-height:160px;
+            transition: transform .16s ease, box-shadow .16s ease;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .quest-card::before {
+            content: "";
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:6px;
+            background: linear-gradient(180deg,#2672ff,#0b6b75);
+            border-top-left-radius:12px;
+            border-bottom-left-radius:12px;
+        }
+
+        .quest-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(2,6,23,0.08);
+        }
+
+        .card-head { display:flex; gap:.75rem; align-items:center; padding-left:10px; /* offset for accent */ }
+        .card-title { font-weight:700; margin:0; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .card-meta { color:#6c757d; font-size:.85rem; margin-top:.15rem; }
+
+        .initiator-badge {
+            margin-left:auto;
+            background: linear-gradient(90deg,#f1f7fb,#eef9ff);
+            color:#063449;
+            font-weight:600;
+            padding:.28rem .6rem;
+            border-radius:999px;
+            font-size:.82rem;
+            border: 1px solid rgba(7,58,87,0.04);
+            white-space:nowrap;
+        }
+
+        .card-body { margin-top:.6rem; color:#222; font-size:.95rem; flex:1 1 auto; padding-left:10px; }
+        .card-body .desc { display:block; max-height:3.5rem; overflow:hidden; text-overflow:ellipsis; white-space:pre-wrap; }
+
+        .card-actions { display:flex; justify-content:flex-end; gap:.5rem; margin-top:.85rem; align-items:center; padding-left:10px; }
+
+        .no-results { text-align:center; padding:2rem; color:#6c757d; grid-column: 1 / -1; }
+
+        @@media (min-width:992px) {
+            .quests-hero { padding:1.6rem 1.25rem; }
         }
     </style>
 }
 
-<div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">All currently active quests</h3>
-        <a asp-action="Add" class="btn btn-sm btn-warning">Add Quest</a>
+<div class="quests-wrap">
+    <div class="quests-hero">
+        <div>
+            <p class="title mb-1">All Active Quests</p>
+            <p class="subtitle mb-0">Find a quest to join or manage your own</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2" style="flex:0 0 auto;">
+            <div class="quests-controls">
+                <div class="quests-search">
+                    <input id="questSearch" class="form-control form-control-sm" placeholder="Search title, description or initiator..." aria-label="Search quests" />
+                </div>
+            </div>
+
+            <a asp-action="Add" class="btn btn-sm btn-warning">Add Quest</a>
+        </div>
     </div>
 
     <div class="mb-3">
-        <input id="questSearch" class="form-control" placeholder="Search title, description or initiator..." />
-    </div>
-
-    <div class="row g-3">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var q in Model)
+        <div id="questGrid" class="quest-grid">
+            @if (Model != null && Model.Any())
             {
-                var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@q.Title</h5>
-                            <h6 class="card-subtitle mb-2 text-muted small">By @q.QuestInitiator</h6>
-                            <p class="card-text text-truncate" title="@q.Description">@q.Description</p>
-
-                            <div class="mt-auto d-flex gap-2">
-                                <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-success">Details</a>
-
-                                @if (isInitiator)
-                                {
-                                    <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                    <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-danger">Delete</a>
-                                }
-                                else
-                                {
-                                    <form asp-action="Join" method="post" class="m-0">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@q.Id" />
-                                        <button type="submit" class="btn btn-sm btn-warning">Join</button>
-                                    </form>
-                                }
+                foreach (var q in Model)
+                {
+                    var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
+                    var titleSafe = q.Title ?? string.Empty;
+                    var initiatorSafe = q.QuestInitiator ?? "Unknown";
+                    var descSafe = q.Description ?? string.Empty;
+                    <div class="quest-card" data-title="@titleSafe.ToLower()" data-desc="@descSafe.ToLower()" data-initiator="@initiatorSafe.ToLower()">
+                        <div class="card-head">
+                            <div style="min-width:0;">
+                                <p class="card-title mb-0" title="@titleSafe">@titleSafe</p>
                             </div>
+
+                            <div class="initiator-badge" title="Initiator">@initiatorSafe</div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="desc" title="@descSafe">@descSafe</div>
+                        </div>
+
+                        <div class="card-actions">
+                            <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-success">Details</a>
+
+                            @if (isInitiator)
+                            {
+                                <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-secondary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@q.Id" class="btn btn-sm btn-danger">Delete</a>
+                            }
+                            else
+                            {
+                                <form asp-action="Join" method="post" class="m-0 d-inline-block">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@q.Id" />
+                                    <button type="submit" class="btn btn-sm btn-warning">Join</button>
+                                </form>
+                            }
                         </div>
                     </div>
-                </div>
+                }
             }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info mb-0">No quests found.</div>
+            else
+            {
+                <div class="no-results">No quests found.</div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="questDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questDetailsTitle">Quest</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        }
+            <div class="modal-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Title</dt>
+                    <dd class="col-sm-9" id="detailQuestTitle"></dd>
+
+                    <dt class="col-sm-3">Initiator</dt>
+                    <dd class="col-sm-9" id="detailQuestInitiator"></dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9" id="detailQuestDescription"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
         (function () {
-            const input = document.getElementById('questSearch');
-            if (!input) return;
-            input.addEventListener('input', function () {
-                const q = this.value.trim().toLowerCase();
-                document.querySelectorAll('.row.g-3 > .col-12, .row.g-3 > .col-md-6').forEach(col => {
-                    const text = col.innerText.toLowerCase();
-                    col.style.display = q === '' || text.indexOf(q) >= 0 ? '' : 'none';
+            const search = document.getElementById('questSearch');
+            const grid = document.getElementById('questGrid');
+            const cards = Array.from(grid ? grid.querySelectorAll('.quest-card') : []);
+
+            function matches(card, q) {
+                if (!card) return false;
+                const title = card.getAttribute('data-title') || '';
+                const desc = card.getAttribute('data-desc') || '';
+                const initiator = card.getAttribute('data-initiator') || '';
+                const text = `${title} ${desc} ${initiator}`;
+                return q === '' || text.indexOf(q) >= 0;
+            }
+
+            function applyFilter() {
+                const q = (search.value || '').trim().toLowerCase();
+                let visible = 0;
+                cards.forEach(c => {
+                    const show = matches(c, q);
+                    c.style.display = show ? '' : 'none';
+                    if (show) visible++;
                 });
+
+                let empty = grid.querySelector('.no-results');
+                if (visible === 0) {
+                    if (!empty) {
+                        const e = document.createElement('div');
+                        e.className = 'no-results';
+                        e.innerText = 'No quests match your search.';
+                        grid.appendChild(e);
+                    }
+                } else {
+                    if (empty) empty.remove();
+                }
+            }
+
+            let timeout;
+            if (search) {
+                search.addEventListener('input', function () {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(applyFilter, 160);
+                });
+            }
+
+            const modalEl = document.getElementById('questDetailsModal');
+            if (modalEl) {
+                modalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    if (!button) return;
+
+                    const setText = (id, attr) => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        el.innerText = button.getAttribute(attr) || '';
+                    };
+
+                    setText('questDetailsTitle', 'data-title');
+                    setText('detailQuestTitle', 'data-title');
+                    setText('detailQuestInitiator', 'data-initiator');
+                    setText('detailQuestDescription', 'data-desc');
+                });
+            }
+
+            document.querySelectorAll('a.btn-outline-success').forEach(a => {
+                if (a.getAttribute('href')) {
+                    const card = a.closest('.quest-card');
+                    if (card) {
+                        a.setAttribute('data-title', card.getAttribute('data-title') || '');
+                        a.setAttribute('data-desc', card.getAttribute('data-desc') || '');
+                        a.setAttribute('data-initiator', card.getAttribute('data-initiator') || '');
+                    }
+                }
             });
         })();
     </script>

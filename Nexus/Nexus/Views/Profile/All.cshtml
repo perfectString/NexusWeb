@@ -6,74 +6,235 @@
 
 @section Styles {
     <style>
-        .badge-connection {
-            background-color: peru;
+        .profiles-hero {
+            background: linear-gradient(135deg, rgba(8,102,121,0.95), rgba(29,161,242,0.92));
             color: #fff;
-            border-radius: 0.2rem;
-            padding: 0.35rem 0.6rem;
-            font-weight: 600;
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.6rem;
+            box-shadow: 0 10px 40px rgba(2,6,23,0.25);
+        }
+
+        .profiles-hero .title { font-size: 1.6rem; font-weight: 700; margin: 0; }
+        .profiles-hero .subtitle { color: rgba(255,255,255,0.95); font-size: .95rem; }
+
+        .profiles-wrap { max-width: 1200px; margin: 0 auto; }
+
+        .profiles-controls {
+            display:flex;
+            gap:.75rem;
+            align-items:center;
+            margin-top:.6rem;
+            flex-wrap:wrap;
+        }
+
+        .profiles-search {
+            flex: 1 1 360px;
+        }
+
+        .profiles-search .form-control {
+            border-radius: 999px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.02);
+        }
+
+        .profiles-filters {
+            display:flex;
+            gap:.5rem;
+            align-items:center;
+        }
+
+        .profile-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .profile-card {
+            background: rgba(255,255,255,0.98);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+            display:flex;
+            flex-direction:column;
+            min-height: 170px;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(2,6,23,0.08);
+        }
+
+        .card-head {
+            display:flex;
+            gap:.75rem;
+            align-items:center;
+        }
+
+        .card-avatar {
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            color:#fff;
+            background: linear-gradient(135deg,#0b6b75,#2672ff);
+            font-size:1.15rem;
+            flex-shrink:0;
+            box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+        }
+
+        .card-title { font-weight:700; margin:0; font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .card-meta { color:#6c757d; font-size:.85rem; margin-top:.15rem; }
+
+        .badge-connection {
+            display:inline-flex;
+            align-items:center;
+            padding:.25rem .5rem;
+            border-radius:999px;
+            font-weight:600;
+            font-size:.78rem;
+            color:#063449;
+            background: linear-gradient(90deg,#e9f8ff,#dff3ff);
+            border: 1px solid rgba(7,58,87,0.04);
+            margin-left:auto;
+            white-space:nowrap;
+            flex:0 0 auto;
+        }
+
+        .chips { margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.4rem; }
+
+        .chip {
+            display:inline-block;
+            background:#f1f7fb;
+            color:#073a57;
+            padding:.32rem .55rem;
+            border-radius:999px;
+            font-weight:600;
+            font-size:.82rem;
+            border:1px solid rgba(7,58,87,0.04);
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            max-width:100%;
+        }
+
+        .card-body { margin-top:.5rem; flex:1 1 auto; color:#222; font-size:.92rem; }
+
+        .card-actions { display:flex; justify-content:flex-end; gap:.5rem; margin-top:.8rem; align-items:center; }
+
+        .no-results {
+            text-align:center;
+            padding:2rem;
+            color:#6c757d;
+            grid-column: 1 / -1;
+        }
+
+        .muted-small { color:#6c757d; }
+
+        .modal-body dd {
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        @@media (min-width: 992px) {
+            .profiles-hero { padding: 2.25rem 1.25rem; }
+            .card-avatar { width:72px; height:72px; font-size:1.25rem; }
         }
     </style>
 }
 
-<div class="page-wrapper">
-    <div class="container my-5">
-        <div class="card shadow-sm bg-white text-dark">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">All User Profiles</h2>
+<div class="profiles-wrap">
+    <div class="profiles-hero d-flex justify-content-between align-items-center">
+        <div>
+            <p class="title mb-1">All Profiles</p>
+            <p class="subtitle mb-0">Browse and connect</p>
+        </div>
 
-                    <div class="w-50">
-                        <input id="profileSearch" class="form-control rounded-pill" placeholder="Search by name, city or interest..." />
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var p in Model)
-                        {
-                            var interestsText = string.Join(", ", p.Interests ?? Enumerable.Empty<string>());
-                            var connectionText = p.DesiredConnection.ToString() ?? string.Empty;
-                            <div class="col-12 col-sm-6 col-lg-4 profile-card">
-                                <div class="card h-100 shadow-sm bg-white text-dark">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title mb-1">@p.DisplayName</h5>
-                                        <div class="text-muted small mb-2">@p.Age years • @p.City</div>
-
-                                        <span class="badge-connection mb-2">@connectionText</span>
-
-                                        <p class="card-text text-truncate" title="@interestsText">
-                                            <strong>Interests:</strong> @interestsText
-                                        </p>
-
-                                        <div class="mt-auto d-flex justify-content-end gap-2">
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-success"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#profileDetailsModal"
-                                                    data-name="@p.DisplayName"
-                                                    data-age="@p.Age"
-                                                    data-city="@p.City"
-                                                    data-connection="@connectionText"
-                                                    data-interests="@interestsText"
-                                                    data-bio="@(p.Bio ?? string.Empty)">
-                                                Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="col-12">
-                            <div class="alert alert-info mb-0">No profiles found.</div>
-                        </div>
-                    }
-                </div>
+        <div class="profiles-controls">
+            <div class="profiles-search">
+                <input id="profileSearch" class="form-control" placeholder="Search by name, city or interest..." aria-label="Search profiles" />
             </div>
+
+            <div class="profiles-filters">
+                <select id="filterCity" class="form-select form-select-sm" style="width:160px;">
+                    <option value="">All cities</option>
+                </select>
+
+                <select id="filterConnection" class="form-select form-select-sm" style="width:160px;">
+                    <option value="">Any connection</option>
+                    @foreach (var v in Enum.GetValues(typeof(Nexus.Data.Models.Enums.ConnectionType)))
+                    {
+                        <option value="@v">@v</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div id="profilesGrid" class="profile-grid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var p in Model)
+                {
+                    var interestsText = string.Join(", ", p.Interests ?? Enumerable.Empty<string>());
+                    var connectionText = p.DesiredConnection.ToString() ?? string.Empty;
+                    <div class="profile-card" data-name="@p.DisplayName.ToLower()" data-city="@p.City.ToLower()" data-interests="@interestsText.ToLower()" data-connection="@connectionText.ToLower()">
+                        <div class="card-head">
+                            <div class="card-avatar" aria-hidden="true">
+                                @(string.IsNullOrEmpty(p.DisplayName) ? "U" : p.DisplayName.Substring(0,1).ToUpper())
+                            </div>
+
+                            <div style="flex:1 1 auto; min-width:0;">
+                                <p class="card-title mb-0" title="@p.DisplayName">@p.DisplayName</p>
+                                <div class="card-meta">@p.Age years • @p.City</div>
+                            </div>
+
+                            <div>
+                                <span class="badge-connection">@connectionText</span>
+                            </div>
+                        </div>
+
+                        <div class="chips" aria-hidden="false">
+                            @if (p.Interests != null && p.Interests.Any())
+                            {
+                                foreach (var i in p.Interests)
+                                {
+                                    <span class="chip" title="@i">@i</span>
+                                }
+                            }
+                        </div>
+
+                        <div class="card-body">
+                            <div class="text-truncate" title="@interestsText"><strong>Interests:</strong> @interestsText</div>
+                        </div>
+
+                        <div class="card-actions">
+                            <div>
+                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#profileDetailsModal"
+                                        data-name="@p.DisplayName"
+                                        data-age="@p.Age"
+                                        data-city="@p.City"
+                                        data-connection="@connectionText"
+                                        data-interests="@interestsText"
+                                        data-bio="@(p.Bio ?? string.Empty)">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-results">No profiles found.</div>
+            }
         </div>
     </div>
 </div>
@@ -81,7 +242,7 @@
 
 <div class="modal fade" id="profileDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-dark bg-white">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="profileDetailsTitle">Profile details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -118,17 +279,83 @@
     <script>
         (function () {
             const searchInput = document.getElementById('profileSearch');
+            const cityFilter = document.getElementById('filterCity');
+            const connectionFilter = document.getElementById('filterConnection');
             const cards = Array.from(document.querySelectorAll('.profile-card'));
+            const grid = document.getElementById('profilesGrid');
 
+            function uniqueCities() {
+                const set = new Set();
+                cards.forEach(c => {
+                    const city = c.getAttribute('data-city') || '';
+                    if (city) set.add(city);
+                });
+                return Array.from(set).sort();
+            }
+
+            // populate city filter
+            (function populateCityFilter() {
+                const cities = uniqueCities();
+                for (const c of cities) {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    cityFilter.appendChild(opt);
+                }
+            })();
+
+            function matchesCard(card, q, city, conn) {
+                const name = card.getAttribute('data-name') || '';
+                const interests = card.getAttribute('data-interests') || '';
+                const cardCity = card.getAttribute('data-city') || '';
+                const cardConn = card.getAttribute('data-connection') || '';
+
+                const text = `${name} ${interests}`;
+                const textMatch = q === '' || text.indexOf(q) >= 0;
+                const cityMatch = !city || cardCity === city;
+                const connMatch = !conn || cardConn === conn;
+                return textMatch && cityMatch && connMatch;
+            }
+
+            function applyFilters() {
+                const q = (searchInput.value || '').trim().toLowerCase();
+                const city = cityFilter.value;
+                const conn = connectionFilter.value.toLowerCase();
+
+                let visible = 0;
+                cards.forEach(card => {
+                    const show = matchesCard(card, q, city, conn);
+                    card.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                });
+
+
+                const anyVisible = visible > 0;
+                let empty = grid.querySelector('.no-results');
+                if (!anyVisible) {
+                    if (!empty) {
+                        empty = document.createElement('div');
+                        empty.className = 'no-results';
+                        empty.innerText = 'No profiles match your filters.';
+                        grid.appendChild(empty);
+                    }
+                } else {
+                    if (empty) empty.remove();
+                }
+            }
+
+
+            let timeout;
             if (searchInput) {
                 searchInput.addEventListener('input', function () {
-                    const q = this.value.trim().toLowerCase();
-                    cards.forEach(card => {
-                        const text = card.innerText.toLowerCase();
-                        card.style.display = q === '' || text.indexOf(q) >= 0 ? '' : 'none';
-                    });
+                    clearTimeout(timeout);
+                    timeout = setTimeout(applyFilters, 180);
                 });
             }
+
+            if (cityFilter) cityFilter.addEventListener('change', applyFilters);
+            if (connectionFilter) connectionFilter.addEventListener('change', applyFilters);
+
 
             const modal = document.getElementById('profileDetailsModal');
             if (modal) {
@@ -147,10 +374,15 @@
                     set('detailCity', 'data-city');
                     set('detailConnection', 'data-connection');
                     set('detailInterests', 'data-interests');
-                    set('detailBio', 'data-bio');
+
+
+                    const bio = button.getAttribute('data-bio') || '';
+                    const bioEl = document.getElementById('detailBio');
+                    if (bioEl) bioEl.innerText = bio;
                 });
             }
         })();
     </script>
 }
+
 
