@@ -1,5 +1,4 @@
-﻿
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.ViewModels.Quest;

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Nexus.Data.Models.Enums;
+using Nexus.GCommon.Enums;
 using static Nexus.GCommon.ValidationConstants;
 
 namespace Nexus.Data.Models
@@ -21,10 +22,11 @@ namespace Nexus.Data.Models
         [MaxLength(DescriptionMaxLen)]
         [MinLength(DescriptionMinLen)]
         public string Description { get; set; } = null!;
+        public QuestStatus Status { get; set; } = QuestStatus.Active;
 
         public QuestDifficulty Difficulty { get; set; }
 
-        //public int RewardXp { get; set; }
+        public int RewardXp { get; set; }
 
         [ForeignKey(nameof(QuestInitiator))]
         public string QuestInitiatorId { get; set; } = null!;

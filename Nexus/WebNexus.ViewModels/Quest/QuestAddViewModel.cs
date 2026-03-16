@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Nexus.Data.Models.Enums;
 using static Nexus.GCommon.ValidationConstants;
 
 namespace Nexus.ViewModels.Quest
@@ -16,5 +17,9 @@ namespace Nexus.ViewModels.Quest
         [MaxLength(DescriptionMaxLen)]
         [MinLength(DescriptionMinLen)]
         public string Description { get; set; } = null!;
+
+        [Required]
+        public QuestDifficulty Difficulty { get; set; }
+
     }
 }

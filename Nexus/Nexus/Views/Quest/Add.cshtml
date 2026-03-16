@@ -15,15 +15,36 @@
                 @Html.AntiForgeryToken()
 
                 <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                </div>
+
+                <div class="col-12">
                     <label asp-for="Title" class="form-label"></label>
                     <input asp-for="Title" class="form-control" />
                     <span asp-validation-for="Title" class="text-danger small"></span>
                 </div>
 
+                <div class="col-12 col-lg-6">
+                    <label asp-for="Difficulty" class="form-label"></label>
+                    <select asp-for="Difficulty" class="form-select" id="difficultySelect">
+                        @foreach (var d in Enum.GetValues(typeof(Nexus.Data.Models.Enums.QuestDifficulty)))
+                        {
+                            <option value="@d" @@(Model.Difficulty.ToString() == d.ToString() ? "selected" : "")>@d</option>
+                        }
+                    </select>
+                    <div class="form-text small text-muted">Difficulty will be locked after creation and cannot be changed.</div>
+                    <span asp-validation-for="Difficulty" class="text-danger small"></span>
+                </div>
+
                 <div class="col-12">
                     <label asp-for="Description" class="form-label"></label>
-                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
+                    <textarea asp-for="Description" class="form-control" rows="6" maxlength="@Nexus.GCommon.ValidationConstants.DescriptionMaxLen" id="descriptionInput"></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </span>
+                        <small id="descCount" class="text-muted small">0/@Nexus.GCommon.ValidationConstants.DescriptionMaxLen</small>
+                    </div>
                 </div>
 
                 <div class="col-12 d-flex justify-content-end gap-2">
@@ -37,4 +58,22 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const textarea = document.getElementById('descriptionInput');
+            const counter = document.getElementById('descCount');
+            const max = Number('@Nexus.GCommon.ValidationConstants.DescriptionMaxLen');
+
+            function updateCount() {
+                const len = textarea ? textarea.value.length : 0;
+                if (counter) counter.innerText = len + '/' + max;
+            }
+
+            if (textarea) {
+                updateCount();
+                textarea.addEventListener('input', updateCount);
+            }
+        })();
+    </script>
 }

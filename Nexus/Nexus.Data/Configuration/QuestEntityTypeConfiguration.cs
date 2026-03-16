@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nexus.Data.Models;
 using Nexus.Data.Models.Enums;
+using Nexus.GCommon.Enums;
 
 namespace Nexus.Data.Configuration
 {
@@ -16,6 +17,7 @@ namespace Nexus.Data.Configuration
                 Description = "Join us for some fishing, cooking and camping near the river!",
                 QuestInitiatorId = "4",
                 Difficulty = QuestDifficulty.Hard,
+                Status = QuestStatus.Active
             },
             new Quest
             {
@@ -24,6 +26,7 @@ namespace Nexus.Data.Configuration
                 Description = "Im looking for people to play cs with so i'd love for us to form a squad!",
                 QuestInitiatorId = "3",
                 Difficulty = QuestDifficulty.Easy,
+                Status = QuestStatus.Active
             },
             new Quest
             {
@@ -32,6 +35,7 @@ namespace Nexus.Data.Configuration
                 Description = "Let's clean the city!",
                 QuestInitiatorId = "1",
                 Difficulty = QuestDifficulty.Medium,
+                Status = QuestStatus.Active
             },
         };
 

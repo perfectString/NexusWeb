@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Enums;
+using Nexus.GCommon.Helpers;
 using Nexus.ViewModels.Profile;
 using Nexus.ViewModels.Quest;
 
@@ -31,7 +33,10 @@ namespace Nexus.Data.Services.Core
                  Title = q.Title,
                  Description = q.Description,
                  QuestInitiator = q.QuestInitiator.DisplayName,
-                 InitiatorId = q.QuestInitiatorId
+                 InitiatorId = q.QuestInitiatorId,
+                 Difficulty = q.Difficulty,
+                 RewardExperience = q.RewardXp,
+                 Status = q.Status,
              })
                 .ToArrayAsync();
 
@@ -57,7 +62,10 @@ namespace Nexus.Data.Services.Core
 
                 Title = questModel.Title,
                 Description = questModel.Description,
-                QuestInitiatorId = userFetch!.Id
+                QuestInitiatorId = userFetch!.Id,
+                Difficulty = questModel.Difficulty,
+                RewardXp = QuestRewardGiver.GetRewardXp(questModel.Difficulty),
+                Status = QuestStatus.Active,
             };
 
 
@@ -100,7 +108,9 @@ namespace Nexus.Data.Services.Core
             {
                 Id = questId,
                 Title = questFetch.Title,
-                Description = questFetch.Description
+                Description = questFetch.Description,
+                Difficulty = questFetch.Difficulty,
+                
             };
 
             return questModel;
@@ -213,6 +223,9 @@ namespace Nexus.Data.Services.Core
                 Id = quest.Id,
                 Title = quest.Title,
                 Description = quest.Description,
+                Difficulty = quest.Difficulty,
+                RewardExperience = quest.RewardXp,
+                Status = quest.Status,
                 QuestInitiator = quest.QuestInitiator?.DisplayName ?? string.Empty,
                 InitiatorId = quest.QuestInitiatorId,
                 JoinedProfiles = joinedProfiles
@@ -249,7 +262,10 @@ namespace Nexus.Data.Services.Core
                     Title = q.Title,
                     Description = q.Description,
                     QuestInitiator = q.QuestInitiator.DisplayName!,
-                    InitiatorId = q.QuestInitiatorId
+                    InitiatorId = q.QuestInitiatorId,
+                    Difficulty = q.Difficulty,
+                    RewardExperience = q.RewardXp,
+                    Status = q.Status
                 })
                 .OrderBy(q => q.Title)
                 .ToListAsync();
