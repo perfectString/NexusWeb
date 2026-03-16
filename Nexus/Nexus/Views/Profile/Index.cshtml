@@ -6,18 +6,6 @@
     Layout = "_Layout";
     ViewData["Title"] = "My Profile";
 
-    // Level and XP calculation
-    // next level requires 100 * (Level + 1) XP.
-    var currentLevel = Model.Level;
-    var totalXp = Model.ExperiencePoints;
-    var baseXp = currentLevel * 100;
-    var nextLevelXp = (currentLevel + 1) * 100;
-    var xpIntoLevel = Math.Max(0, totalXp - baseXp);
-    var xpNeeded = Math.Max(0, nextLevelXp - totalXp);
-    var levelRange = Math.Max(1, nextLevelXp - baseXp);
-    var progressPercent = (int)Math.Round((double)xpIntoLevel / levelRange * 100);
-
-    // Quest counts 
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
     var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userId);
     var joinedCount = joinedQuests?.Count() ?? 0;
@@ -27,11 +15,10 @@
 
 @section Styles {
     <style>
-        
         .profile-hero {
             background: linear-gradient(135deg, rgba(8, 102, 121, 0.95), rgba(29, 161, 242, 0.9));
             color: #fff;
-            padding: 3rem 1rem; 
+            padding: 3rem 1rem;
             border-radius: 12px;
             margin-bottom: 1.6rem;
             box-shadow: 0 8px 30px rgba(2,6,23,0.35);
@@ -51,56 +38,83 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:700;
-            font-size:2.4rem;
-            color:#fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 2.4rem;
+            color: #fff;
             background: linear-gradient(135deg, #0b6b75, #2672ff);
             box-shadow: 0 6px 18px rgba(2,6,23,0.2);
-            flex-shrink:0;
+            flex-shrink: 0;
         }
 
-        .profile-name { font-size: 1.9rem; font-weight: 700; margin-bottom: .5rem; } 
+        .profile-name {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
 
-        .muted-small { color: black; font-size:.95rem; }
+        .muted-small {
+            color: black;
+            font-size: .95rem;
+        }
 
         .interest-badge {
-            display:inline-block;
+            display: inline-block;
             background: #eef6ff;
-            color:#0b3a66;
-            padding:.45rem .7rem;
-            border-radius:999px;
-            margin:.25rem .35rem .25rem 0;
-            font-weight:600;
-            font-size:.9rem;
+            color: #0b3a66;
+            padding: .45rem .7rem;
+            border-radius: 999px;
+            margin: .25rem .35rem .25rem 0;
+            font-weight: 600;
+            font-size: .9rem;
         }
 
-        #xpProgress { height: 18px; border-radius: 999px; overflow: hidden; background: rgba(0,0,0,0.06); }
-        #xpProgress > .bar { height:100%; background: linear-gradient(90deg,#00b4d8,#0077b6); border-radius:999px; transition: width .6s ease; }
+        #xpProgress {
+            height: 18px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.06);
+        }
+
+            #xpProgress > .bar {
+                height: 100%;
+                background: linear-gradient(90deg,#00b4d8,#0077b6);
+                border-radius: 999px;
+                transition: width .6s ease;
+            }
 
         .stats {
-            display:flex;
-            gap:1.5rem; 
-            align-items:center;
-            flex-wrap:wrap;
-            justify-content:center; 
-            width:100%;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
         }
 
         .stat-item {
             background: rgba(255,255,255,0.06);
-            padding:.9rem 1rem; 
-            border-radius:.75rem;
-            min-width:140px; 
-            text-align:center;
-            color:#fff;
+            padding: .9rem 1rem;
+            border-radius: .75rem;
+            min-width: 140px;
+            text-align: center;
+            color: #fff;
             box-shadow: inset 0 -1px 0 rgba(255,255,255,0.03);
         }
 
-        .stat-value { font-weight:700; font-size:1.15rem; display:block; }
-        .profile-actions { display:flex; gap:.6rem; align-items:center; }
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.15rem;
+            display: block;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+        }
 
         .cta-card {
             background: #e9f8ff;
@@ -111,7 +125,7 @@
     </style>
 }
 
-<div class="container-fluid mt-2 mb-4"> 
+<div class="container-fluid mt-2 mb-4">
     <div class="profile-hero">
         <div class="row align-items-center gx-4">
             <div class="col-12 col-lg-8 d-flex align-items-start gap-4">
@@ -120,12 +134,18 @@
                 </div>
 
                 <div class="flex-grow-1">
-                    <h1 class="profile-name mt-1">@(!string.IsNullOrEmpty(Model.DisplayName) ? Model.DisplayName : "Unnamed profile")</h1>
+                    <h1 class="profile-name mt-1">
+                        @(!string.IsNullOrEmpty(Model.DisplayName) ? Model.DisplayName : "Unnamed profile")
+                    </h1>
+
                     <div class="muted-small mb-2">
-                        @Model.City @if (Model.Age > 0) { <span>&middot; @Model.Age years</span> }
+                        @Model.City
+                        @if (Model.Age > 0)
+                        {
+                            <span>&middot; @Model.Age years</span>
+                        }
                     </div>
 
-                    
                     <div class="d-block mt-2">
                         <div class="stats">
                             <div class="stat-item">
@@ -184,7 +204,6 @@
                     <span class="interest-badge">@Model.DesiredConnection</span>
                 </div>
 
-                
                 @if (joinedCount < 3)
                 {
                     <div class="cta-card">
@@ -199,9 +218,15 @@
         <div class="col-12 col-xl-4">
             <div class="profile-glass">
                 <h6>Progress to next level</h6>
-                <div class="muted-small mb-2">XP: @totalXp (@xpIntoLevel of @levelRange) — @xpNeeded XP to level @(@Model.Level + 1)</div>
+
+                <div class="muted-small mb-2">
+                    XP: @Model.ExperiencePoints
+                    (@Model.XpIntoCurrentLevel of @Model.XpNeededPerLevel)
+                    — @Model.XpNeededToNextLevel XP to level @(Model.Level + 1)
+                </div>
+
                 <div id="xpProgress" class="mb-3">
-                    <div class="bar" style="width:@progressPercent%"></div>
+                    <div class="bar" style="width:@Model.ProgressPercentage%"></div>
                 </div>
 
                 <div class="mb-3">
@@ -211,7 +236,7 @@
                         <a asp-action="All" asp-controller="Profile" class="btn btn-outline-secondary w-100">View all profiles</a>
 
                         <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="m-0">
-                            <button type="submit" class="btn btn-outline-danger w-100">Logout</button> 
+                            <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
                         </form>
                     </div>
                 </div>
@@ -228,4 +253,3 @@
         </div>
     </div>
 </div>
-

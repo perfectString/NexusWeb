@@ -16,10 +16,12 @@ namespace Nexus.ViewModels.Profile
 
         public int Level { get; set; }
         public int ExperiencePoints { get; set; }
-
+        public int XpIntoCurrentLevel { get; set; }
+        public int XpNeededPerLevel { get; set; }
+        public int XpNeededToNextLevel { get; set; }
+        public int ProgressPercentage { get; set; }
 
         public ConnectionType DesiredConnection { get; set; }
-
         public List<string> Interests { get; set; }
             = new List<string>();
     }

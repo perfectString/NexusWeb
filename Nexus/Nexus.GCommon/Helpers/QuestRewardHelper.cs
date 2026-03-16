@@ -7,7 +7,7 @@ using Nexus.Data.Models.Enums;
 
 namespace Nexus.GCommon.Helpers
 {
-    public static class QuestRewardGiver
+    public static class QuestRewardHelper
     {
         public static int GetRewardXp(QuestDifficulty difficutly)
         {

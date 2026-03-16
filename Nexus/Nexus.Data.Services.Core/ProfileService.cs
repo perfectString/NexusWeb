@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Helpers;
 using Nexus.ViewModels.Profile;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Nexus.Data.Services.Core
 {
@@ -46,6 +48,8 @@ namespace Nexus.Data.Services.Core
         }
         public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(string userId)
         {
+
+            //add level later here
             Profile? userFetch = await dbContext
                 .Users
                 .AsNoTracking()
@@ -158,7 +162,11 @@ namespace Nexus.Data.Services.Core
                 Bio = userFetch.Bio,
                 DesiredConnection = userFetch.DesiredConnection,
                 ExperiencePoints = userFetch.ExperiencePoints,
-                Level = userFetch.Level,
+                Level = LevelHelper.GetLevel(userFetch.ExperiencePoints),
+                XpIntoCurrentLevel = LevelHelper.GetXpIntoCurrentLevel(userFetch.ExperiencePoints),
+                XpNeededPerLevel = LevelHelper.GetXpNeededPerLevel(),
+                XpNeededToNextLevel = LevelHelper.GetXpNeededToNextLevel(userFetch.ExperiencePoints),
+                ProgressPercentage = LevelHelper.GetProgressPercentage(userFetch.ExperiencePoints),
                 Interests = userFetch.ProfileInterest
                     .Select(i => i.Interest.Name)
                     .ToList()

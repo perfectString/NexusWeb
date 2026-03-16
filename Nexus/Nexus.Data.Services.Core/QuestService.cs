@@ -8,7 +8,6 @@ using Nexus.ViewModels.Quest;
 
 namespace Nexus.Data.Services.Core
 {
-
     // i need to update the view model so it displays quest rewards and etc
     public class QuestService : IQuestService
     {
@@ -64,7 +63,7 @@ namespace Nexus.Data.Services.Core
                 Description = questModel.Description,
                 QuestInitiatorId = userFetch!.Id,
                 Difficulty = questModel.Difficulty,
-                RewardXp = QuestRewardGiver.GetRewardXp(questModel.Difficulty),
+                RewardXp = QuestRewardHelper.GetRewardXp(questModel.Difficulty),
                 Status = QuestStatus.Active,
             };
 
@@ -104,6 +103,11 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Unauthorized");
             }
 
+            if (questFetch.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException("Cannot edit a completed quest.");
+            }
+
             QuestAddViewModel questModel = new QuestAddViewModel()
             {
                 Id = questId,
@@ -137,6 +141,11 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Unauthorized");
             }
 
+            if (questFetch.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException("Cannot edit a completed quest.");
+            }
+
             questFetch.Title = questViewModel.Title;
             questFetch.Description = questViewModel.Description;
 
@@ -159,6 +168,11 @@ namespace Nexus.Data.Services.Core
             if (fetchQuest.QuestInitiatorId.ToLower() != userId!.ToLower())
             {
                 throw new ArgumentException("You are not the initiator of this quest!");
+            }
+
+            if (fetchQuest.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException("Cannot delete a completed quest.");
             }
 
             QuestViewModel questViewModel = new QuestViewModel()
@@ -185,6 +199,11 @@ namespace Nexus.Data.Services.Core
             if (questToDelete.QuestInitiatorId.ToLower() != userId!.ToLower())
             {
                 throw new ArgumentException("You are not the initiator of this quest!");
+            }
+
+            if (questToDelete.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException("Cannot delete a completed quest.");
             }
 
             List<QuestJoiner>? joinedUsers = await dbContext
@@ -308,6 +327,50 @@ namespace Nexus.Data.Services.Core
 
            return true;
 
+        }
+
+        public async Task MarkQuestCompletedAsync(string userId, int questId)
+        {
+
+            var quest = await dbContext
+                .Quests
+                .Include(q => q.QuestJoiners)
+                    .ThenInclude(j => j.Profile)
+                .FirstOrDefaultAsync(q => q.Id == questId);
+
+            if (quest == null)
+            {
+                throw new ArgumentException("Quest not found.");
+            }
+
+            if (quest.QuestInitiatorId.ToLower() != userId!.ToLower())
+            {
+                throw new ArgumentException("You are not the initiator of this quest!");
+            }
+
+            if (quest.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException("Quest is already completed.");
+            }
+
+            quest.Status = QuestStatus.Completed;
+
+            // award XP to all joined users (including initiator)
+            var reward = quest.RewardXp;
+
+            var joinedProfiles = quest.QuestJoiners?
+                .Where(j => j?.Profile != null)
+                .Select(j => j.Profile!)
+                .ToList() ?? new List<Profile>();
+
+            foreach (var profile in joinedProfiles)
+            {
+                profile.ExperiencePoints += reward;
+                dbContext.Update(profile);
+            }
+
+            dbContext.Update(quest);
+            await dbContext.SaveChangesAsync();
         }
 
     }

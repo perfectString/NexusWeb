@@ -33,5 +33,8 @@ namespace Nexus.Data.Services.Core.Interfaces
 
         // Join Quests
         Task<bool> IsJoinedAsync(string userId, int questId);
+
+        // Mark completed quests and give XP to joined users
+        Task MarkQuestCompletedAsync(string userId, int questId);
     }
 }

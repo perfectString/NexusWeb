@@ -9,7 +9,7 @@
                   : Model.Difficulty == Nexus.Data.Models.Enums.QuestDifficulty.Medium ? "diff-medium"
                   : "diff-hard";
 
-    var rewardXp = QuestRewardGiver.GetRewardXp(Model.Difficulty);
+    var rewardXp = QuestRewardHelper.GetRewardXp(Model.Difficulty);
 }
 
 <div class="container my-4">

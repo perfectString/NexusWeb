@@ -175,6 +175,25 @@ namespace Nexus.Controllers
             }
             return RedirectToAction(nameof(All));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Complete(int id)
+        {
+            string? initiatorId = GetUserId();
+
+            try
+            {
+                await questService.MarkQuestCompletedAsync(initiatorId!, id);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while marking the quest as completed!");
+                ModelState.AddModelError(string.Empty, "Completing quest failed. Please try again later.");
+            }
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
 }
