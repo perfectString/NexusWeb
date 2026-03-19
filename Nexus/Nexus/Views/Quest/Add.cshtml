@@ -1,16 +1,61 @@
-﻿@model Nexus.ViewModels.Quest.QuestAddViewModel
+﻿@using System
+@using System.Linq
+@using System.Text.Json
+@using Nexus.GCommon.Helpers
+@model Nexus.ViewModels.Quest.QuestAddViewModel
 
 @{
     ViewData["Title"] = "Add Quest";
+
+    var difficultyValues = Enum.GetValues(typeof(Nexus.Data.Models.Enums.QuestDifficulty))
+        .Cast<Nexus.Data.Models.Enums.QuestDifficulty>()
+        .ToList();
+
+    var rewardMap = difficultyValues
+        .ToDictionary(d => d.ToString(), d => QuestRewardHelper.GetRewardXp(d));
+
+    var initialReward = rewardMap.ContainsKey(Model.Difficulty.ToString())
+        ? rewardMap[Model.Difficulty.ToString()]
+        : rewardMap.First().Value;
+}
+
+@section Styles {
+    <style>
+        .create-quest-card { max-width: 900px; margin: 0 auto; }
+        .meta-row { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; color:#6c757d; font-size:.9rem; }
+        .reward-badge {
+            background: linear-gradient(90deg,#fff7e6,#fff0d9);
+            color:#7a4a00;
+            padding:.22rem .6rem;
+            border-radius:999px;
+            font-weight:700;
+            font-size:.9rem;
+            border: 1px solid rgba(122,74,0,0.06);
+            white-space:nowrap;
+        }
+
+        .form-section { padding:1rem; }
+        .form-actions { display:flex; justify-content:flex-end; gap:.5rem; }
+    </style>
 }
 
 <div class="container my-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h4 class="mb-0">Create Quest</h4>
+    <div class="card shadow-sm create-quest-card">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="mb-0">Create Quest</h4>
+                <div class="meta-row mt-1">
+                    <span class="text-muted">Create a quest to complete with others</span>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-muted small">Reward preview</div>
+                <div id="addRewardBadge" class="reward-badge">@($"{initialReward} XP")</div>
+            </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body form-section">
             <form asp-action="Add" method="post" class="row g-3">
                 @Html.AntiForgeryToken()
 
@@ -25,14 +70,17 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <label asp-for="Difficulty" class="form-label"></label>
-                    <select asp-for="Difficulty" class="form-select" id="difficultySelect">
-                        @foreach (var d in Enum.GetValues(typeof(Nexus.Data.Models.Enums.QuestDifficulty)))
-                        {
-                            <option value="@d" @@(Model.Difficulty.ToString() == d.ToString() ? "selected" : "")>@d</option>
-                        }
-                    </select>
-                    <div class="form-text small text-muted">Difficulty will be locked after creation and cannot be changed.</div>
+                    <label asp-for="Difficulty" class="form-label d-block"></label>
+                    <div class="d-flex gap-2 align-items-center">
+                        <select asp-for="Difficulty" class="form-select" id="difficultySelect" style="min-width:180px;">
+                            @foreach (var d in difficultyValues)
+                            {
+                                <option value="@d" @@(Model.Difficulty == d ? "selected" : "")>@d</option>
+                            }
+                        </select>
+
+                        <div class="form-text small text-muted ms-2">Difficulty locked after creation</div>
+                    </div>
                     <span asp-validation-for="Difficulty" class="text-danger small"></span>
                 </div>
 
@@ -47,7 +95,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 d-flex justify-content-end gap-2">
+                <div class="col-12 form-actions">
                     <a asp-action="All" class="btn btn-outline-secondary">Back</a>
                     <button type="submit" class="btn btn-warning">Create</button>
                 </div>
@@ -61,6 +109,7 @@
 
     <script>
         (function () {
+
             const textarea = document.getElementById('descriptionInput');
             const counter = document.getElementById('descCount');
             const max = Number('@Nexus.GCommon.ValidationConstants.DescriptionMaxLen');
@@ -73,6 +122,23 @@
             if (textarea) {
                 updateCount();
                 textarea.addEventListener('input', updateCount);
+            }
+
+
+            const rewardMap = @Html.Raw(JsonSerializer.Serialize(rewardMap));
+            const difficultySelect = document.getElementById('difficultySelect');
+            const rewardBadge = document.getElementById('addRewardBadge');
+
+            function updateReward() {
+                if (!difficultySelect || !rewardBadge) return;
+                const key = difficultySelect.value;
+                const xp = (rewardMap && rewardMap[key]) ? rewardMap[key] : null;
+                rewardBadge.innerText = xp ? `${xp} XP` : '';
+            }
+
+            if (difficultySelect) {
+                difficultySelect.addEventListener('change', updateReward);
+                updateReward();
             }
         })();
     </script>

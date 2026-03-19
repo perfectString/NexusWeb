@@ -10,7 +10,6 @@ namespace Nexus.Data.Services.Core
     public class ProfileService : IProfileService
     {
 
-        //FIX display of level of the users 
 
         private readonly NexusDbContext dbContext;
         public ProfileService(NexusDbContext dbContext)
@@ -38,6 +37,12 @@ namespace Nexus.Data.Services.Core
                     City = u.City,
                     Bio = u.Bio,
                     DesiredConnection = u.DesiredConnection,
+                    ExperiencePoints = u.ExperiencePoints,
+                    Level = LevelHelper.GetLevel(u.ExperiencePoints),
+                    XpIntoCurrentLevel = LevelHelper.GetXpIntoCurrentLevel(u.ExperiencePoints),
+                    XpNeededPerLevel = LevelHelper.GetXpNeededPerLevel(),
+                    XpNeededToNextLevel = LevelHelper.GetXpNeededToNextLevel(u.ExperiencePoints),
+                    ProgressPercentage = LevelHelper.GetProgressPercentage(u.ExperiencePoints),
                     Interests = u.ProfileInterest
                     .Select(i => i.Interest.Name)
                     .ToList()
@@ -49,7 +54,6 @@ namespace Nexus.Data.Services.Core
         public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(string userId)
         {
 
-            //add level later here
             Profile? userFetch = await dbContext
                 .Users
                 .AsNoTracking()
@@ -76,6 +80,7 @@ namespace Nexus.Data.Services.Core
                 DesiredConnection = userFetch.DesiredConnection,
                 AvailableInterests = await GetAllInterestsAsync(),
                 InterestId = interestId,
+
                
 
 

@@ -31,14 +31,27 @@
                     <div class="d-flex gap-2">
                         <a asp-action="All" asp-controller="Quest" class="btn btn-outline-secondary btn-sm">Back to quests</a>
 
-                        @{
+                        @if (Model != null)
+                        {
                             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                             var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == Model.InitiatorId;
-                        }
+                            if (isInitiator)
+                            {
+                                if (Model.Status == Nexus.GCommon.Enums.QuestStatus.Active)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
 
-                        @if (isInitiator)
-                        {
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                                    <form asp-action="Complete" method="post" class="d-inline-block m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success">Mark Completed</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Quest completed — editing and deletion disabled</span>
+                                }
+                            }
                         }
                     </div>
                 </div>

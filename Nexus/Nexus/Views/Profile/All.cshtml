@@ -60,6 +60,7 @@
             flex-direction:column;
             min-height: 170px;
             transition: transform .18s ease, box-shadow .18s ease;
+            position:relative;
         }
 
         .profile-card:hover {
@@ -86,10 +87,24 @@
             font-size:1.15rem;
             flex-shrink:0;
             box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+            position:relative;
+        }
+
+        .level-badge {
+            position:absolute;
+            right:-8px;
+            top:-8px;
+            background: linear-gradient(90deg,#ffd862,#ff9f00);
+            color:#2b2b2b;
+            font-weight:700;
+            padding:.18rem .46rem;
+            border-radius:999px;
+            font-size:.80rem;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
         }
 
         .card-title { font-weight:700; margin:0; font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .card-meta { color:#6c757d; font-size:.85rem; margin-top:.15rem; }
+        .card-meta { color:#6c757d; font-size:.85rem; margin-top:.15rem; display:flex; gap:.5rem; align-items:center; }
 
         .badge-connection {
             display:inline-flex;
@@ -185,10 +200,17 @@
                 {
                     var interestsText = string.Join(", ", p.Interests ?? Enumerable.Empty<string>());
                     var connectionText = p.DesiredConnection.ToString() ?? string.Empty;
-                    <div class="profile-card" data-name="@p.DisplayName.ToLower()" data-city="@p.City.ToLower()" data-interests="@interestsText.ToLower()" data-connection="@connectionText.ToLower()">
+                    <div class="profile-card"
+                         data-name="@p.DisplayName.ToLower()"
+                         data-city="@p.City.ToLower()"
+                         data-interests="@interestsText.ToLower()"
+                         data-connection="@connectionText.ToLower()"
+                         data-level="@p.Level"
+                         data-xp="@p.ExperiencePoints">
                         <div class="card-head">
                             <div class="card-avatar" aria-hidden="true">
                                 @(string.IsNullOrEmpty(p.DisplayName) ? "U" : p.DisplayName.Substring(0,1).ToUpper())
+                                <div class="level-badge">Lv @p.Level</div>
                             </div>
 
                             <div style="flex:1 1 auto; min-width:0;">
@@ -223,7 +245,8 @@
                                         data-city="@p.City"
                                         data-connection="@connectionText"
                                         data-interests="@interestsText"
-                                        data-bio="@(p.Bio ?? string.Empty)">
+                                        data-bio="@(p.Bio ?? string.Empty)"
+                                        data-level="@p.Level">
                                     View
                                 </button>
                             </div>
@@ -251,6 +274,9 @@
                 <dl class="row mb-0">
                     <dt class="col-sm-4">Name</dt>
                     <dd class="col-sm-8" id="detailName"></dd>
+
+                    <dt class="col-sm-4">Level</dt>
+                    <dd class="col-sm-8" id="detailLevel"></dd>
 
                     <dt class="col-sm-4">Age</dt>
                     <dd class="col-sm-8" id="detailAge"></dd>
@@ -281,8 +307,8 @@
             const searchInput = document.getElementById('profileSearch');
             const cityFilter = document.getElementById('filterCity');
             const connectionFilter = document.getElementById('filterConnection');
-            const cards = Array.from(document.querySelectorAll('.profile-card'));
             const grid = document.getElementById('profilesGrid');
+            let cards = Array.from(document.querySelectorAll('.profile-card'));
 
             function uniqueCities() {
                 const set = new Set();
@@ -292,7 +318,6 @@
                 });
                 return Array.from(set).sort();
             }
-
 
             (function populateCityFilter() {
                 const cities = uniqueCities();
@@ -320,7 +345,7 @@
             function applyFilters() {
                 const q = (searchInput.value || '').trim().toLowerCase();
                 const city = cityFilter.value;
-                const conn = connectionFilter.value.toLowerCase();
+                const conn = (connectionFilter.value || '').toLowerCase();
 
                 let visible = 0;
                 cards.forEach(card => {
@@ -328,7 +353,6 @@
                     card.style.display = show ? '' : 'none';
                     if (show) visible++;
                 });
-
 
                 const anyVisible = visible > 0;
                 let empty = grid.querySelector('.no-results');
@@ -344,7 +368,6 @@
                 }
             }
 
-
             let timeout;
             if (searchInput) {
                 searchInput.addEventListener('input', function () {
@@ -355,7 +378,6 @@
 
             if (cityFilter) cityFilter.addEventListener('change', applyFilters);
             if (connectionFilter) connectionFilter.addEventListener('change', applyFilters);
-
 
             const modal = document.getElementById('profileDetailsModal');
             if (modal) {
@@ -375,12 +397,17 @@
                     set('detailConnection', 'data-connection');
                     set('detailInterests', 'data-interests');
 
-
                     const bio = button.getAttribute('data-bio') || '';
                     const bioEl = document.getElementById('detailBio');
                     if (bioEl) bioEl.innerText = bio;
+
+                    const level = button.getAttribute('data-level') || '0';
+                    const levelEl = document.getElementById('detailLevel');
+                    if (levelEl) levelEl.innerText = 'Level ' + level;
                 });
             }
+
+            applyFilters();
         })();
     </script>
 }

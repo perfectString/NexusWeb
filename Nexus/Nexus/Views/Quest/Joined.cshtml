@@ -1,66 +1,275 @@
-﻿@model IEnumerable<Nexus.ViewModels.Quest.QuestViewModel>
-@using System.Security.Claims
+﻿@using System.Security.Claims
+@using Nexus.GCommon.Enums
+@model IEnumerable<Nexus.ViewModels.Quest.QuestViewModel>
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "My Joined Quests";
+    ViewData["Title"] = "Joined Quests";
     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 @section Styles {
     <style>
-      
-        .page-wrapper { min-height: 100vh; }
-        .card-quest { background: #fff; color: #000; border-radius: 8px; }
-        .card-quest .card-body { display: flex; flex-direction: column; }
-        .muted-small { color: #6c757d; font-size: .85rem; }
-        #questSearch { border-radius: 20px; padding-left: 12px; }
+        .quests-wrap { max-width: 1200px; margin: 0 auto; }
+
+        .quests-hero {
+            background: linear-gradient(135deg, rgba(10,84,101,0.96), rgba(29,161,242,0.95));
+            color: #fff;
+            padding: 1.2rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 12px 36px rgba(2,6,23,0.12);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:1rem;
+            flex-wrap:wrap;
+        }
+
+        .quests-hero .title { font-size: 1.15rem; font-weight:700; margin:0; }
+        .quests-hero .subtitle { color: rgba(255,255,255,0.92); font-size:.92rem; margin:0; }
+
+        .quests-controls { display:flex; gap:.75rem; align-items:center; width:100%; max-width:720px; }
+        .quests-search { flex:1 1 280px; }
+        .quests-search .form-control { border-radius: 999px; padding-left:1rem; padding-right:1rem; }
+
+        .quest-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+            gap:1rem;
+        }
+
+        .quest-card {
+            background: #fff;
+            border-radius:10px;
+            padding:1rem;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+            display:flex;
+            flex-direction:column;
+            min-height:160px;
+            transition: transform .16s ease, box-shadow .16s ease;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .quest-card::before {
+            content: "";
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:6px;
+            background: linear-gradient(180deg,#2672ff,#0b6b75);
+            border-top-left-radius:12px;
+            border-bottom-left-radius:12px;
+        }
+
+        .quest-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(2,6,23,0.08);
+        }
+
+        .card-head { display:flex; gap:.75rem; align-items:center; padding-left:10px; }
+        .card-title { font-weight:700; margin:0; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .card-meta { color:#6c757d; font-size:.85rem; margin-top:.15rem; display:flex; gap:.5rem; align-items:center; }
+
+        .initiator-badge {
+            margin-left:auto;
+            background: linear-gradient(90deg,#f1f7fb,#eef9ff);
+            color:#063449;
+            font-weight:600;
+            padding:.28rem .6rem;
+            border-radius:999px;
+            font-size:.82rem;
+            border: 1px solid rgba(7,58,87,0.04);
+            white-space:nowrap;
+        }
+
+        .reward-badge {
+            background: linear-gradient(90deg,#fff7e6,#fff0d9);
+            color:#7a4a00;
+            padding:.18rem .5rem;
+            border-radius:999px;
+            font-weight:700;
+            font-size:.78rem;
+            border: 1px solid rgba(122,74,0,0.06);
+            white-space:nowrap;
+        }
+
+        .status-badge {
+            font-weight:700;
+            padding:.22rem .5rem;
+            border-radius:999px;
+            font-size:.78rem;
+            white-space:nowrap;
+            display:inline-block;
+        }
+
+        .status-active {
+            background: linear-gradient(90deg,#e6ffef,#ddf7e9);
+            color:#05683a;
+            border: 1px solid rgba(5,104,58,0.08);
+        }
+
+        .status-completed {
+            background: linear-gradient(90deg,#f5f5f6,#eeeeef);
+            color:#5a5f66;
+            border: 1px solid rgba(10,10,10,0.04);
+        }
+
+        .card-body { margin-top:.6rem; color:#222; font-size:.95rem; flex:1 1 auto; padding-left:10px; }
+        .card-body .desc { display:block; max-height:3.5rem; overflow:hidden; text-overflow:ellipsis; white-space:pre-wrap; }
+
+        .card-actions { display:flex; justify-content:flex-end; gap:.5rem; margin-top:.85rem; align-items:center; padding-left:10px; }
+
+        .no-results { text-align:center; padding:2rem; color:#6c757d; grid-column: 1 / -1; }
+
+        @@media (min-width:992px) {
+            .quests-hero { padding:1.2rem 1.25rem; }
+        }
     </style>
 }
 
-<div class="page-wrapper text-white">
-    <div class="container my-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Quests you joined</h3>
-            <a asp-action="All" asp-controller="Quest" class="btn btn-sm btn-secondary">All quests</a>
+<div class="quests-wrap">
+    <div class="quests-hero">
+        <div>
+            <p class="title mb-1">My Joined Quests</p>
+            <p class="subtitle mb-0">Quests you are participating in</p>
         </div>
 
-        <div class="mb-3">
-            <input id="questSearch" class="form-control" placeholder="Search title, description or initiator..." />
-        </div>
+        <div class="d-flex align-items-center gap-2" style="flex:0 0 auto;">
+            <div class="quests-controls">
+                <div class="quests-search">
+                    <input id="joinedSearch" class="form-control form-control-sm" placeholder="Search a quest" aria-label="Search joined quests" />
+                </div>
 
-        <div class="row g-3">
+                <select id="joinedStatusFilter" class="form-select form-select-sm" style="width:140px;">
+                    <option value="all">All</option>
+                    <option value="active" selected>Active</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <a asp-action="All" asp-controller="Quest" class="btn btn-sm btn-warning">All Quests</a>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div id="joinedGrid" class="quest-grid">
             @if (Model != null && Model.Any())
             {
                 foreach (var q in Model)
                 {
                     var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card card-quest h-100 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">@q.Title</h5>
-                                <div class="muted-small mb-2">By @q.QuestInitiator</div>
-                                <p class="card-text text-truncate" title="@q.Description">@q.Description</p>
-
-                                <div class="mt-auto d-flex gap-2">
-                                    <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-success">Details</a>
-
-                                    @if (isInitiator)
-                                    {
-                                        <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
-                                    }
+                    var titleSafe = q.Title ?? string.Empty;
+                    var initiatorSafe = q.QuestInitiator ?? "Unknown";
+                    var descSafe = q.Description ?? string.Empty;
+                    var statusClass = q.Status == QuestStatus.Active ? "status-active" : "status-completed";
+                    <div class="quest-card" data-title="@(titleSafe.ToLower())" data-desc="@(descSafe.ToLower())" data-initiator="@(initiatorSafe.ToLower())" data-status="@(q.Status.ToString().ToLower())" data-initiator-id="@(q.InitiatorId)" data-reward="@q.RewardExperience" data-id="@q.Id">
+                        <div class="card-head">
+                            <div style="min-width:0;">
+                                <p class="card-title mb-0" title="@titleSafe">@titleSafe</p>
+                                <div class="card-meta">
+                                    <div class="muted-small">By @initiatorSafe</div>
+                                    <div><span class="status-badge @statusClass" title="Status">@q.Status</span></div>
+                                    <div><span class="reward-badge ms-2" title="Reward">@q.RewardExperience XP</span></div>
                                 </div>
                             </div>
+
+                            <div class="initiator-badge" title="Initiator">@initiatorSafe</div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="desc" title="@descSafe">@descSafe</div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#joinedQuestPreviewModal"
+                                    data-title="@titleSafe"
+                                    data-desc="@descSafe"
+                                    data-initiator="@initiatorSafe"
+                                    data-initiator-id="@q.InitiatorId"
+                                    data-reward="@q.RewardExperience"
+                                    data-status="@q.Status.ToString().ToLower()"
+                                    data-id="@q.Id">
+                                Preview
+                            </button>
+
+                            <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-outline-primary">Details</a>
+
+                            @if (isInitiator)
+                            {
+                                if (q.Status == QuestStatus.Active)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-secondary">Edit</a>
+
+                                    <form asp-action="Complete" method="post" class="m-0 d-inline-block">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@q.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success">Mark Completed</button>
+                                    </form>
+
+                                    <a asp-action="Delete" asp-route-id="@q.Id" class="btn btn-sm btn-danger">Delete</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Quest completed</span>
+                                }
+                            }
                         </div>
                     </div>
                 }
             }
             else
             {
-                <div class="col-12">
-                    <div class="alert alert-info mb-0">You haven't joined any quests yet!</div>
-                </div>
+                <div class="no-results">You haven't joined any quests yet.</div>
             }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="joinedQuestPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="joinedPreviewTitle">Quest</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <dl class="row mb-2">
+                    <dt class="col-sm-3">Title</dt>
+                    <dd class="col-sm-9" id="joinedDetailTitle"></dd>
+
+                    <dt class="col-sm-3">Initiator</dt>
+                    <dd class="col-sm-9" id="joinedDetailInitiator"></dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9" id="joinedDetailDescription"></dd>
+
+                    <dt class="col-sm-3">Reward</dt>
+                    <dd class="col-sm-9"><strong id="joinedDetailReward"></strong></dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9"><span id="joinedDetailStatus" class="text-muted"></span></dd>
+                </dl>
+            </div>
+
+            <div class="modal-footer">
+                <a id="joinedOpenDetailsLink" class="btn btn-outline-primary btn-sm" href="#">Open Details Page</a>
+
+                <form id="joinedCompleteForm" asp-action="Complete" method="post" class="d-inline-block">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="joinedCompleteId" value="" />
+                    <button type="submit" id="joinedCompleteBtn" class="btn btn-success btn-sm">Mark Completed</button>
+                </form>
+
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -68,15 +277,116 @@
 @section Scripts {
     <script>
         (function () {
-            const input = document.getElementById('questSearch');
-            if (!input) return;
-            input.addEventListener('input', function () {
-                const q = this.value.trim().toLowerCase();
-                document.querySelectorAll('.row.g-3 > .col-12, .row.g-3 > .col-md-6').forEach(col => {
-                    const text = col.innerText.toLowerCase();
-                    col.style.display = q === '' || text.indexOf(q) >= 0 ? '' : 'none';
+            const search = document.getElementById('joinedSearch');
+            const statusFilter = document.getElementById('joinedStatusFilter');
+            const grid = document.getElementById('joinedGrid');
+            const cards = Array.from(grid ? grid.querySelectorAll('.quest-card') : []);
+            const pageUser = '@(currentUserId ?? "")';
+            const detailsUrlBase = '@Url.Action("Details","Quest")';
+
+            function matches(card, q) {
+                if (!card) return false;
+                const title = card.getAttribute('data-title') || '';
+                const desc = card.getAttribute('data-desc') || '';
+                const initiator = card.getAttribute('data-initiator') || '';
+                const text = `${title} ${desc} ${initiator}`;
+                return q === '' || text.indexOf(q) >= 0;
+            }
+
+            function applyFilter() {
+                const q = (search ? search.value : '').trim().toLowerCase();
+                const selectedStatus = (statusFilter ? statusFilter.value : 'all').toLowerCase();
+                let visible = 0;
+                cards.forEach(c => {
+                    const cardStatus = (c.getAttribute('data-status') || '').toLowerCase();
+                    const showBySearch = matches(c, q);
+                    const showByStatus = selectedStatus === 'all' || cardStatus === selectedStatus;
+                    const show = showBySearch && showByStatus;
+                    c.style.display = show ? '' : 'none';
+                    if (show) visible++;
                 });
-            });
+
+                let empty = grid.querySelector('.no-results');
+                if (visible === 0) {
+                    if (!empty) {
+                        const e = document.createElement('div');
+                        e.className = 'no-results';
+                        e.innerText = 'No joined quests match your search or filters.';
+                        grid.appendChild(e);
+                    }
+                } else {
+                    if (empty) empty.remove();
+                }
+            }
+
+        
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialStatus = (urlParams.get('status') || '').toLowerCase();
+            if (initialStatus && ['all','active','completed'].includes(initialStatus) && statusFilter) {
+                statusFilter.value = initialStatus;
+            }
+
+            let timeout;
+            if (search) {
+                search.addEventListener('input', function () {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(applyFilter, 160);
+                });
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilter);
+            }
+
+            const modalEl = document.getElementById('joinedQuestPreviewModal');
+            if (modalEl) {
+                modalEl.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    if (!button) return;
+
+                    const title = button.getAttribute('data-title') || '';
+                    const desc = button.getAttribute('data-desc') || '';
+                    const initiator = button.getAttribute('data-initiator') || '';
+                    const initiatorId = button.getAttribute('data-initiator-id') || '';
+                    const reward = button.getAttribute('data-reward') || '';
+                    const status = (button.getAttribute('data-status') || 'active').toLowerCase();
+                    const id = button.getAttribute('data-id') || '';
+
+                    const setText = (idEl, text) => {
+                        const el = document.getElementById(idEl);
+                        if (el) el.innerText = text;
+                    };
+
+                    setText('joinedPreviewTitle', title);
+                    setText('joinedDetailTitle', title);
+                    setText('joinedDetailInitiator', initiator);
+                    setText('joinedDetailDescription', desc);
+                    setText('joinedDetailReward', reward + ' XP');
+                    setText('joinedDetailStatus', status === 'completed' ? 'Completed' : 'Active');
+
+                 
+                    const openLink = document.getElementById('joinedOpenDetailsLink');
+                    if (openLink) openLink.setAttribute('href', detailsUrlBase + '/' + id);
+
+                   
+                    const completeId = document.getElementById('joinedCompleteId');
+                    const completeBtn = document.getElementById('joinedCompleteBtn');
+                    if (completeId) completeId.value = id;
+
+                    if (status === 'completed') {
+                        if (completeBtn) completeBtn.style.display = 'none';
+                    } else {
+                        if (initiatorId && initiatorId.toLowerCase() === (pageUser || '').toLowerCase()) {
+                            if (completeBtn) completeBtn.style.display = '';
+                        } else {
+                            if (completeBtn) completeBtn.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+          
+            applyFilter();
         })();
     </script>
 }
