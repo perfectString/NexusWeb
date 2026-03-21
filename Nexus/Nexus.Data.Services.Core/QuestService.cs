@@ -2,13 +2,12 @@
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Enums;
-using Nexus.GCommon.Helpers;
+using Nexus.Data.Services.Core.Helpers;
 using Nexus.ViewModels.Profile;
 using Nexus.ViewModels.Quest;
 
 namespace Nexus.Data.Services.Core
 {
-    // i need to update the view model so it displays quest rewards and etc
     public class QuestService : IQuestService
     {
 
@@ -49,7 +48,7 @@ namespace Nexus.Data.Services.Core
             return emptyFormModel;
         }
 
-        public async Task AddQuestsAndJoinInitiatorAsync(string userId, QuestAddViewModel questModel)
+        public async Task AddQuestsAndJoinInitiatorAsync(Guid userId, QuestAddViewModel questModel)
         {
 
             Profile? userFetch = await dbContext
@@ -80,7 +79,7 @@ namespace Nexus.Data.Services.Core
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<QuestAddViewModel> GetQuestToEditViewModelAsync(string userId, int questId)
+        public async Task<QuestAddViewModel> GetQuestToEditViewModelAsync(Guid userId, int questId)
         {
             Profile? userFetch = await dbContext
                .Users
@@ -98,7 +97,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Not found.");
             }
 
-            if (questFetch.QuestInitiatorId.ToLower() != userFetch.Id!.ToLower())
+            if (questFetch.QuestInitiatorId != userFetch.Id)
             {
                 throw new ArgumentException("Unauthorized");
             }
@@ -120,7 +119,7 @@ namespace Nexus.Data.Services.Core
             return questModel;
         }
 
-        public async Task EditQuestAsync(string userId, int questId, QuestAddViewModel questViewModel)
+        public async Task EditQuestAsync(Guid userId, int questId, QuestAddViewModel questViewModel)
         {
             Profile? userFetch = await dbContext
               .Users
@@ -136,7 +135,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Not found.");
             }
 
-            if (questFetch.QuestInitiatorId.ToLower() != userFetch.Id!.ToLower())
+            if (questFetch.QuestInitiatorId != userFetch.Id)
             {
                 throw new ArgumentException("Unauthorized");
             }
@@ -153,7 +152,7 @@ namespace Nexus.Data.Services.Core
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<QuestViewModel> GetQuestToDeleteAsync(string userId, int questId)
+        public async Task<QuestViewModel> GetQuestToDeleteAsync(Guid userId, int questId)
         { 
 
             Quest? fetchQuest = await dbContext
@@ -165,7 +164,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Quest was not found");
             }
 
-            if (fetchQuest.QuestInitiatorId.ToLower() != userId!.ToLower())
+            if (fetchQuest.QuestInitiatorId != userId)
             {
                 throw new ArgumentException("You are not the initiator of this quest!");
             }
@@ -185,7 +184,7 @@ namespace Nexus.Data.Services.Core
             return questViewModel;
         }
 
-        public async Task ConfirmQuestToDeleteAsync(string userId, int questId)
+        public async Task ConfirmQuestToDeleteAsync(Guid userId, int questId)
         {
             var questToDelete = await dbContext
                 .Quests
@@ -196,7 +195,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Quest not found");
             }
 
-            if (questToDelete.QuestInitiatorId.ToLower() != userId!.ToLower())
+            if (questToDelete.QuestInitiatorId != userId)
             {
                 throw new ArgumentException("You are not the initiator of this quest!");
             }
@@ -215,7 +214,7 @@ namespace Nexus.Data.Services.Core
            dbContext.Quests.Remove(questToDelete);
            await dbContext.SaveChangesAsync();
         }
-        public async Task<QuestDetailsViewModel?> GetQuestDetailsWithJoinersViewModelAsync(string userId, int QuestId)
+        public async Task<QuestDetailsViewModel?> GetQuestDetailsWithJoinersViewModelAsync(Guid userId, int QuestId)
         {
             Quest? quest = await dbContext
                .Quests
@@ -266,14 +265,14 @@ namespace Nexus.Data.Services.Core
             return detailsModel;
         }
 
-        public async Task<IEnumerable<QuestViewModel>> GetAllJoinedQuestsByProfileIdAsync(string userId)
+        public async Task<IEnumerable<QuestViewModel>> GetAllJoinedQuestsByProfileIdAsync(Guid userId)
         {
             IEnumerable<QuestViewModel> allJoinedQuest = await dbContext
                 .QuestJoiners
                 .Include(qj => qj.Quest)
                 .ThenInclude(qj => qj.QuestInitiator)
                 .AsNoTracking()
-                .Where(qj => qj.ProfileId.ToLower() == userId.ToLower())
+                .Where(qj => qj.ProfileId == userId)
                 .Select(qj => qj.Quest)
                 .Select(q => new QuestViewModel()
                 {
@@ -292,7 +291,7 @@ namespace Nexus.Data.Services.Core
             return allJoinedQuest;
         }
 
-        public async Task<bool> IsJoinedAsync(string userId, int questId)
+        public async Task<bool> IsJoinedAsync(Guid userId, int questId)
         {
             var questJoinFetch = await dbContext
               .Quests
@@ -304,12 +303,11 @@ namespace Nexus.Data.Services.Core
                 return false;
             }
 
-            bool isInitiator = questJoinFetch
-             .QuestInitiatorId.ToLower() == userId.ToLower();
+            bool isInitiator = questJoinFetch.QuestInitiatorId == userId;
 
             bool isJoined = questJoinFetch
                 .QuestJoiners
-                .Any(qj => qj.ProfileId.ToLower() == userId.ToLower());
+                .Any(qj => qj.ProfileId == userId);
 
             if (isInitiator || isJoined)
             {
@@ -329,7 +327,7 @@ namespace Nexus.Data.Services.Core
 
         }
 
-        public async Task MarkQuestCompletedAsync(string userId, int questId)
+        public async Task MarkQuestCompletedAsync(Guid userId, int questId)
         {
 
             var quest = await dbContext
@@ -343,7 +341,7 @@ namespace Nexus.Data.Services.Core
                 throw new ArgumentException("Quest not found.");
             }
 
-            if (quest.QuestInitiatorId.ToLower() != userId!.ToLower())
+            if (quest.QuestInitiatorId != userId)
             {
                 throw new ArgumentException("You are not the initiator of this quest!");
             }

@@ -42,12 +42,12 @@ namespace Nexus.Controllers
                 return View(questModel);
             }
 
-                string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
             try
             {
 
                await questService
-                    .AddQuestsAndJoinInitiatorAsync(initiatorId!, questModel);
+                    .AddQuestsAndJoinInitiatorAsync(initiatorId, questModel);
 
                 return RedirectToAction(nameof(All));
             }
@@ -64,9 +64,9 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            string? profileId = GetUserId();
+            Guid profileId = GetUserId();
             QuestDetailsViewModel? detailsViewModel = await questService
-                .GetQuestDetailsWithJoinersViewModelAsync(profileId!, id);
+                .GetQuestDetailsWithJoinersViewModelAsync(profileId, id);
 
 
             if (detailsViewModel == null)
@@ -81,10 +81,10 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Joined()
         {
-            string? profileId = GetUserId();
+            Guid profileId = GetUserId();
 
             IEnumerable<QuestViewModel> allJoinedQuest = await questService
-                .GetAllJoinedQuestsByProfileIdAsync(profileId!);
+                .GetAllJoinedQuestsByProfileIdAsync(profileId);
 
             return View(allJoinedQuest);
         }
@@ -93,7 +93,7 @@ namespace Nexus.Controllers
         public async Task<IActionResult> Join(int id)
         {
 
-            string? profileId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            Guid profileId = GetUserId();
 
             try
             {
@@ -111,10 +111,10 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
 
             QuestAddViewModel questModel = await questService
-                .GetQuestToEditViewModelAsync(initiatorId!, id);
+                .GetQuestToEditViewModelAsync(initiatorId, id);
 
             return View(questModel);
         }
@@ -122,7 +122,7 @@ namespace Nexus.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit([FromRoute] int id, QuestAddViewModel questModel)
         {
-            string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
 
             if (!ModelState.IsValid)
             {
@@ -131,7 +131,7 @@ namespace Nexus.Controllers
 
             try
             {
-                await questService.EditQuestAsync(initiatorId!, id, questModel);
+                await questService.EditQuestAsync(initiatorId, id, questModel);
 
                 return RedirectToAction(nameof(All));
             }
@@ -148,10 +148,10 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
 
             QuestViewModel deleteQuest = await questService
-                .GetQuestToDeleteAsync(initiatorId!, id);
+                .GetQuestToDeleteAsync(initiatorId, id);
 
 
             return View(deleteQuest);
@@ -161,12 +161,12 @@ namespace Nexus.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirm(int id)
         {
-            string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
 
             try
             {
                 await questService
-                      .ConfirmQuestToDeleteAsync(initiatorId!, id);
+                      .ConfirmQuestToDeleteAsync(initiatorId, id);
             }
             catch (Exception ex)
             {
@@ -180,11 +180,11 @@ namespace Nexus.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Complete(int id)
         {
-            string? initiatorId = GetUserId();
+            Guid initiatorId = GetUserId();
 
             try
             {
-                await questService.MarkQuestCompletedAsync(initiatorId!, id);
+                await questService.MarkQuestCompletedAsync(initiatorId, id);
             }
             catch (Exception ex)
             {

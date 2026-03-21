@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 
 namespace Nexus.Data
 {
-    public class NexusDbContext : IdentityDbContext<Profile>
+    public class NexusDbContext : IdentityDbContext<Profile, IdentityRole<Guid>, Guid>
     {
         public NexusDbContext(DbContextOptions<NexusDbContext> options)
             : base(options)

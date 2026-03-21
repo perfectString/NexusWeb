@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
-using Nexus.GCommon.Helpers;
+using Nexus.Data.Services.Core.Helpers;
 using Nexus.ViewModels.Profile;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Nexus.GCommon.Enums;
 
 namespace Nexus.Data.Services.Core
 {
@@ -51,7 +51,7 @@ namespace Nexus.Data.Services.Core
 
             return allProfilesVm;
         }
-        public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(string userId)
+        public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(Guid userId)
         {
 
             Profile? userFetch = await dbContext
@@ -80,10 +80,6 @@ namespace Nexus.Data.Services.Core
                 DesiredConnection = userFetch.DesiredConnection,
                 AvailableInterests = await GetAllInterestsAsync(),
                 InterestId = interestId,
-
-               
-
-
             };
             return myProfileViewModel;
         }
@@ -102,7 +98,7 @@ namespace Nexus.Data.Services.Core
                .ToListAsync();
         }
 
-        public async Task EditProfileAsync(string userId, ProfileEditViewModel profileViewModel)
+        public async Task EditProfileAsync(Guid userId, ProfileEditViewModel profileViewModel)
         {
             Profile? userFetch = await dbContext
                 .Users
@@ -144,7 +140,7 @@ namespace Nexus.Data.Services.Core
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ProfileViewModel> GetCurrentUserProfile(string userId)
+        public async Task<ProfileViewModel> GetCurrentUserProfile(Guid userId)
         {
             Profile? userFetch = await dbContext
              .Users

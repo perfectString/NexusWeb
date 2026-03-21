@@ -1,12 +1,12 @@
 ﻿@model Nexus.ViewModels.Quest.QuestAddViewModel
 @using Nexus.GCommon.Enums
-@using Nexus.GCommon.Helpers
+@using Nexus.Data.Services.Core.Helpers
 
 @{
     ViewData["Title"] = "Edit Quest";
 
-    var diffClass = Model.Difficulty == Nexus.Data.Models.Enums.QuestDifficulty.Easy ? "diff-easy"
-                  : Model.Difficulty == Nexus.Data.Models.Enums.QuestDifficulty.Medium ? "diff-medium"
+    var diffClass = Model.Difficulty == Nexus.GCommon.Enums.QuestDifficulty.Easy ? "diff-easy"
+                  : Model.Difficulty == Nexus.GCommon.Enums.QuestDifficulty.Medium ? "diff-medium"
                   : "diff-hard";
 
     var rewardXp = QuestRewardHelper.GetRewardXp(Model.Difficulty);

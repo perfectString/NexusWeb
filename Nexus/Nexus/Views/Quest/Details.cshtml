@@ -34,7 +34,7 @@
                         @if (Model != null)
                         {
                             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                            var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == Model.InitiatorId;
+                            var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == Model.InitiatorId.ToString() ;
                             if (isInitiator)
                             {
                                 if (Model.Status == Nexus.GCommon.Enums.QuestStatus.Active)

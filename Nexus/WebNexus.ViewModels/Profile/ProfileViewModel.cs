@@ -1,11 +1,11 @@
-﻿using Nexus.Data.Models.Enums;
+﻿using Nexus.GCommon.Enums;
 
 namespace Nexus.ViewModels.Profile
 {
     public class ProfileViewModel
     {
 
-        public string Id { get; set; } = null!;
+        public Guid Id { get; set; }
         public string DisplayName { get; set; } = null!;
 
         public int Age { get; set; }

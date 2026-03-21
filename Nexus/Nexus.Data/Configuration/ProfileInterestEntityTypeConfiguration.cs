@@ -1,7 +1,8 @@
-﻿using System.Reflection.Emit;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nexus.Data.Models;
+using static Nexus.Data.Seeding.GuidProfileSeeder;
 
 namespace Nexus.Data.Configuration
 {
@@ -12,68 +13,68 @@ namespace Nexus.Data.Configuration
             //user1
             new ProfileInterests
             {
-                ProfileId = "1",
+                ProfileId =  User1Id,
                 InterestId = 2,
             },
             new ProfileInterests
             {
-                ProfileId = "1",
+                ProfileId =  User1Id,
                 InterestId = 5,
             },
             new ProfileInterests
             {
-                ProfileId = "1",
+                ProfileId =  User1Id,
                 InterestId = 6,
             },
 
             //user 2
             new ProfileInterests
             {
-                ProfileId = "2",
+                ProfileId =  User2Id,
                 InterestId = 6,
             },
             new ProfileInterests
             {
-                ProfileId = "2",
+                ProfileId = User2Id,
                 InterestId = 11,
             },
             new ProfileInterests
             {
-                ProfileId = "2",
+                ProfileId = User2Id,
                 InterestId = 3,
             },
 
             //user 3
             new ProfileInterests
             {
-                ProfileId = "3",
+                ProfileId = User3Id,
                 InterestId = 4,
             },
             new ProfileInterests
             {
-                ProfileId = "3",
+                ProfileId = User3Id,
                 InterestId = 16,
             },
             new ProfileInterests
             {
-                ProfileId = "3",
+                ProfileId = User3Id,
                 InterestId = 9,
             },
 
             //user 4
             new ProfileInterests
             {
-                ProfileId = "4",
+                ProfileId = User4Id,
                 InterestId = 7,
             },
             new ProfileInterests
             {
-                ProfileId = "4",
+                ProfileId = User4Id,
                 InterestId = 15,
             },
             new ProfileInterests
             {
-                ProfileId = "4",
+                ProfileId = User4Id,
                 InterestId = 17,
             },
 

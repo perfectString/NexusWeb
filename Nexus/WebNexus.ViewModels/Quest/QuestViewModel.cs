@@ -1,5 +1,4 @@
 ﻿
-using Nexus.Data.Models.Enums;
 using Nexus.GCommon.Enums;
 
 namespace Nexus.ViewModels.Quest
@@ -15,6 +14,6 @@ namespace Nexus.ViewModels.Quest
         public int RewardExperience { get; set; }
         public QuestStatus Status { get; set; }
 
-        public string InitiatorId { get; set; } = null!;
+        public Guid InitiatorId { get; set; }
     }
 }

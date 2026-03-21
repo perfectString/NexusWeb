@@ -13,12 +13,8 @@ namespace Nexus.Data.Models
         public Quest Quest { get; set; } = null!;
 
         [ForeignKey(nameof(Profile))]
-        public string ProfileId { get; set; } = null!;
+        public Guid ProfileId { get; set; }
         public Profile Profile { get; set; } = null!;
-
-        // this will work with the user xp system // 
-        // for now there is no real logic connected to JoinedAt //
-        public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
     }
 }

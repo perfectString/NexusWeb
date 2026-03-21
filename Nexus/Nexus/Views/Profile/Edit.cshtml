@@ -1,4 +1,5 @@
-﻿@model Nexus.ViewModels.Profile.ProfileEditViewModel
+﻿@using Nexus.GCommon.Enums
+@model Nexus.ViewModels.Profile.ProfileEditViewModel
 
 @{
     ViewData["Title"] = "Edit profile";
@@ -134,7 +135,7 @@
                     <label asp-for="DesiredConnection" class="form-label">Desired connection</label>
                     <select asp-for="DesiredConnection" class="form-select">
                         <option value="">Select</option>
-                        @foreach (var v in Enum.GetValues(typeof(Nexus.Data.Models.Enums.ConnectionType)))
+                        @foreach (var v in Enum.GetValues(typeof(Nexus.GCommon.Enums.ConnectionType)))
                         {
                             <option value="@( (int)v )" selected="@(Model.DesiredConnection.Equals(v) ? "selected" : null)">
                                 @v

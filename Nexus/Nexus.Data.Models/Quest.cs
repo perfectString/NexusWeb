@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Nexus.Data.Models.Enums;
 using Nexus.GCommon.Enums;
 using static Nexus.GCommon.ValidationConstants;
 
@@ -29,7 +28,7 @@ namespace Nexus.Data.Models
         public int RewardXp { get; set; }
 
         [ForeignKey(nameof(QuestInitiator))]
-        public string QuestInitiatorId { get; set; } = null!;
+        public Guid QuestInitiatorId { get; set; }
 
         public Profile QuestInitiator { get; set; } = null!;
 

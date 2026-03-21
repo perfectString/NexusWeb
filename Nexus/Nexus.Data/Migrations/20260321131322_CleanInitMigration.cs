@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Nexus.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class CleanInitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Nexus.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -31,11 +31,13 @@ namespace Nexus.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(85)", maxLength: 85, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(85)", maxLength: 85, nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    ExperiencePoints = table.Column<int>(type: "int", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     DesiredConnection = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -76,7 +78,7 @@ namespace Nexus.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -97,7 +99,7 @@ namespace Nexus.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -116,10 +118,10 @@ namespace Nexus.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,8 +138,8 @@ namespace Nexus.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,9 +162,9 @@ namespace Nexus.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -177,37 +179,34 @@ namespace Nexus.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FriendRequests",
+                name: "Quests",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Difficulty = table.Column<int>(type: "int", nullable: false),
+                    RewardXp = table.Column<int>(type: "int", nullable: false),
+                    QuestInitiatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FriendRequests", x => x.Id);
+                    table.PrimaryKey("PK_Quests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_ReceiverId",
-                        column: x => x.ReceiverId,
+                        name: "FK_Quests_AspNetUsers_QuestInitiatorId",
+                        column: x => x.QuestInitiatorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ProfileInterests",
                 columns: table => new
                 {
-                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     InterestId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -227,21 +226,40 @@ namespace Nexus.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "QuestJoiners",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestId = table.Column<int>(type: "int", nullable: false),
+                    ProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestJoiners", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestJoiners_AspNetUsers_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_QuestJoiners_Quests_QuestId",
+                        column: x => x.QuestId,
+                        principalTable: "Quests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Age", "Bio", "City", "ConcurrencyStamp", "DesiredConnection", "DisplayName", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Age", "Bio", "City", "ConcurrencyStamp", "DesiredConnection", "DisplayName", "Email", "EmailConfirmed", "ExperiencePoints", "Level", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, 21, "New in the city and looking for new connections!", "Sofia", "76c1401c-7d0f-4778-a753-67eae57e6be9", 0, "Alex", null, false, false, null, null, null, null, null, false, "b9927da4-ea49-4019-9796-5590e91ac0cd", false, null },
-                    { "10", 0, 19, "I would like to find a local band. Can play bass pretty good!", "London", "ed39a2f7-e7ce-49b5-9c58-bc79accf117c", 2, "Dan", null, false, false, null, null, null, null, null, false, "1713acdb-67e7-4a78-b5f6-e8fab18d18cf", false, null },
-                    { "2", 0, 30, "Looking for my person", "Berlin", "576e283c-7b9e-41ce-9f1f-1da33ff7563b", 1, "Lidya", null, false, false, null, null, null, null, null, false, "b8b18e80-34e2-4724-a4ad-f08c9c010580", false, null },
-                    { "3", 0, 19, "Im heavy into gaming, i'd like to find people to play CS with!!!", "Madrid", "f74fa0d6-1d62-40bf-8da2-6b28cb4c34b7", 2, "Liam", null, false, false, null, null, null, null, null, false, "87f45c74-e2df-4683-adda-b1b0e5729844", false, null },
-                    { "4", 0, 31, "Work in the tech field.Into long night walks.", "London", "e15c6b78-ae89-4d0d-a630-3f8794a4776d", 1, "Dean", null, false, false, null, null, null, null, null, false, "8c54415b-5995-414e-b5b7-3a1e421e9713", false, null },
-                    { "5", 0, 27, "Let's hang out?", "Sofia", "579239a7-2931-4400-9ec9-0c807fe6431f", 0, "Peter", null, false, false, null, null, null, null, null, false, "536f87c2-d503-4037-9cd2-ba6f5c0b76e1", false, null },
-                    { "6", 0, 44, null, "Rome", "5f113eb3-ee7d-48d1-8039-0c5630e2f043", 1, "Emma", null, false, false, null, null, null, null, null, false, "6a469e25-8749-478f-9843-6d3cbed490e1", false, null },
-                    { "7", 0, 20, "Heavy metal!!", "Sofia", "7fdf558e-515f-47c5-8099-7bb4f42ee4fb", 2, "Luca", null, false, false, null, null, null, null, null, false, "491c8f10-53d4-4a05-9288-97ea04f893b9", false, null },
-                    { "8", 0, 26, "Recommend me new music", "Madrid", "12b32e01-d3a2-4655-8bcb-1df3dda8d30c", 0, "Alexandra", null, false, false, null, null, null, null, null, false, "2a0211f5-ca23-4aae-a87f-b74245766bb8", false, null },
-                    { "9", 0, 33, "Lets travel the world together!", "London", "f6a1dd53-41c5-4d5c-9926-41e5bd5c5c98", 1, "Olivia", null, false, false, null, null, null, null, null, false, "32ef686c-ec50-439b-a1c3-fb593399c970", false, null }
+                    { new Guid("a1111111-1111-1111-1111-111111111111"), 0, 21, "New in the city and looking for new connections!", "Sofia", "9c609905-a329-4257-b01f-f9a833c5e5d9", 0, "Alex", null, false, 800, 9, false, null, null, null, null, null, false, null, false, null },
+                    { new Guid("a2222222-2222-2222-2222-222222222222"), 0, 30, "Looking for my person", "Berlin", "c713a783-8d16-4201-86b7-1b0b7b00f78d", 1, "Lidya", null, false, 350, 4, false, null, null, null, null, null, false, null, false, null },
+                    { new Guid("a3333333-3333-3333-3333-333333333333"), 0, 19, "Im heavy into gaming, i'd like to find people to play CS with!!!", "Madrid", "312e8c34-7816-4298-84c2-bdd8c276973a", 2, "Liam", null, false, 1200, 13, false, null, null, null, null, null, false, null, false, null },
+                    { new Guid("a4444444-4444-4444-4444-444444444444"), 0, 31, "Work in the tech field.Into long night walks.", "London", "472bca3e-d1e9-4581-b5c2-3f0a2ecc506e", 1, "Dean", null, false, 650, 7, false, null, null, null, null, null, false, null, false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -286,36 +304,28 @@ namespace Nexus.Data.Migrations
                 columns: new[] { "InterestId", "ProfileId" },
                 values: new object[,]
                 {
-                    { 2, "1" },
-                    { 5, "1" },
-                    { 6, "1" },
-                    { 27, "10" },
-                    { 29, "10" },
-                    { 30, "10" },
-                    { 3, "2" },
-                    { 6, "2" },
-                    { 11, "2" },
-                    { 4, "3" },
-                    { 9, "3" },
-                    { 16, "3" },
-                    { 7, "4" },
-                    { 15, "4" },
-                    { 17, "4" },
-                    { 21, "5" },
-                    { 22, "5" },
-                    { 23, "5" },
-                    { 13, "6" },
-                    { 14, "6" },
-                    { 26, "6" },
-                    { 2, "7" },
-                    { 22, "7" },
-                    { 24, "7" },
-                    { 2, "8" },
-                    { 15, "8" },
-                    { 19, "8" },
-                    { 16, "9" },
-                    { 17, "9" },
-                    { 19, "9" }
+                    { 2, new Guid("a1111111-1111-1111-1111-111111111111") },
+                    { 5, new Guid("a1111111-1111-1111-1111-111111111111") },
+                    { 6, new Guid("a1111111-1111-1111-1111-111111111111") },
+                    { 3, new Guid("a2222222-2222-2222-2222-222222222222") },
+                    { 6, new Guid("a2222222-2222-2222-2222-222222222222") },
+                    { 11, new Guid("a2222222-2222-2222-2222-222222222222") },
+                    { 4, new Guid("a3333333-3333-3333-3333-333333333333") },
+                    { 9, new Guid("a3333333-3333-3333-3333-333333333333") },
+                    { 16, new Guid("a3333333-3333-3333-3333-333333333333") },
+                    { 7, new Guid("a4444444-4444-4444-4444-444444444444") },
+                    { 15, new Guid("a4444444-4444-4444-4444-444444444444") },
+                    { 17, new Guid("a4444444-4444-4444-4444-444444444444") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Quests",
+                columns: new[] { "Id", "Description", "Difficulty", "QuestInitiatorId", "RewardXp", "Status", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Join us for some fishing, cooking and camping near the river!", 2, new Guid("a4444444-4444-4444-4444-444444444444"), 200, 0, "Camping near the river" },
+                    { 2, "Im looking for people to play cs with so i'd love for us to form a squad!", 0, new Guid("a3333333-3333-3333-3333-333333333333"), 50, 0, "Gaming night" },
+                    { 3, "Let's clean the city!", 1, new Guid("a1111111-1111-1111-1111-111111111111"), 125, 0, "Community Work" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -358,19 +368,24 @@ namespace Nexus.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_ReceiverId",
-                table: "FriendRequests",
-                column: "ReceiverId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_SenderId",
-                table: "FriendRequests",
-                column: "SenderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProfileInterests_InterestId",
                 table: "ProfileInterests",
                 column: "InterestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestJoiners_ProfileId",
+                table: "QuestJoiners",
+                column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestJoiners_QuestId",
+                table: "QuestJoiners",
+                column: "QuestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quests_QuestInitiatorId",
+                table: "Quests",
+                column: "QuestInitiatorId");
         }
 
         /// <inheritdoc />
@@ -392,19 +407,22 @@ namespace Nexus.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FriendRequests");
+                name: "ProfileInterests");
 
             migrationBuilder.DropTable(
-                name: "ProfileInterests");
+                name: "QuestJoiners");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Interests");
 
             migrationBuilder.DropTable(
-                name: "Interests");
+                name: "Quests");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static Nexus.GCommon.ValidationConstants;
-using Nexus.Data.Models.Enums;
+using Nexus.GCommon.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace Nexus.Data.Models
 {
-    public class Profile : IdentityUser
+    public class Profile : IdentityUser<Guid>
     {
 
         [Required]

@@ -12,23 +12,24 @@ using Nexus.Data;
 namespace Nexus.Data.Migrations
 {
     [DbContext(typeof(NexusDbContext))]
-    [Migration("20260207171539_InitialCreation")]
-    partial class InitialCreation
+    [Migration("20260321131322_CleanInitMigration")]
+    partial class CleanInitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.23")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -52,7 +53,7 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,9 +67,8 @@ namespace Nexus.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -77,7 +77,7 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,9 +91,8 @@ namespace Nexus.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -102,22 +101,19 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -126,13 +122,13 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -141,18 +137,16 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -162,35 +156,7 @@ namespace Nexus.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Nexus.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("FriendRequests");
-                });
-
-            modelBuilder.Entity("Nexus.Models.Interest", b =>
+            modelBuilder.Entity("Nexus.Data.Models.Interest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -360,10 +326,11 @@ namespace Nexus.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Nexus.Models.Profile", b =>
+            modelBuilder.Entity("Nexus.Data.Models.Profile", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -398,6 +365,12 @@ namespace Nexus.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int>("ExperiencePoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -447,169 +420,78 @@ namespace Nexus.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("a1111111-1111-1111-1111-111111111111"),
                             AccessFailedCount = 0,
                             Age = 21,
                             Bio = "New in the city and looking for new connections!",
                             City = "Sofia",
-                            ConcurrencyStamp = "76c1401c-7d0f-4778-a753-67eae57e6be9",
+                            ConcurrencyStamp = "9c609905-a329-4257-b01f-f9a833c5e5d9",
                             DesiredConnection = 0,
                             DisplayName = "Alex",
                             EmailConfirmed = false,
+                            ExperiencePoints = 800,
+                            Level = 9,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b9927da4-ea49-4019-9796-5590e91ac0cd",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("a2222222-2222-2222-2222-222222222222"),
                             AccessFailedCount = 0,
                             Age = 30,
                             Bio = "Looking for my person",
                             City = "Berlin",
-                            ConcurrencyStamp = "576e283c-7b9e-41ce-9f1f-1da33ff7563b",
+                            ConcurrencyStamp = "c713a783-8d16-4201-86b7-1b0b7b00f78d",
                             DesiredConnection = 1,
                             DisplayName = "Lidya",
                             EmailConfirmed = false,
+                            ExperiencePoints = 350,
+                            Level = 4,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b8b18e80-34e2-4724-a4ad-f08c9c010580",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "3",
+                            Id = new Guid("a3333333-3333-3333-3333-333333333333"),
                             AccessFailedCount = 0,
                             Age = 19,
                             Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!",
                             City = "Madrid",
-                            ConcurrencyStamp = "f74fa0d6-1d62-40bf-8da2-6b28cb4c34b7",
+                            ConcurrencyStamp = "312e8c34-7816-4298-84c2-bdd8c276973a",
                             DesiredConnection = 2,
                             DisplayName = "Liam",
                             EmailConfirmed = false,
+                            ExperiencePoints = 1200,
+                            Level = 13,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "87f45c74-e2df-4683-adda-b1b0e5729844",
                             TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = "4",
+                            Id = new Guid("a4444444-4444-4444-4444-444444444444"),
                             AccessFailedCount = 0,
                             Age = 31,
                             Bio = "Work in the tech field.Into long night walks.",
                             City = "London",
-                            ConcurrencyStamp = "e15c6b78-ae89-4d0d-a630-3f8794a4776d",
+                            ConcurrencyStamp = "472bca3e-d1e9-4581-b5c2-3f0a2ecc506e",
                             DesiredConnection = 1,
                             DisplayName = "Dean",
                             EmailConfirmed = false,
+                            ExperiencePoints = 650,
+                            Level = 7,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8c54415b-5995-414e-b5b7-3a1e421e9713",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "5",
-                            AccessFailedCount = 0,
-                            Age = 27,
-                            Bio = "Let's hang out?",
-                            City = "Sofia",
-                            ConcurrencyStamp = "579239a7-2931-4400-9ec9-0c807fe6431f",
-                            DesiredConnection = 0,
-                            DisplayName = "Peter",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "536f87c2-d503-4037-9cd2-ba6f5c0b76e1",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "6",
-                            AccessFailedCount = 0,
-                            Age = 44,
-                            City = "Rome",
-                            ConcurrencyStamp = "5f113eb3-ee7d-48d1-8039-0c5630e2f043",
-                            DesiredConnection = 1,
-                            DisplayName = "Emma",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "6a469e25-8749-478f-9843-6d3cbed490e1",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "7",
-                            AccessFailedCount = 0,
-                            Age = 20,
-                            Bio = "Heavy metal!!",
-                            City = "Sofia",
-                            ConcurrencyStamp = "7fdf558e-515f-47c5-8099-7bb4f42ee4fb",
-                            DesiredConnection = 2,
-                            DisplayName = "Luca",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "491c8f10-53d4-4a05-9288-97ea04f893b9",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "8",
-                            AccessFailedCount = 0,
-                            Age = 26,
-                            Bio = "Recommend me new music",
-                            City = "Madrid",
-                            ConcurrencyStamp = "12b32e01-d3a2-4655-8bcb-1df3dda8d30c",
-                            DesiredConnection = 0,
-                            DisplayName = "Alexandra",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2a0211f5-ca23-4aae-a87f-b74245766bb8",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "9",
-                            AccessFailedCount = 0,
-                            Age = 33,
-                            Bio = "Lets travel the world together!",
-                            City = "London",
-                            ConcurrencyStamp = "f6a1dd53-41c5-4d5c-9926-41e5bd5c5c98",
-                            DesiredConnection = 1,
-                            DisplayName = "Olivia",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "32ef686c-ec50-439b-a1c3-fb593399c970",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = "10",
-                            AccessFailedCount = 0,
-                            Age = 19,
-                            Bio = "I would like to find a local band. Can play bass pretty good!",
-                            City = "London",
-                            ConcurrencyStamp = "ed39a2f7-e7ce-49b5-9c58-bc79accf117c",
-                            DesiredConnection = 2,
-                            DisplayName = "Dan",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "1713acdb-67e7-4a78-b5f6-e8fab18d18cf",
                             TwoFactorEnabled = false
                         });
                 });
 
-            modelBuilder.Entity("Nexus.Models.ProfileInterests", b =>
+            modelBuilder.Entity("Nexus.Data.Models.ProfileInterests", b =>
                 {
-                    b.Property<string>("ProfileId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("InterestId")
                         .HasColumnType("int");
@@ -623,235 +505,218 @@ namespace Nexus.Data.Migrations
                     b.HasData(
                         new
                         {
-                            ProfileId = "1",
+                            ProfileId = new Guid("a1111111-1111-1111-1111-111111111111"),
                             InterestId = 2
                         },
                         new
                         {
-                            ProfileId = "1",
+                            ProfileId = new Guid("a1111111-1111-1111-1111-111111111111"),
                             InterestId = 5
                         },
                         new
                         {
-                            ProfileId = "1",
+                            ProfileId = new Guid("a1111111-1111-1111-1111-111111111111"),
                             InterestId = 6
                         },
                         new
                         {
-                            ProfileId = "2",
+                            ProfileId = new Guid("a2222222-2222-2222-2222-222222222222"),
                             InterestId = 6
                         },
                         new
                         {
-                            ProfileId = "2",
+                            ProfileId = new Guid("a2222222-2222-2222-2222-222222222222"),
                             InterestId = 11
                         },
                         new
                         {
-                            ProfileId = "2",
+                            ProfileId = new Guid("a2222222-2222-2222-2222-222222222222"),
                             InterestId = 3
                         },
                         new
                         {
-                            ProfileId = "3",
+                            ProfileId = new Guid("a3333333-3333-3333-3333-333333333333"),
                             InterestId = 4
                         },
                         new
                         {
-                            ProfileId = "3",
+                            ProfileId = new Guid("a3333333-3333-3333-3333-333333333333"),
                             InterestId = 16
                         },
                         new
                         {
-                            ProfileId = "3",
+                            ProfileId = new Guid("a3333333-3333-3333-3333-333333333333"),
                             InterestId = 9
                         },
                         new
                         {
-                            ProfileId = "4",
+                            ProfileId = new Guid("a4444444-4444-4444-4444-444444444444"),
                             InterestId = 7
                         },
                         new
                         {
-                            ProfileId = "4",
+                            ProfileId = new Guid("a4444444-4444-4444-4444-444444444444"),
                             InterestId = 15
                         },
                         new
                         {
-                            ProfileId = "4",
+                            ProfileId = new Guid("a4444444-4444-4444-4444-444444444444"),
                             InterestId = 17
-                        },
-                        new
-                        {
-                            ProfileId = "5",
-                            InterestId = 23
-                        },
-                        new
-                        {
-                            ProfileId = "5",
-                            InterestId = 22
-                        },
-                        new
-                        {
-                            ProfileId = "5",
-                            InterestId = 21
-                        },
-                        new
-                        {
-                            ProfileId = "6",
-                            InterestId = 14
-                        },
-                        new
-                        {
-                            ProfileId = "6",
-                            InterestId = 13
-                        },
-                        new
-                        {
-                            ProfileId = "6",
-                            InterestId = 26
-                        },
-                        new
-                        {
-                            ProfileId = "7",
-                            InterestId = 2
-                        },
-                        new
-                        {
-                            ProfileId = "7",
-                            InterestId = 24
-                        },
-                        new
-                        {
-                            ProfileId = "7",
-                            InterestId = 22
-                        },
-                        new
-                        {
-                            ProfileId = "8",
-                            InterestId = 2
-                        },
-                        new
-                        {
-                            ProfileId = "8",
-                            InterestId = 19
-                        },
-                        new
-                        {
-                            ProfileId = "8",
-                            InterestId = 15
-                        },
-                        new
-                        {
-                            ProfileId = "9",
-                            InterestId = 17
-                        },
-                        new
-                        {
-                            ProfileId = "9",
-                            InterestId = 16
-                        },
-                        new
-                        {
-                            ProfileId = "9",
-                            InterestId = 19
-                        },
-                        new
-                        {
-                            ProfileId = "10",
-                            InterestId = 29
-                        },
-                        new
-                        {
-                            ProfileId = "10",
-                            InterestId = 27
-                        },
-                        new
-                        {
-                            ProfileId = "10",
-                            InterestId = 30
                         });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Nexus.Data.Models.Quest", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QuestInitiatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RewardXp")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestInitiatorId");
+
+                    b.ToTable("Quests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Join us for some fishing, cooking and camping near the river!",
+                            Difficulty = 2,
+                            QuestInitiatorId = new Guid("a4444444-4444-4444-4444-444444444444"),
+                            RewardXp = 200,
+                            Status = 0,
+                            Title = "Camping near the river"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Im looking for people to play cs with so i'd love for us to form a squad!",
+                            Difficulty = 0,
+                            QuestInitiatorId = new Guid("a3333333-3333-3333-3333-333333333333"),
+                            RewardXp = 50,
+                            Status = 0,
+                            Title = "Gaming night"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Let's clean the city!",
+                            Difficulty = 1,
+                            QuestInitiatorId = new Guid("a1111111-1111-1111-1111-111111111111"),
+                            RewardXp = 125,
+                            Status = 0,
+                            Title = "Community Work"
+                        });
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.QuestJoiner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("QuestId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.HasIndex("QuestId");
+
+                    b.ToTable("QuestJoiners");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Nexus.Models.Profile", null)
+                    b.HasOne("Nexus.Data.Models.Profile", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Nexus.Models.Profile", null)
+                    b.HasOne("Nexus.Data.Models.Profile", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Nexus.Models.Profile", null)
+                    b.HasOne("Nexus.Data.Models.Profile", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Nexus.Models.Profile", null)
+                    b.HasOne("Nexus.Data.Models.Profile", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Nexus.Models.FriendRequest", b =>
+            modelBuilder.Entity("Nexus.Data.Models.ProfileInterests", b =>
                 {
-                    b.HasOne("Nexus.Models.Profile", "Receiver")
-                        .WithMany("ReceivedFriendRequests")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Nexus.Models.Profile", "Sender")
-                        .WithMany("SentFriendRequests")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("Nexus.Models.ProfileInterests", b =>
-                {
-                    b.HasOne("Nexus.Models.Interest", "Interest")
+                    b.HasOne("Nexus.Data.Models.Interest", "Interest")
                         .WithMany("ProfileInterest")
                         .HasForeignKey("InterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Nexus.Models.Profile", "Profile")
+                    b.HasOne("Nexus.Data.Models.Profile", "Profile")
                         .WithMany("ProfileInterest")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -862,18 +727,51 @@ namespace Nexus.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("Nexus.Models.Interest", b =>
+            modelBuilder.Entity("Nexus.Data.Models.Quest", b =>
+                {
+                    b.HasOne("Nexus.Data.Models.Profile", "QuestInitiator")
+                        .WithMany()
+                        .HasForeignKey("QuestInitiatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestInitiator");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.QuestJoiner", b =>
+                {
+                    b.HasOne("Nexus.Data.Models.Profile", "Profile")
+                        .WithMany("JoinedQuests")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Nexus.Data.Models.Quest", "Quest")
+                        .WithMany("QuestJoiners")
+                        .HasForeignKey("QuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+
+                    b.Navigation("Quest");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.Interest", b =>
                 {
                     b.Navigation("ProfileInterest");
                 });
 
-            modelBuilder.Entity("Nexus.Models.Profile", b =>
+            modelBuilder.Entity("Nexus.Data.Models.Profile", b =>
                 {
+                    b.Navigation("JoinedQuests");
+
                     b.Navigation("ProfileInterest");
+                });
 
-                    b.Navigation("ReceivedFriendRequests");
-
-                    b.Navigation("SentFriendRequests");
+            modelBuilder.Entity("Nexus.Data.Models.Quest", b =>
+                {
+                    b.Navigation("QuestJoiners");
                 });
 #pragma warning restore 612, 618
         }

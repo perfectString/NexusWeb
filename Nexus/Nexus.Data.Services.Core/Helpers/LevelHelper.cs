@@ -1,5 +1,5 @@
 ﻿
-namespace Nexus.GCommon.Helpers
+namespace Nexus.Data.Services.Core.Helpers
 {
     public static class LevelHelper
     {

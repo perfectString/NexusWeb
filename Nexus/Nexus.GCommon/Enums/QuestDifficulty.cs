@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace Nexus.Data.Models.Enums
+namespace Nexus.GCommon.Enums
 {
     public enum QuestDifficulty
     {

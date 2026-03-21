@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
 using Nexus.Data.Models;
+using Nexus.Data.Seeding;
+using Nexus.Data.Seeding.Contracts;
 using Nexus.Data.Services.Core;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.Web.Infrastructure;
 
 namespace Nexus
 {
@@ -21,17 +24,20 @@ namespace Nexus
 
             // Identity
             builder.Services
-                .AddDefaultIdentity<Profile>(options =>
+                .AddIdentity<Profile, IdentityRole<Guid>>(options =>
                 {
                     ConfigureIdentity(options, builder.Configuration);
                 })
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<NexusDbContext>();
 
-            
-            // Profile service
+            // Identity Service
+            builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
+
+            // Profile Service
             builder.Services.AddScoped<IProfileService, ProfileService>();
-            
-            // Quest service
+
+            // Quest Service
             builder.Services.AddScoped<IQuestService, QuestService>();
 
             builder.Services.AddControllersWithViews();
@@ -68,6 +74,8 @@ namespace Nexus
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseRolesSeeder();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -77,11 +85,11 @@ namespace Nexus
         }
 
         // Identity Configuration
-        // Dev settings
+        // Dev Settings
         private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration)
         {
 
-            // Sign in settings
+            // Sign in Settings
             options.SignIn.RequireConfirmedAccount = configuration
                 .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
             options.SignIn.RequireConfirmedPhoneNumber = configuration
@@ -90,11 +98,11 @@ namespace Nexus
                 .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail");
 
 
-            // User settings
+            // User Settings
             options.User.RequireUniqueEmail = configuration
                 .GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
 
-            // Password settings
+            // Password Settings
             options.Password.RequireUppercase = configuration
                 .GetValue<bool>("IdentityOptions:Password:RequireUppercase");
             options.Password.RequireLowercase = configuration

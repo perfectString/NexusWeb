@@ -1,14 +1,14 @@
 ﻿@using System
 @using System.Linq
 @using System.Text.Json
-@using Nexus.GCommon.Helpers
+@using Nexus.Data.Services.Core.Helpers
 @model Nexus.ViewModels.Quest.QuestAddViewModel
 
 @{
     ViewData["Title"] = "Add Quest";
 
-    var difficultyValues = Enum.GetValues(typeof(Nexus.Data.Models.Enums.QuestDifficulty))
-        .Cast<Nexus.Data.Models.Enums.QuestDifficulty>()
+    var difficultyValues = Enum.GetValues(typeof(Nexus.GCommon.Enums.QuestDifficulty))
+        .Cast<Nexus.GCommon.Enums.QuestDifficulty>()
         .ToList();
 
     var rewardMap = difficultyValues

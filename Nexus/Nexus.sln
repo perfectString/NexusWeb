@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{67
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Data.Services.Core", "Nexus.Data.Services.Core\Nexus.Data.Services.Core.csproj", "{BCEC7BDF-349C-41A8-85B6-30D89A352E67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Web.Infrastructure", "Nexus.Web.Infrastructure\Nexus.Web.Infrastructure.csproj", "{0F141103-9481-46D6-B2E3-3F2C8A50A571}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{BCEC7BDF-349C-41A8-85B6-30D89A352E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCEC7BDF-349C-41A8-85B6-30D89A352E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCEC7BDF-349C-41A8-85B6-30D89A352E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F141103-9481-46D6-B2E3-3F2C8A50A571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F141103-9481-46D6-B2E3-3F2C8A50A571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F141103-9481-46D6-B2E3-3F2C8A50A571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F141103-9481-46D6-B2E3-3F2C8A50A571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{609394DD-7E8D-46CE-9F95-3F54D50811D9} = {5FF96CF6-A0D8-4861-A3F6-EA3D04018794}
 		{06654A48-8938-4EF1-9BA0-F1CBFCF4E112} = {5FF96CF6-A0D8-4861-A3F6-EA3D04018794}
 		{BCEC7BDF-349C-41A8-85B6-30D89A352E67} = {67F4A873-6C4B-4171-967E-8EED7BBF06C6}
+		{0F141103-9481-46D6-B2E3-3F2C8A50A571} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5722E199-64E2-4B27-9BD1-8CA6EB4DC2C5}

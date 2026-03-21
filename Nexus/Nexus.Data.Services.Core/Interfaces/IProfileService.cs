@@ -8,14 +8,14 @@ namespace Nexus.Data.Services.Core.Interfaces
        Task<IEnumerable<ProfileViewModel>> GetAllProfilesByNameThenByAgeThenByCityAscAsync();
 
         // Edit Profiles
-       Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(string userId);
+       Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(Guid userId);
 
        Task<List<AvailableInterestViewModel>> GetAllInterestsAsync();
 
-       Task EditProfileAsync(string userId, ProfileEditViewModel profileViewModel);
+       Task EditProfileAsync(Guid userId, ProfileEditViewModel profileViewModel);
 
         // My Profile
 
-        Task<ProfileViewModel> GetCurrentUserProfile(string userId);
+        Task<ProfileViewModel> GetCurrentUserProfile(Guid userId);
     }
 }

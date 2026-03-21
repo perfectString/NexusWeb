@@ -170,7 +170,7 @@
             {
                 foreach (var q in Model)
                 {
-                    var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId;
+                    var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == q.InitiatorId.ToString();
                     var titleSafe = q.Title ?? string.Empty;
                     var initiatorSafe = q.QuestInitiator ?? "Unknown";
                     var descSafe = q.Description ?? string.Empty;

@@ -27,13 +27,12 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
-            string? userId = GetUserId();
+            Guid userId = GetUserId();
 
+            ProfileEditViewModel profileModel = await profileService
+                .GetEditProfileViewModelWithAllInterestsAsync(userId);
 
-            ProfileEditViewModel myProfileViewModel = await profileService
-                .GetEditProfileViewModelWithAllInterestsAsync(userId!);
-
-            return View(myProfileViewModel);
+            return View(profileModel);
         }
 
         [HttpPost]
@@ -54,7 +53,7 @@ namespace Nexus.Controllers
                 return View(myProfileViewModel);
             }
 
-            string? userId = GetUserId();
+            Guid userId = GetUserId();
 
             try
             {
@@ -64,23 +63,22 @@ namespace Nexus.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while editing the profile!");
-                Console.WriteLine(ex);
+                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                myProfileViewModel.AvailableInterests = await profileService.GetAllInterestsAsync();
+                return View(myProfileViewModel);
             }
-
-                return RedirectToAction(nameof(All));
+                return View(myProfileViewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            string? userId = GetUserId();
+            Guid userId = GetUserId();
 
+            ProfileViewModel profileViewModel = await profileService
+                .GetCurrentUserProfile(userId);
 
-            ProfileViewModel myProfileViewModel = await profileService
-                .GetCurrentUserProfile(userId!);
-
-            return View(myProfileViewModel);
+            return View(profileViewModel);
         }
-
     }
 }

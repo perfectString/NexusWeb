@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Nexus.Data.Services.Core\Nexus.Data.Services.Core.csproj" />
     <ProjectReference Include="..\Nexus.GCommon\Nexus.GCommon.csproj" />
+    <ProjectReference Include="..\Nexus.Web.Infrastructure\Nexus.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\WebNexus.ViewModels\Nexus.ViewModels.csproj" />
   </ItemGroup>
 

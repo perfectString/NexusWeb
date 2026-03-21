@@ -1,7 +1,7 @@
 ﻿
 namespace Nexus.GCommon
 {
-    public class ValidationConstants
+    public static class ValidationConstants
     {
         //Profile
         public const int DisplayNameMaxLen = 85;

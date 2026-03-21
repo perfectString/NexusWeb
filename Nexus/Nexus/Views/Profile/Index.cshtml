@@ -7,10 +7,15 @@
     ViewData["Title"] = "My Profile";
 
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-    var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userId);
+    Guid userGuid;
+    if (!Guid.TryParse(userId, out userGuid))
+    {
+        userGuid = Guid.Empty;
+    }
+    var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userGuid);
     var joinedCount = joinedQuests?.Count() ?? 0;
     var allQuests = await QuestService.GetAllQuestsOrderByTitleAsync();
-    var createdCount = allQuests?.Count(q => string.Equals(q.InitiatorId, userId, StringComparison.OrdinalIgnoreCase)) ?? 0;
+    var createdCount = allQuests?.Count(q => string.Equals(q.InitiatorId.ToString(), userId, StringComparison.OrdinalIgnoreCase)) ?? 0;
 }
 
 @section Styles {

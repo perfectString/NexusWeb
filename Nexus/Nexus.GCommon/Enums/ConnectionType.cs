@@ -1,4 +1,4 @@
-﻿namespace Nexus.Data.Models.Enums
+﻿namespace Nexus.GCommon.Enums
 {
     public enum ConnectionType
     {

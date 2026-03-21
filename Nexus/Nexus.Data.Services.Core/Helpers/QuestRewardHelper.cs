@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nexus.Data.Models.Enums;
+﻿
+using Nexus.GCommon.Enums;
 
-namespace Nexus.GCommon.Helpers
+namespace Nexus.Data.Services.Core.Helpers
 {
     public static class QuestRewardHelper
     {

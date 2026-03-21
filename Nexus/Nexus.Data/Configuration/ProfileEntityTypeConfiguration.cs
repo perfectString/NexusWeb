@@ -1,59 +1,59 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nexus.Data.Models;
-using Nexus.Data.Models.Enums;
+using Nexus.GCommon.Enums;
+using static Nexus.Data.Seeding.GuidProfileSeeder;
 
 namespace Nexus.Data.Configuration
 {
-    // For testing purposes the id of the profiles is beeing seeded 
-    // with numbers regardless of the fact im using identity
+   
     public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
         private readonly Profile[] profiles =
         {
             new Profile
             {
-                Id = "1",
+                Id = User1Id,
                 DisplayName = "Alex",
                 Age = 21,
                 City = "Sofia",
                 Bio = "New in the city and looking for new connections!",
                 DesiredConnection = ConnectionType.Friends,
-                Level = 2,
-                ExperiencePoints = 200,
+                Level = 9,
+                ExperiencePoints = 800,
             },
             new Profile
             {
-                Id = "2",
+                Id = User2Id,
                 DisplayName = "Lidya",
                 Age = 30,
                 City = "Berlin",
                 Bio = "Looking for my person",
                 DesiredConnection = ConnectionType.Romantic,
-                Level = 1,
-                ExperiencePoints = 100
+                Level = 4,
+                ExperiencePoints = 350
             },
             new Profile
             {
-                Id = "3",
+                Id = User3Id,
                 DisplayName = "Liam",
                 Age = 19,
                 City = "Madrid",
                 Bio = "Im heavy into gaming, i'd like to find people to play CS with!!!", //add gaming as interest
                 DesiredConnection = ConnectionType.Groups,
-                Level = 3,
-                ExperiencePoints = 350
+                Level = 13,
+                ExperiencePoints = 1200
             },
             new Profile
             {
-                Id = "4",
+                Id = User4Id,
                 DisplayName = "Dean",
                 Age = 31,
                 City = "London",
                 Bio = "Work in the tech field.Into long night walks.", // add nature or smth as interest
                 DesiredConnection = ConnectionType.Romantic,
-                Level = 1,
-                ExperiencePoints = 100
+                Level = 7,
+                ExperiencePoints = 650
             },
         };
 

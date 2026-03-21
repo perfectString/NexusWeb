@@ -183,7 +183,7 @@
 
                 <select id="filterConnection" class="form-select form-select-sm" style="width:160px;">
                     <option value="">Any connection</option>
-                    @foreach (var v in Enum.GetValues(typeof(Nexus.Data.Models.Enums.ConnectionType)))
+                    @foreach (var v in Enum.GetValues(typeof(Nexus.GCommon.Enums.ConnectionType)))
                     {
                         <option value="@v">@v</option>
                     }
