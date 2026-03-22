@@ -8,8 +8,14 @@ namespace Nexus.Web.Infrastructure
     {
         public static IApplicationBuilder UseRolesSeeder(this IApplicationBuilder app)
         {
-            IIdentitySeeder identitySeeder = app
-                  .ApplicationServices
+
+           using IServiceScope scope = app
+                .ApplicationServices
+                .CreateScope();
+
+
+            IIdentitySeeder identitySeeder = scope
+                .ServiceProvider
                   .GetRequiredService<IIdentitySeeder>();
 
             identitySeeder

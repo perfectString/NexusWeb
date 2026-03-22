@@ -41,6 +41,7 @@ namespace Nexus
             builder.Services.AddScoped<IQuestService, QuestService>();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             // Connection String
             string? developerConnectionString = builder.Configuration
