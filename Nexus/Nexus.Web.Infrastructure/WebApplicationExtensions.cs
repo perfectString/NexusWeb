@@ -9,9 +9,9 @@ namespace Nexus.Web.Infrastructure
         public static IApplicationBuilder UseRolesSeeder(this IApplicationBuilder app)
         {
 
-           using IServiceScope scope = app
-                .ApplicationServices
-                .CreateScope();
+            using IServiceScope scope = app
+                 .ApplicationServices
+                 .CreateScope();
 
 
             IIdentitySeeder identitySeeder = scope
@@ -20,6 +20,26 @@ namespace Nexus.Web.Infrastructure
 
             identitySeeder
                 .SeedRolesAsync()
+                .GetAwaiter()
+                .GetResult();
+
+            return app;
+        }
+
+        public static IApplicationBuilder UseAdminSeeder(this IApplicationBuilder app)
+        {
+            using IServiceScope scope = app
+             .ApplicationServices
+              .CreateScope();
+
+
+            IIdentitySeeder identitySeeder = scope
+                .ServiceProvider
+                  .GetRequiredService<IIdentitySeeder>();
+
+
+            identitySeeder
+                .SeedAdminAsync()
                 .GetAwaiter()
                 .GetResult();
 

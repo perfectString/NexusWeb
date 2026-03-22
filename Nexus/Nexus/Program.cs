@@ -31,7 +31,7 @@ namespace Nexus
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<NexusDbContext>();
 
-            // Identity Service
+            // Identity Seed
             builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
             // Profile Service
@@ -72,10 +72,14 @@ namespace Nexus
 
             app.UseRouting();
 
+            // Authentication & authorization 
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            //Seeding user & admins
             app.UseRolesSeeder();
+            app.UseAdminSeeder();
 
             app.MapControllerRoute(
                 name: "default",
