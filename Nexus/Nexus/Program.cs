@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
 using Nexus.Data.Models;
@@ -29,7 +30,11 @@ namespace Nexus
                     ConfigureIdentity(options, builder.Configuration);
                 })
                 .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<NexusDbContext>();
+                .AddEntityFrameworkStores<NexusDbContext>()
+                .AddDefaultTokenProviders();
+
+            // No-op email sender 
+            builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();
 
             // Identity Seed
             builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
@@ -80,6 +85,10 @@ namespace Nexus
             //Seeding user & admins
             app.UseRolesSeeder();
             app.UseAdminSeeder();
+
+            app.MapControllerRoute(
+                name: "adminArea",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

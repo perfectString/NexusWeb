@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+@section Styles {
+    <style>
+        .admin-banner {
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            border-radius: 0.75rem;
+        }
+
+        .admin-banner h1 {
+            font-size: 1.5rem;
+        }
+
+        .panel {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+        }
+
+        .panel-link {
+            display: block;
+            padding: 0.85rem 1.25rem;
+            color: #2b2548;
+            text-decoration: none;
+            border-bottom: 1px solid #eee8ff;
+            transition: background 0.12s ease;
+        }
+
+        .panel-link:last-child {
+            border-bottom: none;
+        }
+
+        .panel-link:hover {
+            background: #f4f2fb;
+            color: #4e41be;
+        }
+
+        .panel-link .chevron {
+            color: #c5c0dd;
+            transition: transform 0.12s ease;
+        }
+
+        .panel-link:hover .chevron {
+            transform: translateX(3px);
+            color: #4e41be;
+        }
+
+        .panel-title {
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            padding: 0.75rem 1.25rem 0.5rem;
+            border-bottom: 1px solid #eee8ff;
+        }
+    </style>
+}
+
+<div class="py-4">
+    <div class="admin-banner text-white p-4 mb-4">
+        <h1 class="fw-bold mb-1">Admin Dashboard</h1>
+        <p class="mb-0" style="color: rgba(255,255,255,0.75);">
+            Welcome back, @User.Identity?.Name
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card panel">
+                <div class="panel-title text-muted text-uppercase fw-bold">
+                    Administration
+                </div>
+                <a asp-controller="QuestManagement" asp-action="Index" class="panel-link d-flex align-items-center">
+                    <span class="me-3">⚔️</span>
+                    <span class="flex-grow-1 fw-semibold">Manage Quests</span>
+                    <span class="chevron">›</span>
+                </a>
+                <a asp-controller="UserXp" asp-action="Index" class="panel-link d-flex align-items-center">
+                    <span class="me-3">✨</span>
+                    <span class="flex-grow-1 fw-semibold">User XP</span>
+                    <span class="chevron">›</span>
+                </a>
+                <a asp-area="" asp-controller="Profile" asp-action="All" class="panel-link d-flex align-items-center">
+                    <span class="me-3">👥</span>
+                    <span class="flex-grow-1 fw-semibold">All Users</span>
+                    <span class="chevron">›</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card panel">
+                <div class="panel-title text-muted text-uppercase fw-bold">
+                    Quick Links
+                </div>
+                <a asp-area="" asp-controller="Quest" asp-action="Add" class="panel-link d-flex align-items-center">
+                    <span class="me-3">➕</span>
+                    <span class="flex-grow-1 fw-semibold">Create Quest</span>
+                    <span class="chevron">›</span>
+                </a>
+                <a asp-area="" asp-controller="Profile" asp-action="Index" class="panel-link d-flex align-items-center">
+                    <span class="me-3">🛡️</span>
+                    <span class="flex-grow-1 fw-semibold">My Profile</span>
+                    <span class="chevron">›</span>
+                </a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="panel-link d-flex align-items-center">
+                    <span class="me-3">🏠</span>
+                    <span class="flex-grow-1 fw-semibold">Public Site</span>
+                    <span class="chevron">›</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,48 +4,114 @@
 
 @section Styles {
     <style>
-        .web-description{
-            font-size: 1.4rem;
-            font-weight: 300;
+        .hero-banner {
+            background: rgba(78, 65, 190, 0.85);
+            border-radius: 1rem;
+            color: #fff;
+        }
+
+        .hero-banner h1 {
+            letter-spacing: -0.5px;
+        }
+
+        .hero-divider {
+            width: 60px;
+            height: 3px;
+            background: #fff;
+            opacity: 0.6;
+        }
+
+        .cta-btn {
+            border: 2px solid #fff;
+            color: #fff;
+            border-radius: 2rem;
+            padding: 0.6rem 1.8rem;
+            font-weight: 600;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .cta-btn:hover {
+            background: #fff;
+            color: #4e41be;
+        }
+
+        .cta-btn-fill {
+            background: #fff;
+            color: #4e41be;
+            border: 2px solid #fff;
+            border-radius: 2rem;
+            padding: 0.6rem 1.8rem;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        .cta-btn-fill:hover {
+            opacity: 0.85;
+            color: #4e41be;
+        }
+
+        .feature-pill {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            color: #fff;
         }
     </style>
 }
 
-<div class="d-flex justify-content-center align-items-start flex-grow-1 pt-5">
-    <div class="text-center text-break">
-    <h1 class="display-2">Welcome to Nexus!</h1>
-    <p class="mt-3">
-        <p class="web-description mt-3">
-            Nexus connects people through shared interests by turning real-life activities into collaborative experiences!
-           <br>
-           Find your next adventure today!
-       </p>
+<div class="hero-banner shadow-lg p-5 mt-3">
+    <div class="text-center">
+        <h1 class="display-4 fw-bold mb-3">Welcome to Nexus!</h1>
+        <div class="hero-divider mx-auto mb-4"></div>
+        <p class="fs-5 fw-light mb-0 mx-auto" style="max-width: 550px;">
+            Connecting people through shared interests by turning real-life activities
+            into collaborative experiences.
+        </p>
+    </div>
 
-    <hr class="mt-3">
-@if (User.Identity?.IsAuthenticated == false)
-{
+    <div class="text-center mt-4 mb-3">
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <span class="feature-pill">🎯 Shared Interests</span>
+            <span class="feature-pill">⚔️ Collaborative Quests</span>
+            <span class="feature-pill">👥 Meet People</span>
+        </div>
+    </div>
 
-<p mt-3>Please log in or register to continue using the app.</p>
+    <hr class="border-light opacity-25 my-4" />
 
-        <div class="mt-3">
-    <a asp-area="Identity"
-    asp-page="/Account/Login"
-                   class="btn btn-secondary btn-lg me-3">
-    Login
-    </a>
-
-    <a asp-area="Identity"
-    asp-page="/Account/Register"
-                   class="btn btn-secondary btn-lg me-3">
-       Register
-    </a>
-</div>
-}
-else
-{
-            <a asp-controller="Quest" asp-action="All" class="btn btn-primary btn-lg">Start your next adventure!</a>
-            <a asp-controller="Profile" asp-action="Edit" class="btn btn-primary btn-lg">Customise your profile</a>
-
-}
-</div>
+    @if (User.Identity?.IsAuthenticated == false)
+    {
+        <div class="text-center">
+            <p class="mb-4 fw-light">Log in or register to start your adventure.</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a asp-area="Identity"
+                   asp-page="/Account/Login"
+                   class="cta-btn-fill text-decoration-none">
+                    Login
+                </a>
+                <a asp-area="Identity"
+                   asp-page="/Account/Register"
+                   class="cta-btn text-decoration-none">
+                    Register
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <p class="mb-4 fw-light">Welcome back! Ready for your next adventure?</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a asp-controller="Quest" asp-action="All"
+                   class="cta-btn-fill text-decoration-none">
+                    Explore Quests
+                </a>
+                <a asp-controller="Profile" asp-action="Edit"
+                   class="cta-btn text-decoration-none">
+                    Customise Profile
+                </a>
+            </div>
+        </div>
+    }
 </div>

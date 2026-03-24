@@ -67,7 +67,7 @@ namespace Nexus.Controllers
                 myProfileViewModel.AvailableInterests = await profileService.GetAllInterestsAsync();
                 return View(myProfileViewModel);
             }
-                return View(myProfileViewModel);
+                return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
