@@ -30,8 +30,8 @@ namespace Nexus.Data.Models
 
         public ConnectionType DesiredConnection { get; set; }
 
-        public ICollection<ProfileInterests> ProfileInterest { get; set; }
-        = new HashSet<ProfileInterests>();
+        public ICollection<ProfileInterest> ProfileInterest { get; set; }
+        = new HashSet<ProfileInterest>();
         public ICollection<QuestJoiner> JoinedQuests { get; set; } 
             = new HashSet<QuestJoiner>();
     }

@@ -17,10 +17,11 @@ namespace Nexus.Data
         // it inherits from IdentityUser the data will be stored in
         // AspNetUsers in the DB
         public virtual DbSet<Interest> Interests { get; set; } = null!;
-        public virtual DbSet<ProfileInterests> ProfileInterests { get; set; } = null!;
+        public virtual DbSet<ProfileInterest> ProfileInterests { get; set; } = null!;
 
         public virtual DbSet<Quest> Quests { get; set; } = null!;
         public virtual DbSet<QuestJoiner> QuestJoiners { get; set; } = null!;
+        public virtual DbSet<QuestInterest> QuestInterests { get; set; } = null!;
 
 
 

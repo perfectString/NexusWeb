@@ -11,8 +11,11 @@ namespace Nexus.Data.Models
         [Required]
         [MaxLength(InterestMaxName)]
         public string Name { get; set; } = null!;
-        public ICollection<ProfileInterests> ProfileInterest { get; set; }
-        = new HashSet<ProfileInterests>();
+        public ICollection<ProfileInterest> ProfileInterest { get; set; }
+        = new HashSet<ProfileInterest>();
+
+        public ICollection<QuestInterest> QuestInterest { get; set; }
+        = new HashSet<QuestInterest>();
 
 
         //Connect to Quests in the future

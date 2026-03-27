@@ -34,5 +34,10 @@ namespace Nexus.Data.Models
 
         public ICollection<QuestJoiner> QuestJoiners =
             new HashSet<QuestJoiner>();
+
+        public ICollection<QuestInterest> QuestInterest =
+            new HashSet<QuestInterest>();
+
+
     }
 }

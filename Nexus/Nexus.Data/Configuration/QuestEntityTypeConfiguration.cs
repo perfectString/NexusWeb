@@ -17,8 +17,9 @@ namespace Nexus.Data.Configuration
                 Description = "Join us for some fishing, cooking and camping near the river!",
                 QuestInitiatorId = User4Id,
                 Difficulty = QuestDifficulty.Hard,
-                Status = QuestStatus.Active,
+                Status = QuestStatus.Completed,
                 RewardXp = 200
+                
             },
             new Quest
             {
@@ -39,6 +40,16 @@ namespace Nexus.Data.Configuration
                 Difficulty = QuestDifficulty.Medium,
                 Status = QuestStatus.Active,
                 RewardXp = 125
+            },
+            new Quest
+            {
+            Id = 4,
+            Title = "30-Day Fitness Challenge",
+            Description = "Looking for committed people to stay consistent and push limits for 30 days.",
+            QuestInitiatorId = User6Id,
+            Difficulty = QuestDifficulty.Hard,
+            Status = QuestStatus.Active,
+            RewardXp = 200
             },
         };
 

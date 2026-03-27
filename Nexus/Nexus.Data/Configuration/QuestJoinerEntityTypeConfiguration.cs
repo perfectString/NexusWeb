@@ -5,7 +5,7 @@ using Nexus.Data.Models;
 
 namespace Nexus.Data.Configuration
 {
-    public class QuestJoinersEntityTypeCondifuration : IEntityTypeConfiguration<QuestJoiner>
+    public class QuestJoinersEntityTypeConfiguration : IEntityTypeConfiguration<QuestJoiner>
     {
     
 

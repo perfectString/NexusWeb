@@ -255,7 +255,7 @@ namespace Nexus.Data.Services.Core
                       City = p.City,
                       Bio = p.Bio,
                       DesiredConnection = p.DesiredConnection,
-                      Interests = (p.ProfileInterest ?? Enumerable.Empty<ProfileInterests>())
+                      Interests = (p.ProfileInterest ?? Enumerable.Empty<ProfileInterest>())
                                   .Where(pi => pi.Interest != null)
                                   .Select(pi => pi.Interest.Name)
                                   .ToList()

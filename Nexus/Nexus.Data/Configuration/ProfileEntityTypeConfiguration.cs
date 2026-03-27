@@ -55,6 +55,52 @@ namespace Nexus.Data.Configuration
                 Level = 7,
                 ExperiencePoints = 650
             },
+            new Profile
+            {
+                Id = User5Id,
+                DisplayName = "Maya",
+                Age = 24,
+                City = "Paris",
+                Bio = "Love art galleries and coffee spots. Always up for creative activities!",
+                DesiredConnection = ConnectionType.Friends,
+                Level = 6,
+                ExperiencePoints = 520
+            },
+
+            new Profile()
+            {
+                 Id = User6Id,
+                 DisplayName = "Noah",
+                 Age = 27,
+                 City = "Amsterdam",
+                 Bio = "Cycling enthusiast and fitness lover. Looking for active people.",
+                 DesiredConnection = ConnectionType.Groups,
+                 Level = 10,
+                 ExperiencePoints = 950
+            },
+            new Profile()
+            {
+                Id =User7Id,
+                DisplayName = "Elena",
+                Age = 28,
+                City = "Amsterdam",
+                Bio = "Foodie and traveler. Let’s explore new places together!", 
+                DesiredConnection = ConnectionType.Friends,
+                Level = 5,
+                ExperiencePoints = 430
+            },
+            new Profile
+            {
+                Id = User8Id,
+                DisplayName = "Victor",
+                Age = 29,
+                City = "Sofia",
+                Bio = "Into tech, startups and hackathons. Building cool stuff.",
+                DesiredConnection = ConnectionType.Groups,
+                Level = 12,
+                ExperiencePoints = 1100
+            },
+
         };
 
         public void Configure(EntityTypeBuilder<Profile> entity)

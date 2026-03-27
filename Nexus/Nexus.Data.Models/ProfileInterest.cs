@@ -2,7 +2,7 @@
 
 namespace Nexus.Data.Models
 {
-    public class ProfileInterests
+    public class ProfileInterest
     {
         [ForeignKey(nameof(Profile))]
         public Guid ProfileId { get; set; }

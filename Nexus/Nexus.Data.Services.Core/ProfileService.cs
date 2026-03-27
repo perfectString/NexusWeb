@@ -116,7 +116,7 @@ namespace Nexus.Data.Services.Core
             userFetch.Bio = profileViewModel.Bio;
             userFetch.DesiredConnection = profileViewModel.DesiredConnection;
 
-            List<ProfileInterests> oldInterests = dbContext
+            List<ProfileInterest> oldInterests = dbContext
                 .ProfileInterests
                 .Where(p => p.ProfileId == userFetch.Id)
                 .ToList();
@@ -125,9 +125,9 @@ namespace Nexus.Data.Services.Core
                 .ProfileInterests
                 .RemoveRange(oldInterests);
 
-            IEnumerable<ProfileInterests> newInterests = profileViewModel
+            IEnumerable<ProfileInterest> newInterests = profileViewModel
                 .InterestId
-                .Select(i => new ProfileInterests
+                .Select(i => new ProfileInterest
                 {
                     ProfileId = userFetch.Id,
                     InterestId = i
