@@ -14,6 +14,7 @@ namespace Nexus.ViewModels.Quest
         public int RewardExperience { get; set; }
         public QuestStatus Status { get; set; }
 
+        public List<string> Interests { get; set; } = new();
         public List<ProfileViewModel> JoinedProfiles { get; set; } = new();
     }
 }

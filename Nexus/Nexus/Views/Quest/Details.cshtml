@@ -8,9 +8,15 @@
 
 @section Styles {
     <style>
-        .quest-card { background: #ffffff; color: #000; }
-        .joined-card { background: #f8f9fa; color: #000; border-radius: 8px; }
-        .badge-initiator { background-color: DarkCyan; color: #fff; border-radius: .375rem; padding: .25rem .5rem; }
+        .quest-card { background: #fff; color: #2b2548; }
+        .joined-card { background: #f4f2fb; color: #2b2548; border-radius: 8px; }
+        .badge-initiator { background-color: #4e41be; color: #fff; border-radius: .375rem; padding: .25rem .5rem; }
+        .quest-interest {
+            display:inline-block; background:#f4f2fb; color:#4e41be;
+            padding:.32rem .55rem; border-radius:999px; font-weight:600;
+            font-size:.85rem; border:1px solid rgba(78,65,190,0.08);
+            margin:.2rem .3rem .2rem 0;
+        }
         #joinedUsers .card { min-height: 100%; }
         #joinedUsers .card-body { display:flex; align-items:center; gap:.75rem; }
     </style>
@@ -26,6 +32,17 @@
                         <span class="badge badge-initiator me-2">Initiator: @Model.QuestInitiator</span>
                         <span class="text-muted small">@(@Model.JoinedProfiles?.Count ?? 0) Current participants</span>
                     </div>
+
+                    @if (Model.Interests != null && Model.Interests.Any())
+                    {
+                        <div class="mb-3">
+                            @foreach (var interest in Model.Interests)
+                            {
+                                <span class="quest-interest">@interest</span>
+                            }
+                        </div>
+                    }
+
                     <p class="mb-3">@Model.Description</p>
 
                     <div class="d-flex gap-2">
@@ -34,7 +51,7 @@
                         @if (Model != null)
                         {
                             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                            var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == Model.InitiatorId.ToString() ;
+                            var isInitiator = !string.IsNullOrEmpty(currentUserId) && currentUserId == Model.InitiatorId.ToString();
                             if (isInitiator)
                             {
                                 if (Model.Status == Nexus.GCommon.Enums.QuestStatus.Active)
@@ -44,7 +61,7 @@
                                     <form asp-action="Complete" method="post" class="d-inline-block m-0">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-success">Mark Completed</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Mark Completed</button>
                                     </form>
                                 }
                                 else

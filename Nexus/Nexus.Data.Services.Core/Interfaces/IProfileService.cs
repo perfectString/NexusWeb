@@ -7,10 +7,11 @@ namespace Nexus.Data.Services.Core.Interfaces
         // All Profiles
        Task<IEnumerable<ProfileViewModel>> GetAllProfilesByNameThenByAgeThenByCityAscAsync();
 
+        // Get Interests
+       Task<List<AvailableInterestViewModel>> GetAllInterestsAsync();
+
         // Edit Profiles
        Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(Guid userId);
-
-       Task<List<AvailableInterestViewModel>> GetAllInterestsAsync();
 
        Task EditProfileAsync(Guid userId, ProfileEditViewModel profileViewModel);
 

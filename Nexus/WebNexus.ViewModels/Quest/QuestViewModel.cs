@@ -15,5 +15,8 @@ namespace Nexus.ViewModels.Quest
         public QuestStatus Status { get; set; }
 
         public Guid InitiatorId { get; set; }
+
+        public List<string> Interests { get; set; } 
+            = new();
     }
 }

@@ -6,6 +6,7 @@ namespace Nexus.Controllers
 {
     public class ProfileController : BaseController
     {
+        private const int PageSize = 8;
 
         private readonly IProfileService profileService;
         private readonly ILogger<ProfileController> logger;
@@ -16,12 +17,23 @@ namespace Nexus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int page = 1)
         {
             IEnumerable<ProfileViewModel> allProfilesViewModel = await profileService
                 .GetAllProfilesByNameThenByAgeThenByCityAscAsync();
 
-            return View(allProfilesViewModel);
+            int totalItems = allProfilesViewModel.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
+            page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
+
+            var pagedProfiles = allProfilesViewModel
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedProfiles);
         }
 
         [HttpGet]

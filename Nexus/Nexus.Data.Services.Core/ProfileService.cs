@@ -26,6 +26,7 @@ namespace Nexus.Data.Services.Core
                 .AsNoTracking();
 
             IEnumerable<ProfileViewModel> allProfilesVm = await fetchProfilesQuery
+                .Where(p=>p.DisplayName != "Admin")
                 .OrderBy(p => p.DisplayName)
                 .ThenBy(p => p.Age)
                 .ThenBy(p => p.City)

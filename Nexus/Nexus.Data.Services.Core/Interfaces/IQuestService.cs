@@ -1,4 +1,5 @@
-﻿using Nexus.ViewModels.Quest;
+﻿using Nexus.ViewModels.Profile;
+using Nexus.ViewModels.Quest;
 
 namespace Nexus.Data.Services.Core.Interfaces
 {
@@ -36,5 +37,8 @@ namespace Nexus.Data.Services.Core.Interfaces
 
         // Mark completed quests and give XP to joined users
         Task MarkQuestCompletedAsync(Guid userId, int questId);
+
+        // Get Interests
+        Task<List<AvailableInterestViewModel>> GetAllInterestsAsync();
     }
 }

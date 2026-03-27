@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
+using Nexus.Data.Services.Core.Helpers;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Enums;
-using Nexus.Data.Services.Core.Helpers;
 using Nexus.ViewModels.Profile;
 using Nexus.ViewModels.Quest;
 
@@ -19,31 +19,37 @@ namespace Nexus.Data.Services.Core
 
         public async Task<IEnumerable<QuestViewModel>> GetAllQuestsOrderByTitleAsync()
         {
-            IQueryable<Quest> fetchQuestsQuery = dbContext
+            IEnumerable<QuestViewModel> allQuestsVm = await dbContext
               .Quests
-              .AsNoTracking();
-
-            IEnumerable<QuestViewModel> allQuestsVm = await fetchQuestsQuery
-             .OrderBy(q => q.Title)
-             .Select(q => new QuestViewModel()
-             {
-                 Id = q.Id,
-                 Title = q.Title,
-                 Description = q.Description,
-                 QuestInitiator = q.QuestInitiator.DisplayName,
-                 InitiatorId = q.QuestInitiatorId,
-                 Difficulty = q.Difficulty,
-                 RewardExperience = q.RewardXp,
-                 Status = q.Status,
-             })
-                .ToArrayAsync();
+              .AsNoTracking()
+              .Include(q => q.QuestInterest)
+                .ThenInclude(qi => qi.Interest)
+              .OrderBy(q => q.Title)
+              .Select(q => new QuestViewModel()
+              {
+                  Id = q.Id,
+                  Title = q.Title,
+                  Description = q.Description,
+                  QuestInitiator = q.QuestInitiator.DisplayName,
+                  InitiatorId = q.QuestInitiatorId,
+                  Difficulty = q.Difficulty,
+                  RewardExperience = q.RewardXp,
+                  Status = q.Status,
+                  Interests = q.QuestInterest
+                      .Select(qi => qi.Interest.Name)
+                      .ToList()
+              })
+              .ToArrayAsync();
 
             return allQuestsVm;
         }
 
         public async Task<QuestAddViewModel> GetEmptyQuestAddModelAsync()
         {
-            QuestAddViewModel emptyFormModel = new QuestAddViewModel();
+            QuestAddViewModel emptyFormModel = new QuestAddViewModel
+            {
+                AvailableInterests = await GetAllInterestsAsync()
+            };
 
             return emptyFormModel;
         }
@@ -66,7 +72,6 @@ namespace Nexus.Data.Services.Core
                 Status = QuestStatus.Active,
             };
 
-
             //since i want the quest initiator to automatically join the quest
             QuestJoiner newJoiner = new QuestJoiner()
             {
@@ -76,6 +81,20 @@ namespace Nexus.Data.Services.Core
 
             await dbContext.Quests.AddAsync(newQuest);
             await dbContext.QuestJoiners.AddAsync(newJoiner);
+
+            // Add quest interests
+            if (questModel.InterestIds != null && questModel.InterestIds.Any())
+            {
+                foreach (var interestId in questModel.InterestIds.Distinct())
+                {
+                    await dbContext.QuestInterests.AddAsync(new QuestInterest
+                    {
+                        Quest = newQuest,
+                        InterestId = interestId
+                    });
+                }
+            }
+
             await dbContext.SaveChangesAsync();
         }
 
@@ -89,6 +108,7 @@ namespace Nexus.Data.Services.Core
             Quest? questFetch = await dbContext
                 .Quests
                 .AsNoTracking()
+                .Include(q => q.QuestInterest)
                 .SingleOrDefaultAsync(q => q.Id == questId);
 
 
@@ -113,7 +133,10 @@ namespace Nexus.Data.Services.Core
                 Title = questFetch.Title,
                 Description = questFetch.Description,
                 Difficulty = questFetch.Difficulty,
-                
+                InterestIds = questFetch.QuestInterest
+                    .Select(qi => qi.InterestId)
+                    .ToList(),
+                AvailableInterests = await GetAllInterestsAsync()
             };
 
             return questModel;
@@ -128,6 +151,7 @@ namespace Nexus.Data.Services.Core
 
             Quest? questFetch = await dbContext
                 .Quests
+                .Include(q => q.QuestInterest)
                 .SingleOrDefaultAsync(q => q.Id == questId);
 
             if (userFetch == null || questFetch == null)
@@ -148,15 +172,32 @@ namespace Nexus.Data.Services.Core
             questFetch.Title = questViewModel.Title;
             questFetch.Description = questViewModel.Description;
 
+            // Update quest interests
+            dbContext.QuestInterests.RemoveRange(questFetch.QuestInterest);
+
+            if (questViewModel.InterestIds != null && questViewModel.InterestIds.Any())
+            {
+                foreach (var interestId in questViewModel.InterestIds.Distinct())
+                {
+                    await dbContext.QuestInterests.AddAsync(new QuestInterest
+                    {
+                        QuestId = questId,
+                        InterestId = interestId
+                    });
+                }
+            }
+
             dbContext.Update(questFetch);
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<QuestViewModel> GetQuestToDeleteAsync(Guid userId, int questId)
-        { 
+        {
 
             Quest? fetchQuest = await dbContext
                 .Quests
+                .Include(q => q.QuestInterest)
+                    .ThenInclude(qi => qi.Interest)
                 .FirstOrDefaultAsync(q => q.Id == questId);
 
             if (fetchQuest == null)
@@ -178,7 +219,10 @@ namespace Nexus.Data.Services.Core
             {
                 Id = fetchQuest.Id,
                 Title = fetchQuest.Title,
-                Description = fetchQuest.Description
+                Description = fetchQuest.Description,
+                Interests = fetchQuest.QuestInterest
+                    .Select(qi => qi.Interest.Name)
+                    .ToList()
             };
 
             return questViewModel;
@@ -188,6 +232,7 @@ namespace Nexus.Data.Services.Core
         {
             var questToDelete = await dbContext
                 .Quests
+                .Include(q => q.QuestInterest)
                 .FirstOrDefaultAsync(q => q.Id == questId);
 
             if (questToDelete == null)
@@ -210,9 +255,10 @@ namespace Nexus.Data.Services.Core
                 .Where(q => q.QuestId == questToDelete.Id)
                 .ToListAsync();
 
-           dbContext.QuestJoiners.RemoveRange(joinedUsers);
-           dbContext.Quests.Remove(questToDelete);
-           await dbContext.SaveChangesAsync();
+            dbContext.QuestInterests.RemoveRange(questToDelete.QuestInterest);
+            dbContext.QuestJoiners.RemoveRange(joinedUsers);
+            dbContext.Quests.Remove(questToDelete);
+            await dbContext.SaveChangesAsync();
         }
         public async Task<QuestDetailsViewModel?> GetQuestDetailsWithJoinersViewModelAsync(Guid userId, int QuestId)
         {
@@ -223,6 +269,8 @@ namespace Nexus.Data.Services.Core
                  .ThenInclude(j => j.Profile)
                    .ThenInclude(p => p.ProfileInterest)
                      .ThenInclude(pi => pi.Interest)
+               .Include(q => q.QuestInterest)
+                 .ThenInclude(qi => qi.Interest)
                .Include(q => q.QuestInitiator)
                .FirstOrDefaultAsync(q => q.Id == QuestId);
 
@@ -246,6 +294,9 @@ namespace Nexus.Data.Services.Core
                 Status = quest.Status,
                 QuestInitiator = quest.QuestInitiator?.DisplayName ?? string.Empty,
                 InitiatorId = quest.QuestInitiatorId,
+                Interests = quest.QuestInterest
+                    .Select(qi => qi.Interest.Name)
+                    .ToList(),
                 JoinedProfiles = joinedProfiles
                   .Select(p => new ProfileViewModel
                   {
@@ -270,7 +321,10 @@ namespace Nexus.Data.Services.Core
             IEnumerable<QuestViewModel> allJoinedQuest = await dbContext
                 .QuestJoiners
                 .Include(qj => qj.Quest)
-                .ThenInclude(qj => qj.QuestInitiator)
+                    .ThenInclude(q => q.QuestInitiator)
+                .Include(qj => qj.Quest)
+                    .ThenInclude(q => q.QuestInterest)
+                        .ThenInclude(qi => qi.Interest)
                 .AsNoTracking()
                 .Where(qj => qj.ProfileId == userId)
                 .Select(qj => qj.Quest)
@@ -283,7 +337,10 @@ namespace Nexus.Data.Services.Core
                     InitiatorId = q.QuestInitiatorId,
                     Difficulty = q.Difficulty,
                     RewardExperience = q.RewardXp,
-                    Status = q.Status
+                    Status = q.Status,
+                    Interests = q.QuestInterest
+                        .Select(qi => qi.Interest.Name)
+                        .ToList()
                 })
                 .OrderBy(q => q.Title)
                 .ToListAsync();
@@ -320,10 +377,10 @@ namespace Nexus.Data.Services.Core
                 ProfileId = userId
             };
 
-           await dbContext.QuestJoiners.AddAsync(newJoiner);
-           await dbContext.SaveChangesAsync();
+            await dbContext.QuestJoiners.AddAsync(newJoiner);
+            await dbContext.SaveChangesAsync();
 
-           return true;
+            return true;
 
         }
 
@@ -371,5 +428,18 @@ namespace Nexus.Data.Services.Core
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<List<AvailableInterestViewModel>> GetAllInterestsAsync()
+        {
+            return await dbContext
+                .Interests
+                .AsNoTracking()
+                .Select(i => new AvailableInterestViewModel
+                {
+                    Id = i.Id,
+                    Name = i.Name
+                })
+                .OrderBy(i => i.Name)
+                .ToListAsync();
+        }
     }
 }

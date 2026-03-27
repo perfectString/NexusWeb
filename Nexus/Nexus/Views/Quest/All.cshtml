@@ -72,21 +72,6 @@
         .card-title { font-weight:700; margin:0; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .card-meta { color:#7e789c; font-size:.85rem; margin-top:.15rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
 
-        .initiator-badge {
-            margin-left:auto;
-            background: linear-gradient(90deg,#f4f2fb,#e8e5f5);
-            color:#3a2f96;
-            font-weight:600;
-            padding:.28rem .6rem;
-            border-radius:999px;
-            font-size:.82rem;
-            border: 1px solid rgba(78,65,190,0.08);
-            white-space:nowrap;
-            max-width:120px;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            flex-shrink:0;
-        }
 
         .reward-badge {
             background: linear-gradient(90deg,#fff7e6,#fff0d9);
@@ -120,6 +105,19 @@
             border: 1px solid rgba(78,65,190,0.06);
         }
 
+        .quest-interests { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; padding-left:10px; }
+
+        .quest-interest-chip {
+            display:inline-block;
+            background:#f4f2fb;
+            color:#4e41be;
+            padding:.2rem .5rem;
+            border-radius:999px;
+            font-weight:600;
+            font-size:.78rem;
+            border:1px solid rgba(78,65,190,0.08);
+        }
+
         .card-body { margin-top:.6rem; color:#2b2548; font-size:.95rem; flex:1 1 auto; padding-left:10px; }
         .card-body .desc { display:block; max-height:3.5rem; overflow:hidden; text-overflow:ellipsis; white-space:pre-wrap; }
 
@@ -149,7 +147,7 @@
         <div class="d-flex align-items-center gap-2" style="flex:0 0 auto;">
             <div class="quests-controls">
                 <div class="quests-search">
-                    <input id="questSearch" class="form-control form-control-sm" placeholder="Search title, description or initiator..." aria-label="Search quests" />
+                    <input id="questSearch" class="form-control form-control-sm" placeholder="Search by title or interest..." aria-label="Search quests" />
                 </div>
 
                 <select id="questStatusFilter" class="form-select form-select-sm" style="width:140px;">
@@ -173,20 +171,36 @@
                     var titleSafe = q.Title ?? string.Empty;
                     var initiatorSafe = q.QuestInitiator ?? "Unknown";
                     var descSafe = q.Description ?? string.Empty;
+                    var interestsText = string.Join(", ", q.Interests ?? new List<string>());
                     var statusClass = q.Status == QuestStatus.Active ? "status-active" : "status-completed";
-                    <div class="quest-card" data-title="@(titleSafe.ToLower())" data-desc="@(descSafe.ToLower())" data-initiator="@(initiatorSafe.ToLower())" data-status="@(q.Status.ToString().ToLower())" data-initiator-id="@(q.InitiatorId)" data-reward="@q.RewardExperience" data-id="@q.Id">
+                    <div class="quest-card"
+                         data-title="@(titleSafe.ToLower())"
+                         data-interests="@(interestsText.ToLower())"
+                         data-status="@(q.Status.ToString().ToLower())"
+                         data-initiator-id="@(q.InitiatorId)"
+                         data-reward="@q.RewardExperience"
+                         data-id="@q.Id"
+                         data-desc="@(descSafe.ToLower())"
+                         data-initiator="@(initiatorSafe.ToLower())">
                         <div class="card-head">
                             <div style="min-width:0; flex:1 1 0;">
-                                <div class="d-flex align-items-center gap-2 mb-1">
-                                    <p class="card-title mb-0" title="@titleSafe">@titleSafe</p>
-                                    <span class="initiator-badge" title="Initiator">@initiatorSafe</span>
-                                </div>
+                                <p class="card-title mb-1" title="@titleSafe">@titleSafe</p>
                                 <div class="card-meta">
                                     <span class="status-badge @statusClass" title="Status">@q.Status</span>
                                     <span class="reward-badge" title="Reward XP">@q.RewardExperience XP</span>
                                 </div>
                             </div>
                         </div>
+
+                        @if (q.Interests != null && q.Interests.Any())
+                        {
+                            <div class="quest-interests">
+                                @foreach (var interest in q.Interests)
+                                {
+                                    <span class="quest-interest-chip">@interest</span>
+                                }
+                            </div>
+                        }
 
                         <div class="card-body">
                             <div class="desc" title="@descSafe">@descSafe</div>
@@ -203,6 +217,7 @@
                                     data-initiator-id="@q.InitiatorId"
                                     data-reward="@q.RewardExperience"
                                     data-status="@q.Status.ToString().ToLower()"
+                                    data-interests="@interestsText"
                                     data-id="@q.Id">
                                 Preview
                             </button>
@@ -225,17 +240,24 @@
                                 }
                                 else
                                 {
-                                    <span class="text-muted small">Quest completed</span>
+                                    <span class="text-muted small">This quest is no longer active!</span>
                                 }
                             }
                             else
                             {
-                                <form asp-action="Join" method="post" class="m-0 d-inline-block">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@q.Id" />
-                                    <button type="submit" class="btn btn-sm btn-primary">Join</button>
-                                </form>
-                                <span class="text-muted small ms-2 join-reward">+@q.RewardExperience XP</span>
+                                if (q.Status == QuestStatus.Active)
+                                {
+                                    <form asp-action="Join" method="post" class="m-0 d-inline-block">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@q.Id" />
+                                        <button type="submit" class="btn btn-sm btn-primary">Join</button>
+                                    </form>
+                                    <span class="text-muted small ms-2 join-reward">+@q.RewardExperience XP</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">This quest is no longer active!</span>
+                                }
                             }
                         </div>
                     </div>
@@ -246,6 +268,8 @@
                 <div class="no-results">No quests found.</div>
             }
         </div>
+
+        <partial name="_Pagination" />
     </div>
 </div>
 
@@ -263,6 +287,9 @@
 
                     <dt class="col-sm-3">Initiator</dt>
                     <dd class="col-sm-9" id="detailQuestInitiator"></dd>
+
+                    <dt class="col-sm-3">Interests</dt>
+                    <dd class="col-sm-9" id="detailQuestInterests"></dd>
 
                     <dt class="col-sm-3">Description</dt>
                     <dd class="col-sm-9" id="detailQuestDescription"></dd>
@@ -309,9 +336,8 @@
             function matches(card, q) {
                 if (!card) return false;
                 const title = card.getAttribute('data-title') || '';
-                const desc = card.getAttribute('data-desc') || '';
-                const initiator = card.getAttribute('data-initiator') || '';
-                const text = `${title} ${desc} ${initiator}`;
+                const interests = card.getAttribute('data-interests') || '';
+                const text = `${title} ${interests}`;
                 return q === '' || text.indexOf(q) >= 0;
             }
 
@@ -366,6 +392,7 @@
                     const reward = button.getAttribute('data-reward') || '';
                     const status = (button.getAttribute('data-status') || 'active').toLowerCase();
                     const id = button.getAttribute('data-id') || '';
+                    const interests = button.getAttribute('data-interests') || '';
 
                     const setInner = (idEl, text) => {
                         const el = document.getElementById(idEl);
@@ -375,6 +402,7 @@
                     setInner('questDetailsTitle', title);
                     setInner('detailQuestTitle', title);
                     setInner('detailQuestInitiator', initiator);
+                    setInner('detailQuestInterests', interests || 'None');
                     setInner('detailQuestDescription', desc);
                     setInner('detailQuestReward', reward + ' XP');
                     setInner('detailQuestStatus', status === 'completed' ? 'Completed' : 'Active');

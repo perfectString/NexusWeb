@@ -7,6 +7,8 @@ namespace Nexus.Controllers
 {
     public class QuestController : BaseController
     {
+        private const int PageSize = 8;
+
         private readonly IQuestService questService;
         private readonly ILogger<QuestController> logger;
         public QuestController(IQuestService questService, 
@@ -17,12 +19,23 @@ namespace Nexus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int page = 1)
         {
-            IEnumerable<QuestViewModel> allQuestsViewModel = await questService
+            IEnumerable<QuestViewModel> allQuests = await questService
                 .GetAllQuestsOrderByTitleAsync();
 
-            return View(allQuestsViewModel);
+            int totalItems = allQuests.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
+            page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
+
+            var pagedQuests = allQuests
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedQuests);
         }
 
         [HttpGet]
@@ -39,6 +52,7 @@ namespace Nexus.Controllers
         {
             if (!ModelState.IsValid)
             {
+                questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
             }
 
@@ -46,17 +60,18 @@ namespace Nexus.Controllers
             try
             {
 
-               await questService
+                await questService
                     .AddQuestsAndJoinInitiatorAsync(initiatorId, questModel);
 
                 return RedirectToAction(nameof(All));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while adding the quest!");
 
                 ModelState.AddModelError(string.Empty,
                     "Saving changes failed. Please try again later.");
+                questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
             }
         }
@@ -79,14 +94,25 @@ namespace Nexus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Joined()
+        public async Task<IActionResult> Joined(int page = 1)
         {
             Guid profileId = GetUserId();
 
             IEnumerable<QuestViewModel> allJoinedQuest = await questService
                 .GetAllJoinedQuestsByProfileIdAsync(profileId);
 
-            return View(allJoinedQuest);
+            int totalItems = allJoinedQuest.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
+            page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
+
+            var pagedQuests = allJoinedQuest
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedQuests);
         }
 
         [HttpPost]
@@ -100,7 +126,7 @@ namespace Nexus.Controllers
                 bool joined = await questService
                     .IsJoinedAsync(profileId, id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while joining the quest!");
                 return BadRequest();
@@ -126,6 +152,7 @@ namespace Nexus.Controllers
 
             if (!ModelState.IsValid)
             {
+                questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
             }
 
@@ -139,10 +166,9 @@ namespace Nexus.Controllers
             {
                 logger.LogError(ex, "An error occurred while editing changes!");
                 ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
             }
-
-          
         }
 
         [HttpGet]
@@ -195,5 +221,4 @@ namespace Nexus.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
     }
-
 }

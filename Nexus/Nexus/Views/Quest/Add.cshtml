@@ -17,6 +17,11 @@
     var initialReward = rewardMap.ContainsKey(Model.Difficulty.ToString())
         ? rewardMap[Model.Difficulty.ToString()]
         : rewardMap.First().Value;
+
+    var availableInterestsJson = JsonSerializer.Serialize(
+        Model.AvailableInterests.Select(i => new { i.Id, i.Name })
+    );
+    var initialSelectedIds = JsonSerializer.Serialize(Model.InterestIds ?? new List<int>());
 }
 
 @section Styles {
@@ -30,12 +35,32 @@
             border-radius:999px;
             font-weight:700;
             font-size:.9rem;
-            border: 1px solid rgba(122,74,0,0.06);
+            border: 1px solid rgba(78,65,190,0.08);
             white-space:nowrap;
         }
-
         .form-section { padding:1rem; }
         .form-actions { display:flex; justify-content:flex-end; gap:.5rem; }
+
+        .interest-grid {
+            display:flex; flex-wrap:wrap; gap:.5rem; padding:.5rem;
+            border-radius:.5rem; border:1px solid #d5d1e8;
+            background:#fff;
+        }
+        .interest-card {
+            display:inline-flex; align-items:center; padding:.35rem .6rem;
+            border-radius:999px; background:#f4f2fb; color:#4e41be;
+            font-weight:600; font-size:.9rem; border:1px solid rgba(78,65,190,0.08);
+            cursor:pointer; user-select:none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .interest-card:hover { background:#e8e5f5; }
+        .interest-card.selected {
+            background: linear-gradient(90deg, #d4a017, #f0c040);
+            color:#3a2800; border-color:rgba(212,160,23,0.2);
+            box-shadow: 0 2px 8px rgba(212,160,23,0.2);
+        }
+        .interest-card.selected:hover { background: linear-gradient(90deg, #c49315, #e6b535); }
+        .interest-count { font-size:.85rem; color:#7e789c; }
     </style>
 }
 
@@ -95,6 +120,15 @@
                     </div>
                 </div>
 
+                <div class="col-12">
+                    <label class="form-label">
+                        Interests <span class="text-muted small">(Interests locked after creation)</span>
+                        <span class="interest-count ms-2" id="questInterestCount"></span>
+                    </label>
+                    <div id="questInterestGrid" class="interest-grid" role="list"></div>
+                    <div id="questInterestHiddenInputs" class="mt-2"></div>
+                </div>
+
                 <div class="col-12 form-actions">
                     <a asp-action="All" class="btn btn-outline-secondary">Back</a>
                     <button type="submit" class="btn btn-primary">Create</button>
@@ -109,7 +143,6 @@
 
     <script>
         (function () {
-
             const textarea = document.getElementById('descriptionInput');
             const counter = document.getElementById('descCount');
             const max = Number('@Nexus.GCommon.ValidationConstants.DescriptionMaxLen');
@@ -123,7 +156,6 @@
                 updateCount();
                 textarea.addEventListener('input', updateCount);
             }
-
 
             const rewardMap = @Html.Raw(JsonSerializer.Serialize(rewardMap));
             const difficultySelect = document.getElementById('difficultySelect');
@@ -140,6 +172,77 @@
                 difficultySelect.addEventListener('change', updateReward);
                 updateReward();
             }
+
+            
+            const available = @Html.Raw(availableInterestsJson);
+            const initialSelected = @Html.Raw(initialSelectedIds);
+            const grid = document.getElementById('questInterestGrid');
+            const hiddenInputs = document.getElementById('questInterestHiddenInputs');
+            const countEl = document.getElementById('questInterestCount');
+            let selected = [];
+
+            function renderAll() {
+                grid.innerHTML = '';
+                for (const item of available) {
+                    const card = document.createElement('div');
+                    card.className = 'interest-card';
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('data-id', item.Id);
+                    card.tabIndex = 0;
+                    card.innerText = item.Name;
+                    card.addEventListener('click', () => toggleSelect(item.Id, card));
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSelect(item.Id, card); }
+                    });
+                    grid.appendChild(card);
+                }
+                updateCountDisplay();
+            }
+
+            function updateCountDisplay() {
+                countEl.textContent = `${selected.length}/3 selected`;
+            }
+
+            function toggleSelect(id, cardEl) {
+                const idx = selected.indexOf(id);
+                if (idx === -1) {
+                    if (selected.length >= 3) {
+                        cardEl.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 180 });
+                        return;
+                    }
+                    selected.push(id);
+                    cardEl.classList.add('selected');
+                } else {
+                    selected.splice(idx, 1);
+                    cardEl.classList.remove('selected');
+                }
+                updateHiddenInputs();
+                updateCountDisplay();
+            }
+
+            function updateHiddenInputs() {
+                hiddenInputs.innerHTML = '';
+                for (const id of selected) {
+                    const inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = 'InterestIds';
+                    inp.value = id;
+                    hiddenInputs.appendChild(inp);
+                }
+            }
+
+            function initSelected() {
+                if (!Array.isArray(initialSelected)) return;
+                for (const id of initialSelected) {
+                    const card = grid.querySelector(`.interest-card[data-id="${id}"]`);
+                    if (card) { selected.push(id); card.classList.add('selected'); }
+                }
+                updateHiddenInputs();
+                updateCountDisplay();
+            }
+
+            renderAll();
+            initSelected();
         })();
     </script>
 }
