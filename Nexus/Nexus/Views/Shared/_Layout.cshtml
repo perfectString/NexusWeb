@@ -37,12 +37,12 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                        <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Index">
                                             My Profile
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Profile" asp-action="Edit">
+                                        <a class="dropdown-item" asp-area="" asp-controller="Profile" asp-action="Edit">
                                             Edit Profile
                                         </a>
                                     </li>
@@ -50,7 +50,7 @@
                             </li>
 
                             <li class="nav-item me-2">
-                                <a class="nav-link" asp-controller="Profile" asp-action="All">Users</a>
+                                <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="All">Users</a>
                             </li>
 
                             <li class="nav-item dropdown me-2">
@@ -59,19 +59,19 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Quest" asp-action="All">All Quests</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Quest" asp-action="All">All Quests</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Quest" asp-action="Add">Add Quest</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Quest" asp-action="Add">Add Quest</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Quest" asp-action="Joined">Joined Quests</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Quest" asp-action="Joined">Joined Quests</a>
                                     </li>
                                 </ul>
                             </li>
 
                             <li class="nav-item me-2">
-                                <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
 
                             @if (User.IsInRole("Admin"))

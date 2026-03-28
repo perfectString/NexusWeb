@@ -14,11 +14,13 @@ namespace Nexus.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<Profile> signInManager;
+        private readonly UserManager<Profile> userManager;
         private readonly ILogger<LoginModel> logger;
 
-        public LoginModel(SignInManager<Profile> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<Profile> signInManager, UserManager<Profile> userManager, ILogger<LoginModel> logger)
         {
             this.signInManager = signInManager;
+            this.userManager = userManager;
             this.logger = logger;
         }
 
@@ -68,6 +70,13 @@ namespace Nexus.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     logger.LogInformation("User logged in.");
+
+                    var user = await userManager.FindByEmailAsync(Input.Email);
+                    if (user != null && await userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return LocalRedirect("/Admin");
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

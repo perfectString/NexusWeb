@@ -1,0 +1,206 @@
+﻿@model Nexus.ViewModels.Admin.Profile.ProfileManagementViewModel
+
+@{
+    ViewData["Title"] = "Delete User — " + Model.DisplayName;
+}
+
+@section Styles {
+    <style>
+        .admin-banner {
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            border-radius: 0.75rem;
+        }
+
+        .admin-banner h1 {
+            font-size: 1.5rem;
+        }
+
+        .admin-delete-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+        }
+
+        .user-avatar-lg {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            flex-shrink: 0;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid #eee8ff;
+            font-size: 0.92rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 160px;
+            flex-shrink: 0;
+            color: #7e789c;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding-top: 0.1rem;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #2b2548;
+            word-break: break-word;
+        }
+
+        .level-pill-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            background: linear-gradient(90deg, #d4a017, #f0c040);
+            color: #3a2800;
+            font-weight: 700;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 999px;
+        }
+
+        .xp-compact {
+            background: #f4f2fb;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #eee8ff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .xp-compact-bar {
+            width: 500px;
+            height: 15px;
+            background: rgba(78, 65, 190, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .xp-compact-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #4e41be);
+            border-radius: 999px;
+        }
+
+        .warning-box {
+            background: #f4f2fb;
+            border: 1px solid #e8e5f5;
+            border-left: 4px solid #e74c5e;
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            color: #2b2548;
+            font-size: 0.9rem;
+        }
+
+        .warning-box strong {
+            color: #b83243;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .form-actions-right {
+            margin-left: auto;
+        }
+    </style>
+}
+
+<div class="py-4">
+    <div class="admin-banner text-white p-4 mb-4 d-flex align-items-center gap-3">
+        <div class="user-avatar-lg">
+            @(string.IsNullOrEmpty(Model.DisplayName) ? "U" : Model.DisplayName.Substring(0, 1).ToUpper())
+        </div>
+        <div>
+            <h1 class="fw-bold mb-0">Delete User</h1>
+            <p class="mb-0" style="color: rgba(255,255,255,0.75);">
+                @Model.DisplayName — @Model.City
+            </p>
+        </div>
+    </div>
+
+    <div class="card admin-delete-card">
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <div class="detail-label">Display Name</div>
+                        <div class="detail-value fw-semibold">@Model.DisplayName</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <div class="detail-label">City</div>
+                        <div class="detail-value">@Model.City</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">Bio</div>
+                        <div class="detail-value">@(!string.IsNullOrEmpty(Model.Bio) ? Model.Bio : "No bio provided.")</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">XP / Level</div>
+                        <div class="detail-value">
+                            <div class="xp-compact">
+                                <span class="fw-semibold">@Model.ExperiencePoints XP</span>
+                                <span class="level-pill-sm">Lv @Model.Level</span>
+                                <div class="xp-compact-bar">
+                                    <div class="xp-compact-fill" style="width: @Model.ProgressPercentage%"></div>
+                                </div>
+                                <span class="text-muted" style="font-size: 0.78rem;">
+                                    @Model.XpIntoCurrentLevel/@Model.XpNeededPerLevel
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="warning-box">
+                        <strong> This action cannot be undone.</strong>
+                        Deleting this user will permanently remove their profile, quests that they joined,
+                        and any quests they have initiated.
+                    </div>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <div class="form-actions">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-lg">Edit</a>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancel</a>
+
+                        <form asp-action="DeleteConfirm" asp-route-id="@Model.Id" method="post" class="d-inline form-actions-right">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                Delete User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

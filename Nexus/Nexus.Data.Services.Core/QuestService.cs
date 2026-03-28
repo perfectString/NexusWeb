@@ -17,7 +17,14 @@ namespace Nexus.Data.Services.Core
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<QuestViewModel>> GetAllQuestsOrderByTitleAsync()
+        public async Task<int> GetAllQuestsCountAsync()
+        {
+            return await dbContext
+                .Quests
+                .CountAsync();
+        }
+
+        public async Task<IEnumerable<QuestViewModel>> GetAllQuestsOrderByTitleAsync(int page, int pageSize)
         {
             IEnumerable<QuestViewModel> allQuestsVm = await dbContext
               .Quests
@@ -25,6 +32,8 @@ namespace Nexus.Data.Services.Core
               .Include(q => q.QuestInterest)
                 .ThenInclude(qi => qi.Interest)
               .OrderBy(q => q.Title)
+              .Skip((page - 1) * pageSize)
+              .Take(pageSize)
               .Select(q => new QuestViewModel()
               {
                   Id = q.Id,
@@ -316,7 +325,15 @@ namespace Nexus.Data.Services.Core
             return detailsModel;
         }
 
-        public async Task<IEnumerable<QuestViewModel>> GetAllJoinedQuestsByProfileIdAsync(Guid userId)
+        public async Task<int> GetJoinedQuestsCountAsync(Guid userId)
+        {
+            return await dbContext
+                .QuestJoiners
+                .Where(qj => qj.ProfileId == userId)
+                .CountAsync();
+        }
+
+        public async Task<IEnumerable<QuestViewModel>> GetAllJoinedQuestsByProfileIdAsync(Guid userId, int page, int pageSize)
         {
             IEnumerable<QuestViewModel> allJoinedQuest = await dbContext
                 .QuestJoiners
@@ -328,6 +345,9 @@ namespace Nexus.Data.Services.Core
                 .AsNoTracking()
                 .Where(qj => qj.ProfileId == userId)
                 .Select(qj => qj.Quest)
+                .OrderBy(q => q.Title)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(q => new QuestViewModel()
                 {
                     Id = q.Id,
@@ -342,7 +362,6 @@ namespace Nexus.Data.Services.Core
                         .Select(qi => qi.Interest.Name)
                         .ToList()
                 })
-                .OrderBy(q => q.Title)
                 .ToListAsync();
 
             return allJoinedQuest;
@@ -440,6 +459,14 @@ namespace Nexus.Data.Services.Core
                 })
                 .OrderBy(i => i.Name)
                 .ToListAsync();
+        }
+
+        public async Task<int> GetCreatedQuestsCountAsync(Guid userId)
+        {
+            return await dbContext
+                .Quests
+                .Where(q => q.QuestInitiatorId == userId)
+                .CountAsync();
         }
     }
 }

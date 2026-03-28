@@ -19,16 +19,14 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> All(int page = 1)
         {
-            IEnumerable<ProfileViewModel> allProfilesViewModel = await profileService
-                .GetAllProfilesByNameThenByAgeThenByCityAscAsync();
+            int totalItems = await profileService
+                .GetAllProfilesCountAsync();
 
-            int totalItems = allProfilesViewModel.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
             page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
 
-            var pagedProfiles = allProfilesViewModel
-                .Skip((page - 1) * PageSize)
-                .Take(PageSize);
+            var pagedProfiles = await profileService
+                .GetAllProfilesByNameThenByAgeThenByCityAscAsync(page, PageSize);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;

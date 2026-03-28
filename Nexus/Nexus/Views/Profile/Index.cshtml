@@ -12,10 +12,8 @@
     {
         userGuid = Guid.Empty;
     }
-    var joinedQuests = await QuestService.GetAllJoinedQuestsByProfileIdAsync(userGuid);
-    var joinedCount = joinedQuests?.Count() ?? 0;
-    var allQuests = await QuestService.GetAllQuestsOrderByTitleAsync();
-    var createdCount = allQuests?.Count(q => string.Equals(q.InitiatorId.ToString(), userId, StringComparison.OrdinalIgnoreCase)) ?? 0;
+    var joinedCount = await QuestService.GetJoinedQuestsCountAsync(userGuid);
+    var createdCount = await QuestService.GetCreatedQuestsCountAsync(userGuid);
 }
 
 @section Styles {

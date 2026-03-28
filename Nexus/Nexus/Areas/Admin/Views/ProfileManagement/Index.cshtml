@@ -1,0 +1,277 @@
+﻿@model IEnumerable<Nexus.ViewModels.Admin.Profile.ProfileManagementViewModel>
+
+@{
+    ViewData["Title"] = "Manage User Profiles";
+}
+
+@section Styles {
+    <style>
+        .admin-banner {
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            border-radius: 0.75rem;
+        }
+
+        .admin-banner h1 {
+            font-size: 1.5rem;
+        }
+
+        .admin-table-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+            overflow: hidden;
+        }
+
+        .admin-table {
+            margin-bottom: 0;
+        }
+
+        .admin-table thead {
+            background: #f4f2fb;
+        }
+
+        .admin-table thead th {
+            color: #7e789c;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid #eee8ff;
+            white-space: nowrap;
+        }
+
+        .admin-table tbody td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee8ff;
+            font-size: 0.92rem;
+        }
+
+        .admin-table tbody tr {
+            transition: background 0.12s ease;
+        }
+
+        .admin-table tbody tr:hover {
+            background: #f9f8fd;
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2b2548;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .user-city {
+            color: #7e789c;
+            font-size: 0.82rem;
+        }
+
+        .xp-bar-wrap {
+            width: 100px;
+            height: 8px;
+            background: rgba(78, 65, 190, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #4e41be);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        .level-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: linear-gradient(90deg, #d4a017, #f0c040);
+            color: #3a2800;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .btn-admin {
+            font-size: 0.78rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 0.4rem;
+            font-weight: 600;
+        }
+
+        .search-box {
+            max-width: 320px;
+        }
+
+        .search-box .form-control {
+            border-radius: 999px;
+            padding-left: 1rem;
+        }
+
+        .count-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #7e789c;
+        }
+    </style>
+}
+
+<div class="py-4">
+    <div class="admin-banner text-white p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold mb-1">Manage User Profiles</h1>
+            <p class="mb-0" style="color: rgba(255,255,255,0.75);">
+                Edit or remove user accounts
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="count-badge">@ViewBag.TotalUsers users</span>
+            <div class="search-box">
+                <input id="adminSearch" class="form-control form-control-sm" placeholder="Search users..." aria-label="Search users" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card admin-table-card">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Level</th>
+                            <th>XP</th>
+                            <th>Progress</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        @foreach (var user in Model)
+                        {
+                            <tr data-name="@user.DisplayName.ToLower()" data-city="@user.City.ToLower()">
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">
+                                            @(string.IsNullOrEmpty(user.DisplayName) ? "U" : user.DisplayName.Substring(0, 1).ToUpper())
+                                        </div>
+                                        <div>
+                                            <div class="user-name" title="@user.DisplayName">@user.DisplayName</div>
+                                            <div class="user-city">@user.City</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="level-pill">Lv @user.Level</span>
+                                </td>
+                                <td>
+                                    <span class="fw-semibold">@user.ExperiencePoints</span>
+                                    <span class="text-muted" style="font-size: 0.78rem;">XP</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="xp-bar-wrap">
+                                            <div class="xp-bar-fill" style="width: @user.ProgressPercentage%"></div>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 0.78rem;">
+                                            @user.XpIntoCurrentLevel/@user.XpNeededPerLevel
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="actions-cell justify-content-end">
+                                        <a asp-action="Edit" asp-route-id="@user.Id"
+                                           class="btn btn-outline-primary btn-admin">
+                                            Edit
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@user.Id"
+                                           class="btn btn-outline-danger btn-admin">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p class="mb-1 fw-semibold">No users found</p>
+                <p class="mb-0 text-muted">There are no profiles to manage.</p>
+            </div>
+        }
+    </div>
+
+    <partial name="_Pagination" />
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById('adminSearch');
+            const rows = Array.from(document.querySelectorAll('#usersTableBody tr'));
+
+            if (!searchInput) return;
+
+            let timeout;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    const q = (searchInput.value || '').trim().toLowerCase();
+
+                    rows.forEach(function (row) {
+                        const name = row.getAttribute('data-name') || '';
+                        const city = row.getAttribute('data-city') || '';
+                        const match = q === '' || name.indexOf(q) >= 0 || city.indexOf(q) >= 0;
+                        row.style.display = match ? '' : 'none';
+                    });
+                }, 180);
+            });
+        })();
+    </script>
+}

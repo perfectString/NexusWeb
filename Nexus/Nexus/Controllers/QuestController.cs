@@ -21,16 +21,14 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> All(int page = 1)
         {
-            IEnumerable<QuestViewModel> allQuests = await questService
-                .GetAllQuestsOrderByTitleAsync();
+            int totalItems = await questService
+                .GetAllQuestsCountAsync();
 
-            int totalItems = allQuests.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
             page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
 
-            var pagedQuests = allQuests
-                .Skip((page - 1) * PageSize)
-                .Take(PageSize);
+            var pagedQuests = await questService
+                .GetAllQuestsOrderByTitleAsync(page, PageSize);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
@@ -98,16 +96,14 @@ namespace Nexus.Controllers
         {
             Guid profileId = GetUserId();
 
-            IEnumerable<QuestViewModel> allJoinedQuest = await questService
-                .GetAllJoinedQuestsByProfileIdAsync(profileId);
+            int totalItems = await questService
+                .GetJoinedQuestsCountAsync(profileId);
 
-            int totalItems = allJoinedQuest.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
             page = Math.Clamp(page, 1, Math.Max(totalPages, 1));
 
-            var pagedQuests = allJoinedQuest
-                .Skip((page - 1) * PageSize)
-                .Take(PageSize);
+            var pagedQuests = await questService
+                .GetAllJoinedQuestsByProfileIdAsync(profileId, page, PageSize);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;

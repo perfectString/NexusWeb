@@ -3,33 +3,63 @@ using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.Data.Services.Core.Helpers;
 using Nexus.ViewModels.Profile;
-using Nexus.GCommon.Enums;
 
 namespace Nexus.Data.Services.Core
 {
     public class ProfileService : IProfileService
     {
-
-
         private readonly NexusDbContext dbContext;
         public ProfileService(NexusDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<ProfileViewModel>> GetAllProfilesByNameThenByAgeThenByCityAscAsync()
+        public async Task<int> GetAllProfilesCountAsync()
         {
-            IQueryable<Profile> fetchProfilesQuery = dbContext
+            Guid adminRole = await dbContext
+                .Roles
+                .Where(r => r.Name == "Admin")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            List<Guid> adminIds = await dbContext
+                .UserRoles
+                .Where(ur => ur.RoleId == adminRole)
+                .Select(ur => ur.UserId)
+                .ToListAsync();
+
+            return await dbContext
+                .Users
+                .Where(p => !adminIds.Contains(p.Id))
+                .CountAsync();
+        }
+
+        public async Task<IEnumerable<ProfileViewModel>> GetAllProfilesByNameThenByAgeThenByCityAscAsync(int page, int pageSize)
+        {
+            //Excluding the admin from all profiles view
+            Guid adminRole = await dbContext
+                .Roles
+                .Where(r => r.Name == "Admin")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            List<Guid> adminIds = await dbContext
+                .UserRoles
+                .Where(ur => ur.RoleId == adminRole)
+                .Select(ur => ur.UserId)
+                .ToListAsync();
+
+            IEnumerable<ProfileViewModel> allProfilesVm = await dbContext
                 .Users
                 .Include(p => p.ProfileInterest)
                     .ThenInclude(i => i.Interest)
-                .AsNoTracking();
-
-            IEnumerable<ProfileViewModel> allProfilesVm = await fetchProfilesQuery
-                .Where(p=>p.DisplayName != "Admin")
+                .AsNoTracking()
+                .Where(p => !adminIds.Contains(p.Id))
                 .OrderBy(p => p.DisplayName)
                 .ThenBy(p => p.Age)
                 .ThenBy(p => p.City)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(u => new ProfileViewModel
                 {
                     Id = u.Id,
@@ -52,21 +82,21 @@ namespace Nexus.Data.Services.Core
 
             return allProfilesVm;
         }
+
         public async Task<ProfileEditViewModel> GetEditProfileViewModelWithAllInterestsAsync(Guid userId)
         {
-
             Profile? userFetch = await dbContext
                 .Users
                 .AsNoTracking()
-                .SingleOrDefaultAsync(u=> u.Id == userId);
+                .SingleOrDefaultAsync(u => u.Id == userId);
 
             //Even if there is always going to be user to be found in the Db.
             if (userFetch == null)
             {
                 throw new ArgumentException("This profile was not found!");
             }
-            
-            List<int>interestId = await dbContext
+
+            List<int> interestId = await dbContext
                 .ProfileInterests
                 .Where(pf => pf.ProfileId == userId)
                 .Select(i => i.InterestId)
@@ -158,7 +188,7 @@ namespace Nexus.Data.Services.Core
             ProfileViewModel profileViewModel = new ProfileViewModel()
             {
                 Id = userFetch.Id,
-                DisplayName = userFetch.DisplayName, 
+                DisplayName = userFetch.DisplayName,
                 Age = userFetch.Age,
                 City = userFetch.City,
                 Bio = userFetch.Bio,
