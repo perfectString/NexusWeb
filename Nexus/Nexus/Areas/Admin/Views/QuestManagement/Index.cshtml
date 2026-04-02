@@ -1,0 +1,279 @@
+﻿@model IEnumerable<Nexus.ViewModels.Admin.Quest.QuestManagementViewModel>
+
+@{
+    ViewData["Title"] = "Manage Quests";
+}
+
+@section Styles {
+    <style>
+        .admin-banner {
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            border-radius: 0.75rem;
+        }
+
+            .admin-banner h1 {
+                font-size: 1.5rem;
+            }
+
+        .admin-table-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+            overflow: hidden;
+        }
+
+        .admin-table {
+            margin-bottom: 0;
+        }
+
+            .admin-table thead {
+                background: #f4f2fb;
+            }
+
+                .admin-table thead th {
+                    color: #7e789c;
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    padding: 0.75rem 1rem;
+                    border-bottom: 2px solid #eee8ff;
+                    white-space: nowrap;
+                }
+
+            .admin-table tbody td {
+                padding: 0.75rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee8ff;
+                font-size: 0.92rem;
+            }
+
+            .admin-table tbody tr {
+                transition: background 0.12s ease;
+            }
+
+                .admin-table tbody tr:hover {
+                    background: #f9f8fd;
+                }
+
+                .admin-table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+        .quest-title {
+            font-weight: 600;
+            color: #2b2548;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+
+        .quest-meta {
+            color: #7e789c;
+            font-size: 0.82rem;
+        }
+
+        .difficulty-pill {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: #eee8ff;
+            color: #4e41be;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: #e0f7fa;
+            color: #00796b;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .btn-admin {
+            font-size: 0.78rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 0.4rem;
+            font-weight: 600;
+        }
+
+        .search-box {
+            max-width: 320px;
+        }
+
+            .search-box .form-control {
+                border-radius: 999px;
+                padding-left: 1rem;
+            }
+
+        .count-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #7e789c;
+        }
+
+        .fab-add-quest {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1050;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .fab-add-quest i {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .add-quest-row {
+            padding: 1.5rem 0 0 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .add-quest-btn {
+            min-width: 180px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+        }
+    </style>
+}
+
+<div class="py-4">
+    <div class="admin-banner text-white p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold mb-1">Manage Quests</h1>
+            <p class="mb-0" style="color: rgba(255,255,255,0.75);">
+                Edit or remove quests
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="count-badge">@ViewBag.TotalQuests quests</span>
+            <div class="search-box">
+                <input id="adminSearch" class="form-control form-control-sm" placeholder="Search quests..." aria-label="Search quests" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card admin-table-card">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Initiator</th>
+                            <th>Difficulty</th>
+                            <th>Status</th>
+                            <th>Reward</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questsTableBody">
+                        @foreach (var quest in Model)
+                        {
+                            <tr data-title="@quest.Title.ToLower()" data-initiator="@quest.QuestInitiator.ToLower()">
+                                <td>
+                                    <div class="quest-title" title="@quest.Title">@quest.Title</div>
+                                    <div class="quest-meta">@quest.Description</div>
+                                </td>
+                                <td>
+                                    <span class="quest-meta">@quest.QuestInitiator</span>
+                                </td>
+                                <td>
+                                    <span class="difficulty-pill">@quest.Difficulty</span>
+                                </td>
+                                <td>
+                                    <span class="status-pill">@quest.Status</span>
+                                </td>
+                                <td>
+                                    <span class="fw-semibold">@quest.RewardExperience</span>
+                                    <span class="text-muted" style="font-size: 0.78rem;">XP</span>
+                                </td>
+                                <td>
+                                    <div class="actions-cell justify-content-end">
+                                        <a asp-action="Edit" asp-route-id="@quest.Id"
+                                           class="btn btn-outline-primary btn-admin">
+                                            Edit
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@quest.Id"
+                                           class="btn btn-outline-danger btn-admin">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p class="mb-1 fw-semibold">No quests found</p>
+                <p class="mb-0 text-muted">There are no quests to manage.</p>
+            </div>
+        }
+    </div>
+
+    <div class="add-quest-row">
+        <a asp-area="" asp-controller="Quest" asp-action="Add" class="btn btn-primary add-quest-btn">
+            <i class="bi bi-plus-lg"></i> Add Quest
+        </a>
+    </div>
+
+    <partial name="_Pagination" />
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById('adminSearch');
+            const rows = Array.from(document.querySelectorAll('#questsTableBody tr'));
+
+            if (!searchInput) return;
+
+            let timeout;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    const q = (searchInput.value || '').trim().toLowerCase();
+
+                    rows.forEach(function (row) {
+                        const title = row.getAttribute('data-title') || '';
+                        const initiator = row.getAttribute('data-initiator') || '';
+                        const match = q === '' || title.indexOf(q) >= 0 || initiator.indexOf(q) >= 0;
+                        row.style.display = match ? '' : 'none';
+                    });
+                }, 180);
+            });
+        })();
+    </script>
+}

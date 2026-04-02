@@ -4,16 +4,16 @@ using Nexus.ViewModels.Admin.Profile;
 
 namespace Nexus.Areas.Admin.Controllers
 {
-    public class ProfileManagement : BaseController
+    public class ProfileManagementController : BaseController
     {
         private const int PageSize = 8;
 
         private readonly IProfileManagementService profileManagementService;
-        private readonly ILogger<ProfileManagement> logger;
+        private readonly ILogger<ProfileManagementController> logger;
 
-        public ProfileManagement(
+        public ProfileManagementController(
             IProfileManagementService profileManagementService,
-            ILogger<ProfileManagement> logger)
+            ILogger<ProfileManagementController> logger)
         {
             this.profileManagementService = profileManagementService;
             this.logger = logger;
@@ -42,7 +42,7 @@ namespace Nexus.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             ProfileManagementViewModel profileModel = await profileManagementService
-                .GetProfileForEditAsAdminAsync(id);
+                .GetProfileToEditAsAdminAsync(id);
 
             return View(profileModel);
         }
@@ -75,7 +75,7 @@ namespace Nexus.Areas.Admin.Controllers
         {
             ProfileManagementViewModel profileModel =
                 await profileManagementService
-                .GetProfileForEditAsAdminAsync(id);
+                .GetProfileToEditAsAdminAsync(id);
             return View(profileModel);
         }
 

@@ -49,7 +49,7 @@ namespace Nexus.Data.Services.Core
             return allProfilesVm;
         }
 
-        public async Task<ProfileManagementViewModel> GetProfileForEditAsAdminAsync(Guid userId)
+        public async Task<ProfileManagementViewModel> GetProfileToEditAsAdminAsync(Guid userId)
         {
             Profile? userFetch = await dbContext
                 .Users

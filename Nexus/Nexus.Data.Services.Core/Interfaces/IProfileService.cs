@@ -4,9 +4,10 @@ namespace Nexus.Data.Services.Core.Interfaces
 {
     public interface IProfileService
     {
-        // All Profiles 
+        // All Profile Count
         Task<int> GetAllProfilesCountAsync();
 
+        // All Profiles 
         Task<IEnumerable<ProfileViewModel>> GetAllProfilesByNameThenByAgeThenByCityAscAsync(int page, int pageSize);
 
         // Get Interests

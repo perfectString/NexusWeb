@@ -12,7 +12,7 @@ namespace Nexus.Data.Services.Core.Interfaces
         Task<IEnumerable<ProfileManagementViewModel>> GetAllProfilesAsAdminAsync(int page, int pageSize);
 
         //Edit profile 
-        Task<ProfileManagementViewModel> GetProfileForEditAsAdminAsync(Guid userId);
+        Task<ProfileManagementViewModel> GetProfileToEditAsAdminAsync(Guid userId);
 
         Task EditProfileAsAdminAsync(Guid userId, ProfileManagementViewModel model);
 

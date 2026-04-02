@@ -47,6 +47,9 @@ namespace Nexus
 
             // ProfileManagement Service
             builder.Services.AddScoped<IProfileManagementService, ProfileManagementService>();
+            
+            // QuestManagement Service
+            builder.Services.AddScoped<IQuestManagementService, QuestManagementService>();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();

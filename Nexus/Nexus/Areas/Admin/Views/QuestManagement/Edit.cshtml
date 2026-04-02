@@ -1,0 +1,185 @@
+﻿@model Nexus.ViewModels.Admin.Quest.QuestManagementViewModel
+@using Nexus.GCommon.Enums
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Admin Quest Editor";
+
+    var difficultyValues = Enum.GetValues(typeof(QuestDifficulty))
+        .Cast<QuestDifficulty>()
+        .ToList();
+
+    var availableInterestsJson = JsonSerializer.Serialize(
+        Model.AvailableInterests.Select(i => new { i.Id, i.Name })
+    );
+    var initialSelectedIds = JsonSerializer.Serialize(Model.InterestIds ?? new List<int>());
+}
+
+@section Styles {
+    <style>
+        .interest-grid {
+            display:flex; flex-wrap:wrap; gap:.5rem; padding:.5rem;
+            border-radius:.5rem; border:1px solid #d5d1e8;
+            background:#fff;
+        }
+        .interest-card {
+            display:inline-flex; align-items:center; padding:.35rem .6rem;
+            border-radius:999px; background:#f4f2fb; color:#4e41be;
+            font-weight:600; font-size:.9rem; border:1px solid rgba(78,65,190,0.08);
+            cursor:pointer; user-select:none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .interest-card:hover { background:#e8e5f5; }
+        .interest-card.selected {
+            background: linear-gradient(90deg, #d4a017, #f0c040);
+            color:#3a2800; border-color:rgba(212,160,23,0.2);
+            box-shadow: 0 2px 8px rgba(212,160,23,0.2);
+        }
+        .interest-card.selected:hover { background: linear-gradient(90deg, #c49315, #e6b535); }
+        .interest-count { font-size:.85rem; color:#7e789c; }
+        .create-quest-card { max-width: 900px; margin: 0 auto; margin-bottom: 5rem; }
+    </style>
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm create-quest-card">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">Admin Quest Editor</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <input asp-for="Id" type="hidden" />
+
+                <div class="col-12">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <label asp-for="Difficulty" class="form-label"></label>
+                    <select asp-for="Difficulty" class="form-select" id="difficultySelect">
+                        @foreach (var d in difficultyValues)
+                        {
+                            <option value="@d" @@(Model.Difficulty == d ? "selected" : "")>@d</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Difficulty" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4" maxlength="@Nexus.GCommon.ValidationConstants.DescriptionMaxLen"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">
+                        Interests
+                        <span class="interest-count ms-2" id="questInterestCount"></span>
+                    </label>
+                    <div id="questInterestGrid" class="interest-grid" role="list"></div>
+                    <div id="questInterestHiddenInputs" class="mt-2"></div>
+                    <span asp-validation-for="InterestIds" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<QuestStatus>()"></select>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <div class="form-actions d-flex align-items-center gap-2">
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-lg">Delete</a>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-lg ms-auto">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const available = @Html.Raw(availableInterestsJson);
+            const initialSelected = @Html.Raw(initialSelectedIds);
+            const grid = document.getElementById('questInterestGrid');
+            const hiddenInputs = document.getElementById('questInterestHiddenInputs');
+            const countEl = document.getElementById('questInterestCount');
+            let selected = [];
+
+            function renderAll() {
+                grid.innerHTML = '';
+                for (const item of available) {
+                    const card = document.createElement('div');
+                    card.className = 'interest-card';
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('data-id', item.Id);
+                    card.tabIndex = 0;
+                    card.innerText = item.Name;
+                    card.addEventListener('click', () => toggleSelect(item.Id, card));
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSelect(item.Id, card); }
+                    });
+                    grid.appendChild(card);
+                }
+                updateCountDisplay();
+            }
+
+            function updateCountDisplay() {
+                countEl.textContent = `${selected.length}/3 selected`;
+            }
+
+            function toggleSelect(id, cardEl) {
+                const idx = selected.indexOf(id);
+                if (idx === -1) {
+                    if (selected.length >= 3) {
+                        cardEl.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 180 });
+                        return;
+                    }
+                    selected.push(id);
+                    cardEl.classList.add('selected');
+                } else {
+                    selected.splice(idx, 1);
+                    cardEl.classList.remove('selected');
+                }
+                updateHiddenInputs();
+                updateCountDisplay();
+            }
+
+            function updateHiddenInputs() {
+                hiddenInputs.innerHTML = '';
+                for (const id of selected) {
+                    const inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = 'InterestIds';
+                    inp.value = id;
+                    hiddenInputs.appendChild(inp);
+                }
+            }
+
+            function initSelected() {
+                if (!Array.isArray(initialSelected)) return;
+                for (const id of initialSelected) {
+                    const card = grid.querySelector(`.interest-card[data-id="${id}"]`);
+                    if (card) { selected.push(id); card.classList.add('selected'); }
+                }
+                updateHiddenInputs();
+                updateCountDisplay();
+            }
+
+            renderAll();
+            setTimeout(initSelected, 0);
+        })();
+    </script>
+}

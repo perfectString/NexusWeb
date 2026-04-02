@@ -1,0 +1,171 @@
+﻿@model Nexus.ViewModels.Admin.Quest.QuestManagementViewModel
+
+@{
+    ViewData["Title"] = "Delete Quest — " + Model.Title;
+}
+
+@section Styles {
+    <style>
+        .admin-banner {
+            background: linear-gradient(135deg, #4e41be, #6c5ce7);
+            border-radius: 0.75rem;
+        }
+
+            .admin-banner h1 {
+                font-size: 1.5rem;
+            }
+
+        .admin-delete-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid #eee8ff;
+            font-size: 0.92rem;
+        }
+
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+
+        .detail-label {
+            width: 160px;
+            flex-shrink: 0;
+            color: #7e789c;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding-top: 0.1rem;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #2b2548;
+            word-break: break-word;
+        }
+
+        .interest-pill {
+            background: #eee8ff;
+            color: #4e41be;
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.85rem;
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+            display: inline-block;
+        }
+
+        .warning-box {
+            background: #f4f2fb;
+            border: 1px solid #e8e5f5;
+            border-left: 4px solid #e74c5e;
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            color: #2b2548;
+            font-size: 0.9rem;
+        }
+
+            .warning-box strong {
+                color: #b83243;
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .form-actions-right {
+            margin-left: auto;
+        }
+    </style>
+}
+
+<div class="py-4">
+    <div class="admin-banner text-white p-4 mb-4 d-flex align-items-center gap-3">
+        <div>
+            <h1 class="fw-bold mb-0">Delete Quest</h1>
+            <p class="mb-0" style="color: rgba(255,255,255,0.75);">
+                @Model.Title
+            </p>
+        </div>
+    </div>
+
+    <div class="card admin-delete-card">
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <div class="detail-label">Title</div>
+                        <div class="detail-value fw-semibold">@Model.Title</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">@Model.Difficulty</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">Description</div>
+                        <div class="detail-value">@Model.Description</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">@Model.Status</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">Reward</div>
+                        <div class="detail-value">@Model.RewardExperience XP</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-row">
+                        <div class="detail-label">Interests</div>
+                        <div class="detail-value">
+                            @foreach (var interest in Model.AvailableInterests.Where(i => Model.InterestIds.Contains(i.Id)))
+                            {
+                                <span class="interest-pill">@interest.Name</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="warning-box">
+                        <strong>This action cannot be undone.</strong>
+                        Deleting this quest will permanently remove it and all related joiners and interests.
+                    </div>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <div class="form-actions">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-lg">Edit</a>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">Cancel</a>
+
+                        <form asp-action="DeleteConfirm" asp-route-id="@Model.Id" method="post" class="d-inline form-actions-right">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                Delete Quest
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
