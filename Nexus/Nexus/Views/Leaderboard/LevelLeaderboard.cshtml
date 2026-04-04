@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Nexus.ViewModels.Leaderboard.LeaderboardViewModel>
+
+@{
+    ViewData["Title"] = "Level Leaderboard";
+}
+
+@section Styles {
+    <style>
+        .leaderboard-wrap {
+            margin-top: 1.5rem;
+        }
+
+        .leaderboard-glass {
+            background: #fff;
+            color: #2b2548;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(43,37,72,0.08);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-title {
+            text-align: center;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #4e41be;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.5rem;
+        }
+
+            .leaderboard-table th, .leaderboard-table td {
+                padding: 0.75rem 1rem;
+                text-align: left;
+            }
+
+            .leaderboard-table th {
+                color: #7e789c;
+                font-size: 1rem;
+                font-weight: 600;
+                border-bottom: 2px solid #e8e5f5;
+            }
+
+            .leaderboard-table tr {
+                background: #f4f2fb;
+                border-radius: 0.5rem;
+            }
+
+                .leaderboard-table tr:first-child td {
+                    font-weight: 700;
+                    color: #d4a017;
+                }
+
+                .leaderboard-table tr td {
+                    border-top: 1px solid #e8e5f5;
+                }
+
+        .leaderboard-rank {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4e41be;
+        }
+    </style>
+}
+
+<div class="container leaderboard-wrap">
+    <div class="leaderboard-glass">
+        <div class="leaderboard-title">
+            Top Users by Level
+        </div>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Level</th>
+                    <th>XP</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    var rank = 1;
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="leaderboard-rank">@rank</td>
+                            <td>@user.DisplayName</td>
+                            <td>@user.Level</td>
+                            <td>@user.ExperiencePoints</td>
+                        </tr>
+                        rank++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No leaderboard data available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

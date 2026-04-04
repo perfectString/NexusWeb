@@ -69,6 +69,20 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="nav-item dropdown me-2">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    Leaderboards
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Leaderboard" asp-action="QuestLeaderboard">Quest Leaderboard</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Leaderboard" asp-action="LevelLeaderboard">Level Leaderboard</a>
+                                    </li>
+
+                                </ul>
+                            </li>
 
                             <li class="nav-item me-2">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

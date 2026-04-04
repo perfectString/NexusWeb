@@ -47,6 +47,9 @@ namespace Nexus
             // Profile Service
             builder.Services.AddScoped<IProfileService, ProfileService>();
 
+            //Leaderboard Service
+            builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+
             // Quest Service
             builder.Services.AddScoped<IQuestService, QuestService>();
 
