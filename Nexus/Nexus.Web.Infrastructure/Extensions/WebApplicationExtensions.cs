@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Data.Seeding.Contracts;
 
-namespace Nexus.Web.Infrastructure
+namespace Nexus.Web.Infrastructure.Extensions
 {
     public static class WebApplicationExtensions
     {

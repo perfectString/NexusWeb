@@ -5,6 +5,7 @@ namespace Nexus.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [AutoValidateAntiforgeryToken]
     public abstract class BaseController : Controller
     {
 

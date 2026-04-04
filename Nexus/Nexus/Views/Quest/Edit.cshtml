@@ -1,6 +1,8 @@
 ﻿@model Nexus.ViewModels.Quest.QuestAddViewModel
 @using Nexus.GCommon.Enums
 @using Nexus.Data.Services.Core.Helpers
+@using Nexus.Web.Infrastructure.Utilities.Interfaces
+@inject ISlugGenerator SlugGenerator
 
 @{
     ViewData["Title"] = "Edit Quest";

@@ -7,7 +7,9 @@ using Nexus.Data.Seeding;
 using Nexus.Data.Seeding.Contracts;
 using Nexus.Data.Services.Core;
 using Nexus.Data.Services.Core.Interfaces;
-using Nexus.Web.Infrastructure;
+using Nexus.Web.Infrastructure.Extensions;
+using Nexus.Web.Infrastructure.Utilities;
+using Nexus.Web.Infrastructure.Utilities.Interfaces;
 
 namespace Nexus
 {
@@ -38,6 +40,9 @@ namespace Nexus
 
             // Identity Seed
             builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
+
+            // Slug Generator
+            builder.Services.AddSingleton<ISlugGenerator, SlugGenerator>();
 
             // Profile Service
             builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -96,9 +101,15 @@ namespace Nexus
             app.UseRolesSeeder();
             app.UseAdminSeeder();
 
+
+            //Routes, Areas
             app.MapControllerRoute(
                 name: "adminArea",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "slugRoute",
+                pattern: "{controller=Home}/{action=Index}/{id:required}/{slug:required}");
 
             app.MapControllerRoute(
                 name: "default",

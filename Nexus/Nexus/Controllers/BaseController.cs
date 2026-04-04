@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Nexus.Controllers
 {
     [Authorize]
+    [AutoValidateAntiforgeryToken]
     public abstract class BaseController : Controller
     {
         protected Guid GetUserId()
