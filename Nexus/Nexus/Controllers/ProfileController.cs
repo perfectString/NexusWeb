@@ -55,6 +55,7 @@ namespace Nexus.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProfileEditViewModel myProfileViewModel)
         {
             if (myProfileViewModel.InterestId.Count > 3)

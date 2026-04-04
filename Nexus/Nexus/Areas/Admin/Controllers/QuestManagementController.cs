@@ -68,6 +68,7 @@ namespace Nexus.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, QuestManagementViewModel questModel)
         {
 
@@ -124,6 +125,7 @@ namespace Nexus.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirm(int id)
         {
             try

@@ -78,6 +78,7 @@ namespace Nexus.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, ProfileManagementViewModel profileModel)
         {
             if (!ModelState.IsValid)
@@ -153,6 +154,7 @@ namespace Nexus.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirm(Guid id)
         {
             try

@@ -157,7 +157,7 @@
                 textarea.addEventListener('input', updateCount);
             }
 
-            const rewardMap = @Html.Raw(JsonSerializer.Serialize(rewardMap));
+            const rewardMap = @Html.Raw(JsonSerializer.Serialize(rewardMap)); //using json serialised against attacks
             const difficultySelect = document.getElementById('difficultySelect');
             const rewardBadge = document.getElementById('addRewardBadge');
 
@@ -173,8 +173,8 @@
                 updateReward();
             }
 
-            
-            const available = @Html.Raw(availableInterestsJson);
+
+            const available = @Html.Raw(availableInterestsJson); //using json serialised against attacks
             const initialSelected = @Html.Raw(initialSelectedIds);
             const grid = document.getElementById('questInterestGrid');
             const hiddenInputs = document.getElementById('questInterestHiddenInputs');

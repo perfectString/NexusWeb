@@ -111,7 +111,7 @@
 
     <script>
         (function () {
-            const available = @Html.Raw(availableInterestsJson);
+            const available = @Html.Raw(availableInterestsJson); //using json serialised against attacks
             const initialSelected = @Html.Raw(initialSelectedIds);
             const grid = document.getElementById('questInterestGrid');
             const hiddenInputs = document.getElementById('questInterestHiddenInputs');

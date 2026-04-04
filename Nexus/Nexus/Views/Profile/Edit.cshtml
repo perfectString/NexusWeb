@@ -196,8 +196,8 @@
 
     <script>
         (function () {
-            const available = @Html.Raw(_availableInterestsJson);
-            const initialSelectedIds = @Html.Raw(_initialSelectedIds);
+            const available = @Html.Raw(_availableInterestsJson); //using json serialised against attacks
+            const initialSelectedIds = @Html.Raw(_initialSelectedIds); 
 
             const grid = document.getElementById('interestGrid');
             const filter = document.getElementById('interestFilter');

@@ -52,6 +52,7 @@ namespace Nexus.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(QuestAddViewModel questModel)
         {
             if (!ModelState.IsValid)
@@ -168,6 +169,7 @@ namespace Nexus.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(int id)
         {
 
@@ -251,6 +253,7 @@ namespace Nexus.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, QuestAddViewModel questModel)
         {
             Guid initiatorId = GetUserId();
@@ -349,6 +352,7 @@ namespace Nexus.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirm(int id)
         {
             Guid initiatorId = GetUserId();
