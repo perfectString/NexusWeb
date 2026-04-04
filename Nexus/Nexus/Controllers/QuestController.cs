@@ -1,7 +1,13 @@
 ﻿using System.Security.Claims;
+using System.Text;
+using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Quest;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.Controllers
 {
@@ -55,6 +61,13 @@ namespace Nexus.Controllers
             }
 
             Guid initiatorId = GetUserId();
+
+
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
             try
             {
 
@@ -63,12 +76,21 @@ namespace Nexus.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception ex)
+            catch (EntityFailureException ex)
             {
-                logger.LogError(ex, "An error occurred while adding the quest!");
+                logger.LogError(ex, AddQuestFailedMessage);
 
                 ModelState.AddModelError(string.Empty,
-                    "Saving changes failed. Please try again later.");
+                    AddQuestFailedMessage);
+                questModel.AvailableInterests = await questService.GetAllInterestsAsync();
+                return View(questModel);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+
+                ModelState.AddModelError(string.Empty,
+                    UnexpectedErrorMessage);
                 questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
             }
@@ -77,24 +99,58 @@ namespace Nexus.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
+            
             Guid profileId = GetUserId();
-            QuestDetailsViewModel? detailsViewModel = await questService
-                .GetQuestDetailsWithJoinersViewModelAsync(profileId, id);
 
-
-            if (detailsViewModel == null)
+            if (profileId == Guid.Empty)
             {
-                return NotFound();
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
             }
 
-            return View(detailsViewModel);
+            try
+            {
 
+                QuestDetailsViewModel? detailsViewModel = await questService
+                   .GetQuestDetailsWithJoinersViewModelAsync(profileId, id);
+                return View(detailsViewModel);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+            }
+
+            return RedirectToAction(nameof(Details), new{ id });
         }
 
         [HttpGet]
         public async Task<IActionResult> Joined(int page = 1)
         {
             Guid profileId = GetUserId();
+
+            if (profileId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             int totalItems = await questService
                 .GetJoinedQuestsCountAsync(profileId);
@@ -117,34 +173,92 @@ namespace Nexus.Controllers
 
             Guid profileId = GetUserId();
 
+            if (profileId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             try
             {
                 bool joined = await questService
                     .IsJoinedAsync(profileId, id);
             }
-            catch (Exception ex)
+            catch (UnauthorizedException ex)
             {
-                logger.LogError(ex, "An error occurred while joining the quest!");
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
                 return BadRequest();
             }
-            return RedirectToAction(nameof(Joined));
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+            }
+                return RedirectToAction(nameof(Joined));
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             Guid initiatorId = GetUserId();
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            try
+            {
 
             QuestAddViewModel questModel = await questService
                 .GetQuestToEditViewModelAsync(initiatorId, id);
-
             return View(questModel);
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+            }
+
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit([FromRoute] int id, QuestAddViewModel questModel)
         {
             Guid initiatorId = GetUserId();
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             if (!ModelState.IsValid)
             {
@@ -158,12 +272,35 @@ namespace Nexus.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception ex)
+            catch(EntityNotFoundException ex)
             {
-                logger.LogError(ex, "An error occurred while editing changes!");
-                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+            catch (EntityFailureException ex)
+            {
+                logger.LogError(ex, string.Format(CrudExceptionMessage, nameof(Edit)));
+                ModelState.AddModelError(string.Empty, string.Format(CrudExceptionMessage,
+                    "edit the quest"));
                 questModel.AvailableInterests = await questService.GetAllInterestsAsync();
                 return View(questModel);
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
             }
         }
 
@@ -171,12 +308,43 @@ namespace Nexus.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             Guid initiatorId = GetUserId();
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
+            try
+            {
             QuestViewModel deleteQuest = await questService
                 .GetQuestToDeleteAsync(initiatorId, id);
-
-
             return View(deleteQuest);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+            }
+
+
         }
 
 
@@ -184,16 +352,45 @@ namespace Nexus.Controllers
         public async Task<IActionResult> DeleteConfirm(int id)
         {
             Guid initiatorId = GetUserId();
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             try
             {
                 await questService
                       .ConfirmQuestToDeleteAsync(initiatorId, id);
             }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (EntityFailureException ex)
+            {
+                logger.LogError(ex, string.Format(CrudExceptionMessage, nameof(Delete)));
+                ModelState.AddModelError(string.Empty, string.Format(CrudExceptionMessage,
+                    "deleting the quest"));
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while deleting the quest!");
-                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
             }
             return RedirectToAction(nameof(All));
         }
@@ -203,16 +400,45 @@ namespace Nexus.Controllers
         public async Task<IActionResult> Complete(int id)
         {
             Guid initiatorId = GetUserId();
+            if (initiatorId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             try
             {
                 await questService.MarkQuestCompletedAsync(initiatorId, id);
             }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (EntityFailureException ex)
+            {
+                logger.LogError(ex, string.Format(CrudExceptionMessage, nameof(Complete)));
+                ModelState.AddModelError(string.Empty, string.Format(CrudExceptionMessage,
+                    "mark quest as complete"));
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while marking the quest as completed!");
-                ModelState.AddModelError(string.Empty, "Completing quest failed. Please try again later.");
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
             }
+
 
             return RedirectToAction(nameof(Details), new { id });
         }

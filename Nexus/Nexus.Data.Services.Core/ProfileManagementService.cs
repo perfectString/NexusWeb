@@ -2,6 +2,7 @@
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Helpers;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Admin.Profile;
 
 namespace Nexus.Data.Services.Core
@@ -58,7 +59,7 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null)
             {
-                throw new ArgumentException("This profile was not found!");
+                throw new EntityNotFoundException();
             }
 
             ProfileManagementViewModel viewModel = new ProfileManagementViewModel()
@@ -85,8 +86,9 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null)
             {
-                throw new ArgumentException("This profile was not found!");
+                throw new EntityNotFoundException();
             }
+           
 
             userFetch.DisplayName = viewModel.DisplayName;
             userFetch.City = viewModel.City;
@@ -114,7 +116,7 @@ namespace Nexus.Data.Services.Core
         {
             if (await IsAdminAsync(userId))
             {
-                throw new InvalidOperationException("Cannot delete an admin user!");
+                throw new UnauthorizedException();
             }
 
             Profile? userFetch = await dbContext
@@ -123,7 +125,7 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null)
             {
-                throw new ArgumentException("This profile was not found!");
+                throw new EntityNotFoundException();
             }
 
             List<ProfileInterest> profileInterests = await dbContext

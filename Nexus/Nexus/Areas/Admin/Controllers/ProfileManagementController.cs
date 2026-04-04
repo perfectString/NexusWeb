@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Admin.Profile;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.Areas.Admin.Controllers
 {
@@ -41,10 +43,38 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            ProfileManagementViewModel profileModel = await profileManagementService
-                .GetProfileToEditAsAdminAsync(id);
+            try
+            {
 
-            return View(profileModel);
+                ProfileManagementViewModel profileModel = await profileManagementService
+                    .GetProfileToEditAsAdminAsync(id);
+
+                return View(profileModel);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+
+            }
         }
 
         [HttpPost]
@@ -60,11 +90,28 @@ namespace Nexus.Areas.Admin.Controllers
                 await profileManagementService
                     .EditProfileAsAdminAsync(id, profileModel);
             }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occured while editing the profile!");
-                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
-                return View(profileModel);
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+
             }
 
             return RedirectToAction(nameof(Index));
@@ -73,10 +120,36 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            ProfileManagementViewModel profileModel =
-                await profileManagementService
-                .GetProfileToEditAsAdminAsync(id);
-            return View(profileModel);
+            try
+            {
+                ProfileManagementViewModel profileModel =
+                    await profileManagementService
+                    .GetProfileToEditAsAdminAsync(id);
+                return View(profileModel);
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+
+            }
         }
 
         [HttpPost]
@@ -87,11 +160,28 @@ namespace Nexus.Areas.Admin.Controllers
                 await profileManagementService
                     .DeleteProfileAsAdminAsync(id);
             }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while deleting the profile!");
-                ModelState.AddModelError(string.Empty,
-                    "Deleting profile failed. Please try again later.");
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+
             }
 
             return RedirectToAction(nameof(Index));

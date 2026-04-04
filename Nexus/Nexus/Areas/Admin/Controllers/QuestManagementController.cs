@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Nexus.Data.Services.Core;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Admin.Quest;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.Areas.Admin.Controllers
 {
@@ -36,9 +37,34 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            QuestManagementViewModel questModel = await questManagementService
-                .GetQuestToEditAsAdminAsync(id);
-            return View(questModel);
+            try
+            {
+                QuestManagementViewModel questModel = await questManagementService
+                    .GetQuestToEditAsAdminAsync(id);
+                return View(questModel);
+            }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
+                return View("InternalServerError");
+            }
         }
 
         [HttpPost]
@@ -61,10 +87,26 @@ namespace Nexus.Areas.Admin.Controllers
                 await questManagementService
                     .EditQuestAsAdminAsync(id, questModel);
             }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while editing the quest!");
-                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
                 questModel.AvailableInterests = await questManagementService
                     .GetAllInterestsAsync();
                 return View(questModel);

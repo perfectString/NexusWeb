@@ -62,6 +62,7 @@ namespace Nexus
             {
                 options.UseSqlServer(developerConnectionString);
             });
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 
@@ -83,9 +84,12 @@ namespace Nexus
 
             app.UseRouting();
 
+
             // Authentication & authorization 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
 
             //Seeding user & admins

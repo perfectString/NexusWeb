@@ -3,8 +3,10 @@ using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Helpers;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Enums;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Profile;
 using Nexus.ViewModels.Quest;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.Data.Services.Core
 {
@@ -123,17 +125,17 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null || questFetch == null)
             {
-                throw new ArgumentException("Not found.");
+                throw new EntityNotFoundException();
             }
 
             if (questFetch.QuestInitiatorId != userFetch.Id)
             {
-                throw new ArgumentException("Unauthorized");
+                throw new UnauthorizedException();
             }
 
             if (questFetch.Status == QuestStatus.Completed)
             {
-                throw new InvalidOperationException("Cannot edit a completed quest.");
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
             }
 
             QuestAddViewModel questModel = new QuestAddViewModel()
@@ -165,17 +167,17 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null || questFetch == null)
             {
-                throw new ArgumentException("Not found.");
+                throw new EntityNotFoundException();
             }
 
             if (questFetch.QuestInitiatorId != userFetch.Id)
             {
-                throw new ArgumentException("Unauthorized");
+                throw new UnauthorizedException();
             }
 
             if (questFetch.Status == QuestStatus.Completed)
             {
-                throw new InvalidOperationException("Cannot edit a completed quest.");
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
             }
 
             questFetch.Title = questViewModel.Title;
@@ -211,17 +213,17 @@ namespace Nexus.Data.Services.Core
 
             if (fetchQuest == null)
             {
-                throw new ArgumentException("Quest was not found");
+                throw new EntityNotFoundException();
             }
 
             if (fetchQuest.QuestInitiatorId != userId)
             {
-                throw new ArgumentException("You are not the initiator of this quest!");
+                throw new UnauthorizedException();
             }
 
             if (fetchQuest.Status == QuestStatus.Completed)
             {
-                throw new InvalidOperationException("Cannot delete a completed quest.");
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
             }
 
             QuestViewModel questViewModel = new QuestViewModel()
@@ -246,17 +248,17 @@ namespace Nexus.Data.Services.Core
 
             if (questToDelete == null)
             {
-                throw new ArgumentException("Quest not found");
+                throw new EntityNotFoundException();
             }
 
             if (questToDelete.QuestInitiatorId != userId)
             {
-                throw new ArgumentException("You are not the initiator of this quest!");
+                throw new UnauthorizedException();
             }
 
             if (questToDelete.Status == QuestStatus.Completed)
             {
-                throw new InvalidOperationException("Cannot delete a completed quest.");
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
             }
 
             List<QuestJoiner>? joinedUsers = await dbContext
@@ -285,7 +287,7 @@ namespace Nexus.Data.Services.Core
 
             if (quest == null)
             {
-                throw new ArgumentException("NotFound");
+                throw new EntityNotFoundException();
             }
 
             List<Profile>? joinedProfiles = (quest.QuestJoiners ?? Enumerable.Empty<QuestJoiner>())
@@ -414,17 +416,17 @@ namespace Nexus.Data.Services.Core
 
             if (quest == null)
             {
-                throw new ArgumentException("Quest not found.");
+                throw new EntityNotFoundException();
             }
 
             if (quest.QuestInitiatorId != userId)
             {
-                throw new ArgumentException("You are not the initiator of this quest!");
+                throw new UnauthorizedException();
             }
 
             if (quest.Status == QuestStatus.Completed)
             {
-                throw new InvalidOperationException("Quest is already completed.");
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
             }
 
             quest.Status = QuestStatus.Completed;

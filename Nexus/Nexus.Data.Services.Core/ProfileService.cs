@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
-using Nexus.Data.Services.Core.Interfaces;
 using Nexus.Data.Services.Core.Helpers;
+using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Profile;
 
 namespace Nexus.Data.Services.Core
@@ -93,7 +94,8 @@ namespace Nexus.Data.Services.Core
             //Even if there is always going to be user to be found in the Db.
             if (userFetch == null)
             {
-                throw new ArgumentException("This profile was not found!");
+                throw new EntityNotFoundException();
+               
             }
 
             List<int> interestId = await dbContext
@@ -138,7 +140,7 @@ namespace Nexus.Data.Services.Core
             //Even if there is always going to be user to be found in the Db.
             if (userFetch == null)
             {
-                throw new ArgumentException("This profile was not found!");
+                throw new EntityNotFoundException();
             }
 
             userFetch.DisplayName = profileViewModel.DisplayName;
@@ -182,7 +184,7 @@ namespace Nexus.Data.Services.Core
 
             if (userFetch == null)
             {
-                throw new ArgumentException("Not found.");
+                throw new EntityNotFoundException();
             }
 
             ProfileViewModel profileViewModel = new ProfileViewModel()

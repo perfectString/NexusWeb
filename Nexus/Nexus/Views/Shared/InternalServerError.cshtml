@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Internal Server Error";
+}
+
+@section Styles {
+    <style>
+        .error500-container {
+            max-width: 520px;
+            margin: 5rem auto 0 auto;
+            padding: 2.5rem 2rem;
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(78,65,190,0.10);
+            text-align: center;
+        }
+
+        .error500-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #b83243;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.04em;
+        }
+
+        .error500-desc {
+            color: #7e789c;
+            font-size: 1.08rem;
+            margin-bottom: 2rem;
+        }
+
+        .error500-btn {
+            padding: 0.7rem 2.1rem;
+            font-size: 1.08rem;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+    </style>
+}
+
+<div class="error500-container">
+    <div class="error500-title">Error 500: Server Error</div>
+    <div class="error500-desc">
+        Sorry, something went wrong on our end.<br>
+        Please try again later or contact support if the problem persists.
+    </div>
+    <a href="@(Url.Action("Index", "Home"))" class="btn btn-primary error500-btn">
+        Go Home
+    </a>
+</div>

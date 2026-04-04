@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nexus.Data.Services.Core.Interfaces;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Profile;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.Controllers
 {
@@ -39,6 +41,13 @@ namespace Nexus.Controllers
         {
             Guid userId = GetUserId();
 
+
+            if (userId == Guid.Empty)
+            {
+                logger.LogError( BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             ProfileEditViewModel profileModel = await profileService
                 .GetEditProfileViewModelWithAllInterestsAsync(userId);
 
@@ -64,19 +73,41 @@ namespace Nexus.Controllers
             }
 
             Guid userId = GetUserId();
+            if (userId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             try
             {
               await profileService
                     .EditProfileAsync(userId!, myProfileViewModel);
             }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex, UnauthorizedErrorMessage);
+                return Unauthorized();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, BadRequestErrorMessage);
+                return BadRequest();
+            }
+
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while editing the profile!");
-                ModelState.AddModelError(string.Empty, "Saving changes failed. Please try again later.");
+                logger.LogError(ex, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
                 myProfileViewModel.AvailableInterests = await profileService.GetAllInterestsAsync();
                 return View(myProfileViewModel);
             }
+
                 return RedirectToAction(nameof(Index));
         }
 
@@ -84,6 +115,11 @@ namespace Nexus.Controllers
         public async Task<IActionResult> Index()
         {
             Guid userId = GetUserId();
+            if (userId == Guid.Empty)
+            {
+                logger.LogError(BadRequestErrorMessage);
+                return BadRequest();
+            }
 
             ProfileViewModel profileViewModel = await profileService
                 .GetCurrentUserProfile(userId);

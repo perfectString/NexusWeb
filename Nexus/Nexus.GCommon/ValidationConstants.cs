@@ -29,5 +29,6 @@ namespace Nexus.GCommon
 
         public const int PasswordMinLength = 5;
 
+       
     }
 }

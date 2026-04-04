@@ -2,6 +2,7 @@
 using Nexus.GCommon.Enums;
 using Nexus.ViewModels.Profile;
 using static Nexus.GCommon.ValidationConstants;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.ViewModels.Quest
 {
@@ -9,14 +10,14 @@ namespace Nexus.ViewModels.Quest
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(TitleMaxLen)]
-        [MinLength(TitleMinLen)]
+        [Required(ErrorMessage = QuestTitleRequiredMessage)]
+        [MaxLength(TitleMaxLen, ErrorMessage = QuestTitleMaxLenMessage)]
+        [MinLength(TitleMinLen, ErrorMessage = QuestTitleMinLenMessage)]
         public string Title { get; set; } = null!;
 
         [Required]
-        [MaxLength(DescriptionMaxLen)]
-        [MinLength(DescriptionMinLen)]
+        [MaxLength(DescriptionMaxLen, ErrorMessage = QuestDescriptionMaxLenMessage)]
+        [MinLength(DescriptionMinLen, ErrorMessage = QuestDescriptionMinLenMessage)]
         public string Description { get; set; } = null!;
 
         [Required]

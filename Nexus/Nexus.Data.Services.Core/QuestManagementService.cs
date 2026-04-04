@@ -4,6 +4,7 @@ using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Helpers;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Enums;
+using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Admin.Quest;
 using Nexus.ViewModels.Profile;
 
@@ -82,7 +83,7 @@ namespace Nexus.Data.Services.Core
                 .FirstOrDefaultAsync(q=> q.Id == questId);
 
             if (quest == null)
-                throw new ArgumentException("Quest not found.");
+                throw new EntityNotFoundException();
 
             var interests = await GetAllInterestsAsync();
 
@@ -114,7 +115,7 @@ namespace Nexus.Data.Services.Core
                 .FirstOrDefaultAsync(q => q.Id == questId);
 
             if (quest == null)
-                throw new ArgumentException("Quest not found.");
+                throw new EntityNotFoundException();
 
             if (model.InterestIds == null || model.InterestIds.Count > 3)
                 throw new ArgumentException("You can select up to 3 interests.");
@@ -168,7 +169,7 @@ namespace Nexus.Data.Services.Core
                 .FirstOrDefaultAsync(q => q.Id == questId);
 
             if (quest == null)
-                throw new ArgumentException("Quest not found.");
+                throw new EntityNotFoundException();
 
             dbContext.QuestInterests.RemoveRange(quest.QuestInterest);
             dbContext.QuestJoiners.RemoveRange(quest.QuestJoiners);

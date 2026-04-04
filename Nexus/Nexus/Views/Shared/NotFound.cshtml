@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Not Found";
+}
+
+@section Styles {
+    <style>
+        .notfound-container {
+            max-width: 520px;
+            margin: 5rem auto 0 auto;
+            padding: 2.5rem 2rem;
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 12px rgba(78,65,190,0.10);
+            text-align: center;
+        }
+
+        .notfound-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #b83243;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.04em;
+        }
+
+        .notfound-desc {
+            color: #7e789c;
+            font-size: 1.08rem;
+            margin-bottom: 2rem;
+        }
+
+        .notfound-btn {
+            padding: 0.8rem 2.1rem;
+            font-size: 1.08rem;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+    </style>
+}
+
+<div class="notfound-container">
+    <div class="notfound-title">Error 404: Not Found</div>
+    <div class="notfound-desc">
+        The page you’re looking for doesn’t exist or was moved.<br>
+        Please check the URL or return to the homepage.
+    </div>
+    <a href="@(Url.Action("Index", "Home"))" class="btn btn-primary notfound-btn">
+        Go Home
+    </a>
+</div>

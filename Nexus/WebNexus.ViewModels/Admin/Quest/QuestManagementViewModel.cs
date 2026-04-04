@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Nexus.GCommon.Enums;
 using Nexus.ViewModels.Profile;
 using static Nexus.GCommon.ValidationConstants;
+using static Nexus.GCommon.OutputMessages;
 
 namespace Nexus.ViewModels.Admin.Quest
 {
@@ -12,14 +13,14 @@ namespace Nexus.ViewModels.Admin.Quest
         public string? QuestInitiator { get; set; } 
         public Guid InitiatorId { get; set; }
 
-        [Required]
-        [MaxLength(TitleMaxLen)]
-        [MinLength(TitleMinLen)]
+        [Required(ErrorMessage = QuestTitleRequiredMessage)]
+        [MaxLength(TitleMaxLen, ErrorMessage = QuestTitleMaxLenMessage)]
+        [MinLength(TitleMinLen, ErrorMessage = QuestTitleMinLenMessage)]
         public string Title { get; set; } = null!;
 
         [Required]
-        [MaxLength(DescriptionMaxLen)]
-        [MinLength(DescriptionMinLen)]
+        [MaxLength(DescriptionMaxLen, ErrorMessage = QuestDescriptionMaxLenMessage)]
+        [MinLength(DescriptionMinLen, ErrorMessage = QuestDescriptionMinLenMessage)]
         public string Description { get; set; } = null!;
         public QuestDifficulty Difficulty { get; set; }
         public int RewardExperience { get; set; }
