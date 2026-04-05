@@ -371,38 +371,19 @@ namespace Nexus.Data.Services.Core
 
         public async Task<bool> IsJoinedAsync(Guid userId, int questId)
         {
-            var questJoinFetch = await dbContext
-              .Quests
-              .Include(q => q.QuestJoiners)
-              .FirstOrDefaultAsync(q => q.Id == questId);
+            Quest? quest = await dbContext
+                .Quests
+                .Include(q => q.QuestJoiners)
+                .FirstOrDefaultAsync(q => q.Id == questId);
 
-            if (questJoinFetch == null)
+            if (quest == null)
             {
                 return false;
             }
 
-            bool isInitiator = questJoinFetch.QuestInitiatorId == userId;
-
-            bool isJoined = questJoinFetch
-                .QuestJoiners
-                .Any(qj => qj.ProfileId == userId);
-
-            if (isInitiator || isJoined)
-            {
-                return false;
-            }
-
-            QuestJoiner newJoiner = new QuestJoiner()
-            {
-                QuestId = questJoinFetch.Id,
-                ProfileId = userId
-            };
-
-            await dbContext.QuestJoiners.AddAsync(newJoiner);
-            await dbContext.SaveChangesAsync();
-
-            return true;
-
+           
+            return quest.QuestInitiatorId == userId ||
+                   quest.QuestJoiners.Any(qj => qj.ProfileId == userId);
         }
 
         public async Task MarkQuestCompletedAsync(Guid userId, int questId)
