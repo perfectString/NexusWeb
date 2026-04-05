@@ -416,6 +416,7 @@ namespace Nexus.Controllers
             }
             catch (EntityNotFoundException ex)
             {
+                logger.LogError(ex,NotFoundErrorMessage);
                 return NotFound();
             }
             catch (EntityFailureException ex)
