@@ -5,6 +5,7 @@ using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Admin.Profile;
 
+
 namespace Nexus.Data.Services.Core
 {
     public class ProfileManagementService : IProfileManagementService
@@ -94,7 +95,7 @@ namespace Nexus.Data.Services.Core
             userFetch.City = viewModel.City;
             userFetch.Bio = viewModel.Bio;
             userFetch.ExperiencePoints = viewModel.ExperiencePoints;
-            userFetch.Level = LevelHelper.GetLevel(viewModel.Level);
+            userFetch.Level = LevelHelper.GetLevel(userFetch.ExperiencePoints);
 
             await dbContext.SaveChangesAsync();
         }

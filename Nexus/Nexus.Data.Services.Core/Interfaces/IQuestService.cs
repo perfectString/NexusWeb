@@ -35,8 +35,9 @@ namespace Nexus.Data.Services.Core.Interfaces
         // Created Quests count
         Task<int> GetCreatedQuestsCountAsync(Guid userId);
 
-        // Join Quests
+        // Join and Check Quests
         Task<bool> IsJoinedAsync(Guid userId, int questId);
+        Task JoinQuestAsync(Guid userId, int questId);
 
         // Mark completed quests and give XP to joined users
         Task MarkQuestCompletedAsync(Guid userId, int questId);

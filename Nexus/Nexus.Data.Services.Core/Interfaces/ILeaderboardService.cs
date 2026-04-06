@@ -1,5 +1,4 @@
-﻿
-using Nexus.ViewModels.Leaderboard;
+﻿using Nexus.ViewModels.Leaderboard;
 
 namespace Nexus.Data.Services.Core.Interfaces
 {

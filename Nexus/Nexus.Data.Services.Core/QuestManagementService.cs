@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Models;
 using Nexus.Data.Services.Core.Helpers;
 using Nexus.Data.Services.Core.Interfaces;

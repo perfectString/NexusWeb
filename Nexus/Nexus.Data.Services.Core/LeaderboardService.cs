@@ -17,11 +17,11 @@ namespace Nexus.Data.Services.Core
         public async Task<IEnumerable<LeaderboardViewModel>> TopFiveUsersByLevelAsync()
         {
             //Excluding admins from leaderboards
-            List<Guid> getAdmins = await GetAdminUserIdsAsync();
+            List<Guid> adminIds = await FindAdminHelper.GetAdminUserIdsAsync(dbContext);
 
             return await dbContext
                 .Users
-                .Where(u => !getAdmins.Contains(u.Id))
+                .Where(u => !adminIds.Contains(u.Id))
                 .OrderByDescending(u => u.ExperiencePoints)
                 .ThenBy(u => u.DisplayName)
                 .Take(5)
@@ -40,12 +40,11 @@ namespace Nexus.Data.Services.Core
         public async Task<IEnumerable<LeaderboardViewModel>> TopFiveUsersByCompletedQuestsAsync()
         {
             //Excluding admins from leaderboards
-            List<Guid> getAdmins = await GetAdminUserIdsAsync();
-
+            List<Guid> adminIds = await FindAdminHelper.GetAdminUserIdsAsync(dbContext);
 
             return await dbContext
                 .Users
-                .Where(u=> !getAdmins.Contains(u.Id))
+                .Where(u=> !adminIds.Contains(u.Id))
                 .Select(u => new LeaderboardViewModel
                 {
                     Id = u.Id,
@@ -56,21 +55,6 @@ namespace Nexus.Data.Services.Core
                 .OrderByDescending(u => u.CompletedQuests)
                 .ThenBy(u => u.DisplayName)
                 .Take(5)
-                .ToListAsync();
-        }
-
-        private async Task<List<Guid>> GetAdminUserIdsAsync()
-        {
-            Guid adminRoleId = await dbContext
-                .Roles
-                .Where(r => r.Name == "Admin")
-                .Select(r => r.Id)
-                .FirstOrDefaultAsync();
-
-            return await dbContext
-                .UserRoles
-                .Where(ur => ur.RoleId == adminRoleId)
-                .Select(ur => ur.UserId)
                 .ToListAsync();
         }
     }

@@ -271,6 +271,7 @@ namespace Nexus.Data.Services.Core
             dbContext.Quests.Remove(questToDelete);
             await dbContext.SaveChangesAsync();
         }
+
         public async Task<QuestDetailsViewModel?> GetQuestDetailsWithJoinersViewModelAsync(Guid userId, int QuestId)
         {
             Quest? quest = await dbContext
@@ -381,9 +382,34 @@ namespace Nexus.Data.Services.Core
                 return false;
             }
 
-           
             return quest.QuestInitiatorId == userId ||
                    quest.QuestJoiners.Any(qj => qj.ProfileId == userId);
+        }
+
+        public async Task JoinQuestAsync(Guid userId, int questId)
+        {
+            Quest? quest = await dbContext
+                .Quests
+                .FirstOrDefaultAsync(q => q.Id == questId);
+
+            if (quest == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            if (quest.Status == QuestStatus.Completed)
+            {
+                throw new InvalidOperationException(CompletedQuestFailedMessage);
+            }
+
+            QuestJoiner joiner = new QuestJoiner
+            {
+                QuestId = questId,
+                ProfileId = userId
+            };
+
+            await dbContext.QuestJoiners.AddAsync(joiner);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task MarkQuestCompletedAsync(Guid userId, int questId)

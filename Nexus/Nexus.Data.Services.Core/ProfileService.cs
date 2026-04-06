@@ -18,11 +18,11 @@ namespace Nexus.Data.Services.Core
         public async Task<int> GetAllProfilesCountAsync()
         {
             //Count without admins
-            List<Guid> getAdmins = await GetAdminUserIdsAsync();
+            List<Guid> adminIds = await FindAdminHelper.GetAdminUserIdsAsync(dbContext);
 
             return await dbContext
                 .Users
-                .Where(p => !getAdmins.Contains(p.Id))
+                .Where(p => !adminIds.Contains(p.Id))
                 .CountAsync();
         }
 
@@ -30,14 +30,14 @@ namespace Nexus.Data.Services.Core
         {
             //Excluding the admin from all profiles view
 
-            List<Guid> getAdmins = await GetAdminUserIdsAsync();
+            List<Guid> adminIds = await FindAdminHelper.GetAdminUserIdsAsync(dbContext);
 
             IEnumerable<ProfileViewModel> allProfilesVm = await dbContext
                 .Users
                 .Include(p => p.ProfileInterest)
                     .ThenInclude(i => i.Interest)
                 .AsNoTracking()
-                .Where(p => !getAdmins.Contains(p.Id))
+                .Where(p => !adminIds.Contains(p.Id))
                 .OrderBy(p => p.DisplayName)
                 .ThenBy(p => p.Age)
                 .ThenBy(p => p.City)
@@ -131,10 +131,10 @@ namespace Nexus.Data.Services.Core
             userFetch.Bio = profileViewModel.Bio;
             userFetch.DesiredConnection = profileViewModel.DesiredConnection;
 
-            List<ProfileInterest> oldInterests = dbContext
+            List<ProfileInterest> oldInterests = await dbContext
                 .ProfileInterests
                 .Where(p => p.ProfileId == userFetch.Id)
-                .ToList();
+                .ToListAsync();
 
             dbContext
                 .ProfileInterests
@@ -189,21 +189,6 @@ namespace Nexus.Data.Services.Core
             };
 
             return profileViewModel;
-        }
-
-        private async Task<List<Guid>> GetAdminUserIdsAsync()
-        {
-            Guid adminRoleId = await dbContext
-                .Roles
-                .Where(r => r.Name == "Admin")
-                .Select(r => r.Id)
-                .FirstOrDefaultAsync();
-
-            return await dbContext
-                .UserRoles
-                .Where(ur => ur.RoleId == adminRoleId)
-                .Select(ur => ur.UserId)
-                .ToListAsync();
         }
     }
 }
