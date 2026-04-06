@@ -6,9 +6,10 @@ namespace Nexus.Data.Services.Core.Interfaces
     {
         /* Admin options */
 
-        // All profiles (including admin)
+        // Profile Count
         Task<int> GetAllProfilesCountAsync();
 
+        // All profiles (including admin)
         Task<IEnumerable<ProfileManagementViewModel>> GetAllProfilesAsAdminAsync(int page, int pageSize);
 
         //Edit profile 
