@@ -26,57 +26,34 @@
         .muted-small { color:#7e789c; font-size:.95rem; }
 
         .interests-wrap {
-            display:flex;
-            flex-direction:column;
-            gap:.5rem;
-            max-width:720px;
-        }
-
-        .interest-search {
-            display:flex;
-            gap:.5rem;
-            align-items:center;
-        }
-
-        .interest-search input {
-            flex:1;
-            padding:.45rem .6rem;
-            border-radius:.5rem;
-            border:1px solid #d5d1e8;
-            font-size:.95rem;
-        }
-
-        .interest-search input:focus {
-            border-color: #4e41be;
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(78,65,190,0.15);
+            max-width: 720px;
         }
 
         .interest-grid {
-            display:flex;
-            flex-wrap:wrap;
-            gap:.5rem;
-            padding:.5rem;
-            border-radius:.5rem;
-            border:1px solid #d5d1e8;
-            background:#fff;
-            max-height:220px;
-            overflow:auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            padding: .5rem;
+            border-radius: .5rem;
+            border: 1px solid #d5d1e8;
+            background: #fff;
+            max-height: 220px;
+            overflow: auto;
         }
 
         .interest-card {
-            display:inline-flex;
-            align-items:center;
-            gap:.5rem;
-            padding:.35rem .6rem;
-            border-radius:999px;
-            background:#f4f2fb;
-            color:#4e41be;
-            font-weight:600;
-            font-size:.9rem;
-            border:1px solid rgba(78,65,190,0.08);
-            cursor:pointer;
-            user-select:none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .35rem .6rem;
+            border-radius: 999px;
+            background: #f4f2fb;
+            color: #4e41be;
+            font-weight: 600;
+            font-size: .9rem;
+            border: 1px solid rgba(78,65,190,0.08);
+            cursor: pointer;
+            user-select: none;
             transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
         }
 
@@ -96,15 +73,16 @@
         }
 
         .interest-count {
-            font-size:.85rem;
-            color:#7e789c;
+            font-size: .85rem;
+            color: #7e789c;
+            margin-top: .35rem;
         }
 
         .form-actions {
-            display:flex;
-            gap:.6rem;
-            justify-content:flex-end;
-            align-items:center;
+            display: flex;
+            gap: .6rem;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         @@media (min-width: 992px) {
@@ -165,17 +143,11 @@
                     <label class="form-label">Interests</label>
 
                     <div class="interests-wrap">
-                        <div class="interest-search">
-                            <input id="interestFilter" type="text" placeholder="Filter interests (shows all results)..." aria-label="Filter interests" />
-                            <div class="interest-count" id="interestCount"></div>
-                        </div>
-
-                        <div id="interestGrid" class="interest-grid" role="list">
-                        </div>
+                        <div id="interestGrid" class="interest-grid" role="list"></div>
+                        <div class="interest-count" id="interestCount"></div>
                     </div>
 
-                    <div id="interestHiddenInputs" class="mt-2">
-                    </div>
+                    <div id="interestHiddenInputs" class="mt-2"></div>
 
                     <span asp-validation-for="InterestId" class="text-danger small"></span>
                 </div>
@@ -196,11 +168,10 @@
 
     <script>
         (function () {
-            const available = @Html.Raw(_availableInterestsJson); //using json serialised against attacks
-            const initialSelectedIds = @Html.Raw(_initialSelectedIds); 
+            const available = @Html.Raw(_availableInterestsJson);
+            const initialSelectedIds = @Html.Raw(_initialSelectedIds);
 
             const grid = document.getElementById('interestGrid');
-            const filter = document.getElementById('interestFilter');
             const hiddenInputs = document.getElementById('interestHiddenInputs');
             const countEl = document.getElementById('interestCount');
 
@@ -217,13 +188,13 @@
                     card.innerText = item.Name;
 
                     card.addEventListener('click', function () {
-                        toggleSelect(item.Id, item.Name, card);
+                        toggleSelect(item.Id, card);
                     });
 
                     card.addEventListener('keydown', function (e) {
                         if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
-                            toggleSelect(item.Id, item.Name, card);
+                            toggleSelect(item.Id, card);
                         }
                     });
 
@@ -236,7 +207,7 @@
                 countEl.textContent = `${selected.length}/3 selected`;
             }
 
-            function toggleSelect(id, name, cardEl) {
+            function toggleSelect(id, cardEl) {
                 const idx = selected.indexOf(id);
                 if (idx === -1) {
                     if (selected.length >= 3) {
@@ -277,32 +248,8 @@
                 updateCount();
             }
 
-            function applyFilter(q) {
-                const ql = (q || '').trim().toLowerCase();
-                const cards = Array.from(grid.children);
-                let visible = 0;
-                for (const c of cards) {
-                    const text = c.textContent.toLowerCase();
-                    const show = ql === '' || text.includes(ql);
-                    c.style.display = show ? '' : 'none';
-                    if (show) visible++;
-                }
-
-                const total = available.length;
-                countEl.textContent = `${selected.length}/3 selected • ${visible} / ${total} visible`;
-            }
-
-            filter.addEventListener('input', function () {
-                applyFilter(this.value);
-            });
-
             renderAll();
             initSelected();
-
-            window.__interestGrid = {
-                selected() { return selected.slice(); },
-                selectAll() { available.forEach(a => { const el = grid.querySelector(`.interest-card[data-id="${a.Id}"]`); if (el && !selected.includes(a.Id) && selected.length < 3) toggleSelect(a.Id, a.Name, el); }); }
-            };
         })();
     </script>
 }

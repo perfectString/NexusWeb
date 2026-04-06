@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Nexus.GCommon.Enums;
 using Nexus.ViewModels.Profile;
 using static Nexus.GCommon.ValidationConstants;

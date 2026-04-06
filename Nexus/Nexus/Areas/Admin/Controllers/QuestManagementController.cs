@@ -72,11 +72,6 @@ namespace Nexus.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, QuestManagementViewModel questModel)
         {
 
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                logger.LogWarning("ModelState error: {Error}", error.ErrorMessage);
-            }
-
             if (!ModelState.IsValid)
             {
                 questModel.AvailableInterests = await questManagementService.GetAllInterestsAsync();
@@ -119,9 +114,22 @@ namespace Nexus.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            QuestManagementViewModel questModel = await questManagementService
-                .GetQuestToEditAsAdminAsync(id);
-            return View(questModel);
+            try
+            {
+                QuestManagementViewModel questModel = await questManagementService
+                    .GetQuestToEditAsAdminAsync(id);
+                return View(questModel);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                logger.LogError(ex, NotFoundErrorMessage);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, UnexpectedErrorMessage);
+                return View("InternalServerError");
+            }
         }
 
         [HttpPost]
@@ -135,7 +143,7 @@ namespace Nexus.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while deleting the quest!");
+                logger.LogError(ex, UnexpectedErrorMessage);
                 ModelState.AddModelError(string.Empty, "Deleting quest failed. Please try again later.");
             }
 

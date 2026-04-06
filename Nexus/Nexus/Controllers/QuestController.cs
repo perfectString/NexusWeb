@@ -1,9 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text;
-using AspNetCoreGeneratedDocument;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Nexus.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Nexus.Data.Services.Core.Interfaces;
 using Nexus.GCommon.Exceptions;
 using Nexus.ViewModels.Quest;
@@ -111,7 +106,6 @@ namespace Nexus.Controllers
 
             try
             {
-
                 QuestDetailsViewModel? detailsViewModel = await questService
                    .GetQuestDetailsWithJoinersViewModelAsync(profileId, id);
                 return View(detailsViewModel);
@@ -132,7 +126,6 @@ namespace Nexus.Controllers
                 logger.LogError(ex, BadRequestErrorMessage);
                 return BadRequest();
             }
-
             catch (Exception ex)
             {
                 logger.LogError(ex, UnexpectedErrorMessage);
@@ -172,7 +165,6 @@ namespace Nexus.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(int id)
         {
-
             Guid profileId = GetUserId();
 
             if (profileId == Guid.Empty)
@@ -180,16 +172,14 @@ namespace Nexus.Controllers
                 logger.LogError(BadRequestErrorMessage);
                 return BadRequest();
             }
-
             try
             {
-                bool joined = await questService
-                    .IsJoinedAsync(profileId, id);
-            }
-            catch (UnauthorizedException ex)
-            {
-                logger.LogError(ex, UnauthorizedErrorMessage);
-                return Unauthorized();
+                bool alreadyJoined = await questService.IsJoinedAsync(profileId, id);
+
+                if (!alreadyJoined)
+                {
+                    await questService.JoinQuestAsync(profileId, id);
+                }
             }
             catch (EntityNotFoundException ex)
             {
@@ -201,13 +191,13 @@ namespace Nexus.Controllers
                 logger.LogError(ex, BadRequestErrorMessage);
                 return BadRequest();
             }
-
             catch (Exception ex)
             {
                 logger.LogError(ex, UnexpectedErrorMessage);
                 ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
             }
-                return RedirectToAction(nameof(Joined));
+
+            return RedirectToAction(nameof(Joined));
         }
 
         [HttpGet]
@@ -222,10 +212,9 @@ namespace Nexus.Controllers
 
             try
             {
-
-            QuestAddViewModel questModel = await questService
-                .GetQuestToEditViewModelAsync(initiatorId, id);
-            return View(questModel);
+                QuestAddViewModel questModel = await questService
+                    .GetQuestToEditViewModelAsync(initiatorId, id);
+                return View(questModel);
             }
             catch (UnauthorizedException ex)
             {
@@ -275,7 +264,7 @@ namespace Nexus.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch(EntityNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 logger.LogError(ex, NotFoundErrorMessage);
                 return NotFound();
@@ -316,7 +305,6 @@ namespace Nexus.Controllers
                 logger.LogError(BadRequestErrorMessage);
                 return BadRequest();
             }
-
             try
             {
             QuestViewModel deleteQuest = await questService
@@ -339,17 +327,13 @@ namespace Nexus.Controllers
                 logger.LogError(ex, BadRequestErrorMessage);
                 return BadRequest();
             }
-
             catch (Exception ex)
             {
                 logger.LogError(ex, UnexpectedErrorMessage);
                 ModelState.AddModelError(string.Empty, SavingChangesFailMessage);
                 return View("InternalServerError");
             }
-
-
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -361,7 +345,6 @@ namespace Nexus.Controllers
                 logger.LogError(BadRequestErrorMessage);
                 return BadRequest();
             }
-
             try
             {
                 await questService
@@ -416,7 +399,7 @@ namespace Nexus.Controllers
             }
             catch (EntityNotFoundException ex)
             {
-                logger.LogError(ex,NotFoundErrorMessage);
+                logger.LogError(ex, NotFoundErrorMessage);
                 return NotFound();
             }
             catch (EntityFailureException ex)

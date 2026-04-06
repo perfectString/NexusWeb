@@ -20,7 +20,9 @@ namespace Nexus
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            string? connectionString = builder.Configuration
+                .GetConnectionString("DefaultConnection") 
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<NexusDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -61,18 +63,6 @@ namespace Nexus
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-
-            // Connection String
-            string? developerConnectionString = builder.Configuration
-                .GetConnectionString("DeveloperConnection");
-
-            builder.Services.AddDbContext<NexusDbContext>(options =>
-            {
-                options.UseSqlServer(developerConnectionString);
-            });
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-
 
             WebApplication app = builder.Build();
 

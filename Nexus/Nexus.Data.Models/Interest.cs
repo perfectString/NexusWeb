@@ -17,7 +17,5 @@ namespace Nexus.Data.Models
         public ICollection<QuestInterest> QuestInterest { get; set; }
         = new HashSet<QuestInterest>();
 
-
-        //Connect to Quests in the future
     }
 }

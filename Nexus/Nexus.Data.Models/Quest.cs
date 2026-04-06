@@ -5,8 +5,6 @@ using static Nexus.GCommon.ValidationConstants;
 
 namespace Nexus.Data.Models
 {
-    // id like to implement a logic that connects quests with interests
-    // and add an xp system in the long run 
     public class Quest
     {
         [Key]

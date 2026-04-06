@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.ViewModels;
 
@@ -29,9 +28,9 @@ namespace Nexus.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         [Route("Home/Error/{statusCode}")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [AllowAnonymous]
         public IActionResult Error(int statusCode)
         {
             if (statusCode == StatusCodes.Status404NotFound)

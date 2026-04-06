@@ -1,5 +1,4 @@
-﻿
-namespace Nexus.ViewModels.Leaderboard
+﻿namespace Nexus.ViewModels.Leaderboard
 {
     public class LeaderboardViewModel
     {

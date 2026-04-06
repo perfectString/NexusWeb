@@ -1,6 +1,4 @@
-﻿
-
-namespace Nexus.GCommon.Enums
+﻿namespace Nexus.GCommon.Enums
 {
     public enum QuestDifficulty
     {

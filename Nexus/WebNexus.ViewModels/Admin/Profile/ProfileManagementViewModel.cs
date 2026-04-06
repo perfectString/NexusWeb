@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static Nexus.GCommon.ValidationConstants;
 using static Nexus.GCommon.OutputMessages;
 

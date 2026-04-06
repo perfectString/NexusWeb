@@ -1,5 +1,4 @@
-﻿
-using Nexus.GCommon.Enums;
+﻿using Nexus.GCommon.Enums;
 
 namespace Nexus.ViewModels.Quest
 {

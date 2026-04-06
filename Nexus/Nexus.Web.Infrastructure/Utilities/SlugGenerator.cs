@@ -1,5 +1,4 @@
-﻿
-using Nexus.Web.Infrastructure.Utilities.Interfaces;
+﻿using Nexus.Web.Infrastructure.Utilities.Interfaces;
 
 namespace Nexus.Web.Infrastructure.Utilities
 {

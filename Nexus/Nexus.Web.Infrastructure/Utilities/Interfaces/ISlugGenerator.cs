@@ -1,5 +1,4 @@
-﻿
-namespace Nexus.Web.Infrastructure.Utilities.Interfaces
+﻿namespace Nexus.Web.Infrastructure.Utilities.Interfaces
 {
     public interface ISlugGenerator
     {

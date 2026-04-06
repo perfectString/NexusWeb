@@ -1,5 +1,4 @@
-﻿
-namespace Nexus.GCommon
+﻿namespace Nexus.GCommon
 {
     public static class ValidationConstants
     {

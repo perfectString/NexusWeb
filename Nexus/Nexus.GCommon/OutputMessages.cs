@@ -1,11 +1,10 @@
-﻿
-namespace Nexus.GCommon
+﻿namespace Nexus.GCommon
 {
     public static class OutputMessages
     {
         //Error Messages
-        public const string UnexpectedErrorMessage = "An unexpected error occured. Please reach out to site administrator.";
-        public const string UnauthorizedErrorMessage = "You are not authrorised to access this content.";
+        public const string UnexpectedErrorMessage = "An unexpected error occurred. Please reach out to site administrator.";
+        public const string UnauthorizedErrorMessage = "You are not authorized to access this content.";
         public const string BadRequestErrorMessage = "Bad request. Check site url or try again from home page.";
         public const string NotFoundErrorMessage = "The content you are looking for was not found.";
         public const string ServerErrorMessage = "There was an error on our end. Try again later.";
@@ -47,11 +46,11 @@ namespace Nexus.GCommon
 
 
 
-        public const string AddQuestFailedMessage = "An error occured while adding a new quest. Please try again later.";
+        public const string AddQuestFailedMessage = "An error occurred while adding a new quest. Please try again later.";
         public const string CompletedQuestFailedMessage = "Quest is already completed.";
 
         public const string ProfileNotFoundMessage = "This profile was not found.";
-        public const string CrudExceptionMessage = "An error occured while trying to {0}!";
+        public const string CrudExceptionMessage = "An error occurred while trying to {0}!";
 
     }
 }
