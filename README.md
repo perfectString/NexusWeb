@@ -276,6 +276,7 @@ Users can:
 - View other users' level 
 
 Admins can:
+
 Admins have access to all standard user functionalities, as well as additional management features, including:
 - Manage user profiles
 - Modify level and xp for each user 
