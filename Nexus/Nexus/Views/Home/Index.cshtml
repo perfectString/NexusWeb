@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Nexus.ViewModels.Home
+@model HomeViewModel?
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,10 +11,6 @@
             background: rgba(78, 65, 190, 0.85);
             border-radius: 1rem;
             color: #fff;
-        }
-
-        .hero-banner h1 {
-            letter-spacing: -0.5px;
         }
 
         .hero-divider {
@@ -57,10 +56,59 @@
             font-size: 0.9rem;
             color: #fff;
         }
+
+        .leaderboard-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(43, 37, 72, 0.08);
+        }
+
+        .leaderboard-card .card-header {
+                background: #4e41be;
+                color: #fff;
+            border-radius: 10px 10px 0 0;
+            font-weight: 700;
+        }
+
+        .leaderboard-card .list-group-item {
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .rank-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .rank-1 { background: #ffd700; color: #7a4a00; }
+        .rank-2 { background: #c0c0c0; color: #444; }
+        .rank-3 { background: #cd7f32; color: #fff; }
+        .rank-other { background: #f4f2fb; color: #4e41be; }
+
+        .xp-bar-wrap {
+            height: 6px;
+            background: #f0eeff;
+            border-radius: 999px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #4e41be);
+            border-radius: 999px;
+        }
     </style>
 }
 
-<div class="hero-banner shadow-lg p-5 mt-3">
+<div class="hero-banner shadow-lg p-5 mt-3 mb-2">
     <div class="text-center">
         <h1 class="display-4 fw-bold mb-3">Welcome to Nexus!</h1>
         <div class="hero-divider mx-auto mb-4"></div>
@@ -72,8 +120,10 @@
 
     <div class="text-center mt-4 mb-3">
         <div class="d-flex justify-content-center flex-wrap gap-2">
-            <span class="feature-pill">🎯 Shared Interests</span>
             <span class="feature-pill">⚔️ Collaborative Quests</span>
+            <span class="feature-pill">🏆 Leaderboards</span>
+            <span class="feature-pill">⭐ Levels</span>
+            <span class="feature-pill">🎯 Shared Interests</span>
             <span class="feature-pill">👥 Meet People</span>
         </div>
     </div>
@@ -85,16 +135,8 @@
         <div class="text-center">
             <p class="mb-4 fw-light">Log in or register to start your adventure.</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a asp-area="Identity"
-                   asp-page="/Account/Login"
-                   class="cta-btn-fill text-decoration-none">
-                    Login
-                </a>
-                <a asp-area="Identity"
-                   asp-page="/Account/Register"
-                   class="cta-btn text-decoration-none">
-                    Register
-                </a>
+                <a asp-area="Identity" asp-page="/Account/Login" class="cta-btn-fill text-decoration-none">Login</a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="cta-btn text-decoration-none">Register</a>
             </div>
         </div>
     }
@@ -103,15 +145,96 @@
         <div class="text-center">
             <p class="mb-4 fw-light">Welcome back! Ready for your next adventure?</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a asp-controller="Quest" asp-action="All"
-                   class="cta-btn-fill text-decoration-none">
-                    Explore Quests
-                </a>
-                <a asp-controller="Profile" asp-action="Edit"
-                   class="cta-btn text-decoration-none">
-                    Customise Profile
-                </a>
+                <a asp-controller="Quest" asp-action="All" class="cta-btn-fill text-decoration-none">Explore Quests</a>
+                <a asp-controller="Profile" asp-action="Edit" class="cta-btn text-decoration-none">Customise Profile</a>
             </div>
         </div>
     }
 </div>
+
+@if (User.Identity?.IsAuthenticated == true && Model != null)
+{
+    <div class="row g-4">
+
+
+        <div class="col-12 col-md-6">
+            <div class="card leaderboard-card h-100">
+                <div class="card-header py-3 text-center">
+                    ⭐ Top Users by Level
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (!Model.TopByLevel.Any())
+                    {
+                        <li class="list-group-item text-muted text-center py-3">No users yet.</li>
+                    }
+                    else
+                    {
+                        int rank = 1;
+                        foreach (var user in Model.TopByLevel.Take(3))
+                        {
+                            var rankClass = rank switch { 1 => "rank-1", 2 => "rank-2", 3 => "rank-3", _ => "rank-other" };
+                            <li class="list-group-item px-3">
+                                <div class="d-flex align-items-center gap-3 w-100">
+                                    <span class="rank-badge @rankClass">@rank</span>
+                                    <div style="min-width:0; flex:1;">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-truncate">@user.DisplayName</span>
+                                            <span class="text-muted small ms-2 text-nowrap">Lvl @user.Level &nbsp;·&nbsp; @user.ExperiencePoints XP</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="xp-bar-wrap">
+                                                <div class="xp-bar-fill" style="width:@(user.ExperiencePoints % 100)%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            rank++;
+                        }
+                    }
+                </ul>
+                <div class="card-footer text-center bg-transparent border-0 py-3">
+                    <a asp-controller="Leaderboard" asp-action="LevelLeaderboard" class="btn btn-outline-primary px-4">View Full Leaderboard</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card leaderboard-card h-100">
+                <div class="card-header py-3 text-center">
+                    ⚔️ Top Users by Completed Quests
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (!Model.TopByQuests.Any())
+                    {
+                        <li class="list-group-item text-muted text-center py-3">No users yet.</li>
+                    }
+                    else
+                    {
+                        int rank = 1;
+                        foreach (var user in Model.TopByQuests.Take(3))
+                        {
+                            var rankClass = rank switch { 1 => "rank-1", 2 => "rank-2", 3 => "rank-3", _ => "rank-other" };
+                            <li class="list-group-item px-3">
+                                <div class="d-flex align-items-center gap-3 w-100">
+                                    <span class="rank-badge @rankClass">@rank</span>
+                                    <div style="min-width:0; flex:1;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-semibold text-truncate">@user.DisplayName</span>
+                                            <span class="text-muted small ms-2 text-nowrap">@user.CompletedQuests quest@(user.CompletedQuests != 1 ? "s" : "")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            rank++;
+                        }
+                    }
+                </ul>
+                <div class="card-footer text-center bg-transparent border-0 py-3">
+                    <a asp-controller="Leaderboard" asp-action="QuestLeaderboard" class="btn btn-outline-primary px-4">View Full Leaderboard</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

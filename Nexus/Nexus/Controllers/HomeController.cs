@@ -1,23 +1,36 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nexus.Data.Services.Core.Interfaces;
 using Nexus.ViewModels;
+using Nexus.ViewModels.Home;
 
 namespace Nexus.Controllers
 {
-
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> logger;
+        private readonly ILeaderboardService leaderboardService;
 
-        public HomeController(ILogger<HomeController> homeLogger)
+        public HomeController(ILogger<HomeController> homeLogger, ILeaderboardService leaderboardService)
         {
             this.logger = homeLogger;
+            this.leaderboardService = leaderboardService;
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                HomeViewModel homeViewModel = new HomeViewModel
+                {
+                    TopByLevel = await leaderboardService.TopFiveUsersByLevelAsync(),
+                    TopByQuests = await leaderboardService.TopFiveUsersByCompletedQuestsAsync()
+                };
+
+                return View(homeViewModel);
+            }
 
             return View();
         }
@@ -49,7 +62,6 @@ namespace Nexus.Controllers
             {
                 return View("Unauthorized");
             }
-
 
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
