@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Runtime.Intrinsics.X86;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data;
 using Nexus.Data.Models;
@@ -9,83 +7,46 @@ using Nexus.GCommon.Enums;
 
 namespace Nexus.Services.Tests
 {
-
-
     [TestFixture]
     public class LeaderboardServiceTests
     {
-
         private NexusDbContext dbContext;
         private LeaderboardService leaderboardService;
-        private static readonly Guid adminRoleId = Guid.NewGuid();
-        private static readonly Guid userRoleId = Guid.NewGuid();
 
+        private static readonly Guid adminRoleId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        private static readonly Guid userRoleId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
+        private static readonly Guid adminId = Guid.Parse("8d7b0283-56a0-4c40-85d3-d1be04437f3e");
+        private static readonly Guid userOneId = Guid.Parse("dd172857-29d5-4d62-9850-5221384ed08f");
+        private static readonly Guid userTwoId = Guid.Parse("d57e9e71-cc0f-4ddf-ae83-52dc4dfc2be7");
 
         [SetUp]
         public void Setup()
         {
-            // Arange for most tests
             var options = new DbContextOptionsBuilder<NexusDbContext>()
                 .UseInMemoryDatabase("DummyDatabaseNexus" + Guid.NewGuid().ToString())
                 .Options;
 
             this.dbContext = new NexusDbContext(options);
 
-            IdentityRole<Guid> adminRole = new() { Id = adminRoleId, Name = "Admin"};
-            IdentityRole<Guid> userRole = new() { Id = userRoleId, Name = "User"};
-            this.dbContext.Roles.AddRange(adminRole, userRole);
+            SeedRoles(dbContext);
 
-           
-           Profile admin = new ()
-           { 
-               Id = Guid.Parse("8d7b0283-56a0-4c40-85d3-d1be04437f3e"),
-               DisplayName = "AdminDummy", 
-               City = "NightCity",
-               ExperiencePoints = 8000, 
-               JoinedQuests = new List<QuestJoiner>() 
-           };
-            Profile userOne = new()
-            {
-                Id = Guid.Parse("dd172857-29d5-4d62-9850-5221384ed08f"),
-                DisplayName = "AlexDummy",
-                City = "NightCity",
-                ExperiencePoints = 4000,
-                JoinedQuests = new List<QuestJoiner>()
-            };
-            Profile userTwo = new()
-            {
-                Id = Guid.Parse("d57e9e71-cc0f-4ddf-ae83-52dc4dfc2be7"),
-                DisplayName = "YoanaDummy",
-                City = "NightCity",
-                ExperiencePoints = 2000,
-                JoinedQuests = new List<QuestJoiner>()
-            };
-            this.dbContext.Users.AddRange(admin, userOne, userTwo);
+            SeedProfileWithRole(dbContext, adminId, "AdminDummy", "NightCity", 8000, adminRoleId);
+            SeedProfileWithRole(dbContext, userOneId, "AlexDummy", "NightCity", 4000, userRoleId);
+            SeedProfileWithRole(dbContext, userTwoId, "YoanaDummy", "NightCity", 2000, userRoleId);
 
-            List<IdentityUserRole<Guid>> userRoles = new()
-            {
-                new IdentityUserRole<Guid> { UserId = admin.Id, RoleId = adminRoleId },
-                new IdentityUserRole<Guid> { UserId = userOne.Id, RoleId = userRoleId },
-                new IdentityUserRole<Guid> { UserId = userTwo.Id, RoleId = userRoleId }
-            };
-            this.dbContext.UserRoles.AddRange(userRoles);
+            var questOne = SeedQuest(dbContext, 100, "CompletedQuestOne", QuestStatus.Completed);
+            var questTwo = SeedQuest(dbContext, 200, "CompletedQuestTwo", QuestStatus.Completed);
+            var questThree = SeedQuest(dbContext, 300, "ActiveQuestOne", QuestStatus.Active);
 
-            Quest questOne = new() { Id = 100, Status = QuestStatus.Completed, Title = "CompletedQuestOne", Description= "Testing" };
-            Quest questTwo = new() { Id = 200, Status = QuestStatus.Completed,  Title = "CompletedQuestTwo", Description = "Testing" };
-            Quest questThree = new() { Id = 300, Status = QuestStatus.Active,  Title = "ActiveQuestOne", Description = "Testing" };
-            this.dbContext.Quests.AddRange(questOne, questTwo, questThree);
+            SeedQuestJoiners(dbContext,
+                (userOneId, questOne),
+                (userOneId, questTwo),
+                (userTwoId, questOne),
+                (userTwoId, questThree),
+                (adminId, questOne));
 
-            List<QuestJoiner> questJoiners = new()
-            {
-                new QuestJoiner { ProfileId = userOne.Id, QuestId = questOne.Id, Quest = questOne },
-                new QuestJoiner { ProfileId = userOne.Id, QuestId = questTwo.Id, Quest = questTwo },
-                new QuestJoiner { ProfileId = userTwo.Id, QuestId = questOne.Id, Quest = questOne },
-                new QuestJoiner { ProfileId = userTwo.Id, QuestId = questThree.Id, Quest = questThree },
-                new QuestJoiner { ProfileId = admin.Id, QuestId = questOne.Id, Quest = questOne }
-            };
-            this.dbContext.QuestJoiners.AddRange(questJoiners);
-            this.dbContext.SaveChanges();
-
+            dbContext.SaveChanges();
             leaderboardService = new LeaderboardService(dbContext);
         }
 
@@ -95,173 +56,233 @@ namespace Nexus.Services.Tests
             this.dbContext.Dispose();
         }
 
-        [Test]
-        public async Task TopFiveUsersByLevelAsync_ExcludeAdminsAndOrdersByXP()
+        private static void SeedRoles(NexusDbContext context)
         {
-            //Arrange is in setup
-            //Act
-            var result = (await leaderboardService.TopFiveUsersByLevelAsync()).ToList();
-
-            //Assert
-            Assert.AreEqual(2, result.Count); 
-            Assert.AreEqual("AlexDummy", result[0].DisplayName); 
-            Assert.AreEqual("YoanaDummy", result[1].DisplayName);
-            Assert.IsFalse(result.Any(u => u.DisplayName == "AdminDummy")); 
+            context.Roles.AddRange(
+                new IdentityRole<Guid> { Id = adminRoleId, Name = "Admin" },
+                new IdentityRole<Guid> { Id = userRoleId, Name = "User" });
+            context.SaveChanges();
         }
 
-        [Test]
-        public async Task TopFiveUsersByCompletedQuestsAsync_OrderedByCompletedQuestsAndExludesAdmin()
+        private static Profile CreateProfile(
+            Guid id,
+            string displayName,
+            string city = "NightCity",
+            int xp = 0)
         {
-            //Arrange is in setup
-            //Act
-            var result = (await leaderboardService.TopFiveUsersByCompletedQuestsAsync()).ToList();
-
-            //Assert
-            Assert.AreEqual(2, result.Count); 
-            Assert.AreEqual("AlexDummy", result[0].DisplayName); 
-            Assert.AreEqual(2, result[0].CompletedQuests);
-            Assert.AreEqual("YoanaDummy", result[1].DisplayName); 
-            Assert.AreEqual(1, result[1].CompletedQuests);
-            Assert.IsFalse(result.Any(u => u.DisplayName == "AdminDummy"));
-        }
-
-        [Test]
-        public async Task TopFiveUsersByLevelAsync_ReturnsEmpty_WhenNoUsers()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<NexusDbContext>()
-                .UseInMemoryDatabase("DummyNexusDb" + Guid.NewGuid().ToString())
-                .Options;
-            NexusDbContext emptyContext = new(options);
-            LeaderboardService service = new(emptyContext);
-
-            //Act
-            var result = (await service.TopFiveUsersByLevelAsync()).ToList();
-            
-            //Assert
-            Assert.IsEmpty(result);
-        }
-
-        [Test]
-        public async Task TopFiveUsersByCompletedQuestsAsync_ReturnsEmpty_WhenNoUsers()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<NexusDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-            NexusDbContext emptyContext = new(options);
-            LeaderboardService service = new(emptyContext);
-            //Act
-            var result = (await service.TopFiveUsersByCompletedQuestsAsync()).ToList();
-
-            //Assert
-            Assert.IsEmpty(result);
-        }
-
-        [Test]
-        public async Task TopFiveUsersByLevelAsync_ReturnsAtMostFiveUsers()
-        {
-           
-            var options = new DbContextOptionsBuilder<NexusDbContext>()
-                .UseInMemoryDatabase("DummyNexusDb" + Guid.NewGuid().ToString())
-                .Options;
-            NexusDbContext context = new(options);
-
-
-            IdentityRole<Guid> adminRole = new () { Id = adminRoleId, Name = "Admin" };
-            IdentityRole<Guid> userRole = new() { Id = userRoleId, Name = "User" };
-            context.Roles.AddRange(adminRole, userRole);
-
-            List<Profile> users = new();
-            List<IdentityUserRole<Guid>> userRoles = new();
-            for (int i = 0; i < 7; i++)
+            return new Profile
             {
-                Profile user = new()
+                Id = id,
+                DisplayName = displayName,
+                City = city,
+                ExperiencePoints = xp,
+                JoinedQuests = new List<QuestJoiner>()
+            };
+        }
+
+        private static void SeedProfileWithRole(
+            NexusDbContext context,
+            Guid id,
+            string displayName,
+            string city,
+            int xp,
+            Guid roleId)
+        {
+            context.Users.Add(CreateProfile(id, displayName, city, xp));
+            context.UserRoles.Add(new IdentityUserRole<Guid> { UserId = id, RoleId = roleId });
+            context.SaveChanges();
+        }
+
+        private static Quest SeedQuest(
+            NexusDbContext context,
+            int id,
+            string title,
+            QuestStatus status)
+        {
+            var quest = new Quest
+            {
+                Id = id,
+                Title = title,
+                Description = "Testing",
+                Status = status
+            };
+            context.Quests.Add(quest);
+            context.SaveChanges();
+            return quest;
+        }
+
+        private static void SeedQuestJoiners(
+            NexusDbContext context,
+            params (Guid ProfileId, Quest Quest)[] joiners)
+        {
+            foreach (var (profileId, quest) in joiners)
+            {
+                context.QuestJoiners.Add(new QuestJoiner
                 {
-                    Id = Guid.NewGuid(),
-                    DisplayName = $"Dummy{i}",
-                    City = "NightCity",
-                    ExperiencePoints = 1000 + i * 2,
-                    JoinedQuests = new List<QuestJoiner>()
-                };
-                users.Add(user);
-                userRoles.Add(new IdentityUserRole<Guid>
-                {
-                    UserId = user.Id,
-                    RoleId = (i == 0) ? adminRoleId : userRoleId 
+                    ProfileId = profileId,
+                    QuestId = quest.Id,
+                    Quest = quest
                 });
             }
-            context.Users.AddRange(users);
-            context.UserRoles.AddRange(userRoles);
             context.SaveChanges();
-
-            LeaderboardService service = new(context);
-
-            // Act
-            var result = (await service.TopFiveUsersByLevelAsync()).ToList();
-
-            // Assert
-            Assert.LessOrEqual(result.Count, 5);
-            Assert.IsFalse(result.Any(u => u.DisplayName == "Dummy0")); 
         }
 
-        [Test]
-        public async Task TopFiveUsersByCompletedQuestsAsync_ReturnsAtMostFiveUsers()
+        private static (NexusDbContext context, LeaderboardService service) CreateIsolatedContext()
         {
-            // Arrange
             var options = new DbContextOptionsBuilder<NexusDbContext>()
                 .UseInMemoryDatabase("DummyNexusDb" + Guid.NewGuid().ToString())
                 .Options;
+
             var context = new NexusDbContext(options);
+            SeedRoles(context);
+            var service = new LeaderboardService(context);
+            return (context, service);
+        }
 
-            IdentityRole<Guid> adminRole = new() { Id = adminRoleId, Name = "Admin" };
-            IdentityRole<Guid> userRole = new() { Id = userRoleId, Name = "User" };
-            context.Roles.AddRange(adminRole, userRole);
+        private static void SeedUsersWithCompletedQuests(
+            NexusDbContext context,
+            int userCount,
+            int adminIndex = 0,
+            bool assignCompletedQuests = false)
+        {
+            int questIdCounter = 1000;
 
-            List<Profile> users = new();
-            List<IdentityUserRole<Guid>> userRoles = new();
-            List<Quest> quests = new();
-            List<QuestJoiner> questJoiners = new();
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < userCount; i++)
             {
-                var user = new Profile
-                {
-                    Id = Guid.NewGuid(),
-                    DisplayName = $"Dummy{i}",
-                    City = "NightCity",
-                    ExperiencePoints = 1000 + i * 2,
-                    JoinedQuests = new List<QuestJoiner>()
-                };
-                users.Add(user);
-                userRoles.Add(new IdentityUserRole<Guid>
-                {
-                    UserId = user.Id,
-                    RoleId = (i == 0) ? adminRoleId : userRoleId 
-                });
+                var userId = Guid.NewGuid();
+                var roleId = (i == adminIndex) ? adminRoleId : userRoleId;
 
-                for (int j = 0; j < i; j++)
+                SeedProfileWithRole(context, userId, $"Dummy{i}", "NightCity", 1000 + i * 2, roleId);
+
+                if (assignCompletedQuests)
                 {
-                    Quest quest = new() { Id = 1000 + i * 10 + j, Status = QuestStatus.Completed, Title = $"CompletedQuest{j}", Description = "Testing" };
-                    quests.Add(quest);
-                    questJoiners.Add(new QuestJoiner { ProfileId = user.Id, QuestId = quest.Id, Quest = quest });
+                    for (int j = 0; j < i; j++)
+                    {
+                        var quest = SeedQuest(context, questIdCounter++, $"CompletedQuest{j}", QuestStatus.Completed);
+                        SeedQuestJoiners(context, (userId, quest));
+                    }
                 }
             }
-            context.Users.AddRange(users);
-            context.UserRoles.AddRange(userRoles);
-            context.Quests.AddRange(quests);
-            context.QuestJoiners.AddRange(questJoiners);
-            context.SaveChanges();
+        }
 
-            LeaderboardService service = new(context);
+        [Test]
+        public async Task TopFiveUsersByLevelAsync_ExcludesAdmins()
+        {
+            // Arrange 
+
+            // Act
+            var result = (await leaderboardService.TopFiveUsersByLevelAsync()).ToList();
+
+            // Assert
+            Assert.That(result.Any(u => u.DisplayName == "AdminDummy"), Is.False);
+        }
+
+        [Test]
+        public async Task TopFiveUsersByLevelAsync_OrdersByXpDescending()
+        {
+            // Arrange 
+
+            // Act
+            var result = (await leaderboardService.TopFiveUsersByLevelAsync()).ToList();
+
+            // Assert
+            Assert.That(result, Has.Count.EqualTo(2));
+            Assert.That(result[0].DisplayName, Is.EqualTo("AlexDummy"));
+            Assert.That(result[0].ExperiencePoints, Is.EqualTo(4000));
+            Assert.That(result[1].DisplayName, Is.EqualTo("YoanaDummy"));
+            Assert.That(result[1].ExperiencePoints, Is.EqualTo(2000));
+        }
+
+        [Test]
+        public async Task TopFiveUsersByLevelAsync_WhenNoUsers_ReturnsEmpty()
+        {
+            // Arrange
+            var (context, service) = CreateIsolatedContext();
+
+            // Act
+            var result = (await service.TopFiveUsersByLevelAsync()).ToList();
+
+            // Assert
+            Assert.That(result, Is.Empty);
+
+            context.Dispose();
+        }
+
+        [Test]
+        public async Task TopFiveUsersByLevelAsync_WithMoreThanFiveUsers_ReturnsAtMostFive()
+        {
+            // Arrange
+            var (context, service) = CreateIsolatedContext();
+            SeedUsersWithCompletedQuests(context, userCount: 7, adminIndex: 0);
+
+            // Act
+            var result = (await service.TopFiveUsersByLevelAsync()).ToList();
+
+            // Assert
+            Assert.That(result, Has.Count.LessThanOrEqualTo(5));
+            Assert.That(result.Any(u => u.DisplayName == "Dummy0"), Is.False);
+
+            context.Dispose();
+        }
+
+        [Test]
+        public async Task TopFiveUsersByCompletedQuestsAsync_ExcludesAdmins()
+        {
+            // Arrange 
+
+            // Act
+            var result = (await leaderboardService.TopFiveUsersByCompletedQuestsAsync()).ToList();
+
+            // Assert
+            Assert.That(result.Any(u => u.DisplayName == "AdminDummy"), Is.False);
+        }
+
+        [Test]
+        public async Task TopFiveUsersByCompletedQuestsAsync_OrdersByCompletedQuestsDescending()
+        {
+            // Arrange
+
+            // Act
+            var result = (await leaderboardService.TopFiveUsersByCompletedQuestsAsync()).ToList();
+
+            // Assert
+            Assert.That(result, Has.Count.EqualTo(2));
+            Assert.That(result[0].DisplayName, Is.EqualTo("AlexDummy"));
+            Assert.That(result[0].CompletedQuests, Is.EqualTo(2));
+            Assert.That(result[1].DisplayName, Is.EqualTo("YoanaDummy"));
+            Assert.That(result[1].CompletedQuests, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task TopFiveUsersByCompletedQuestsAsync_WhenNoUsers_ReturnsEmpty()
+        {
+            // Arrange
+            var (context, service) = CreateIsolatedContext();
 
             // Act
             var result = (await service.TopFiveUsersByCompletedQuestsAsync()).ToList();
 
             // Assert
-            Assert.AreEqual(5, result.Count);
-            Assert.IsFalse(result.Any(u => u.DisplayName == "Dummy0")); 
-                                                                     
-            Assert.AreEqual("Dummy6", result[0].DisplayName);
+            Assert.That(result, Is.Empty);
+
+            context.Dispose();
+        }
+
+        [Test]
+        public async Task TopFiveUsersByCompletedQuestsAsync_WithMoreThanFiveUsers_ReturnsTopFiveOrdered()
+        {
+            // Arrange
+            var (context, service) = CreateIsolatedContext();
+            SeedUsersWithCompletedQuests(context, userCount: 7, adminIndex: 0, assignCompletedQuests: true);
+
+            // Act
+            var result = (await service.TopFiveUsersByCompletedQuestsAsync()).ToList();
+
+            // Assert
+            Assert.That(result, Has.Count.EqualTo(5));
+            Assert.That(result.Any(u => u.DisplayName == "Dummy0"), Is.False);
+            Assert.That(result[0].DisplayName, Is.EqualTo("Dummy6"));
+            Assert.That(result[0].CompletedQuests, Is.GreaterThanOrEqualTo(result[1].CompletedQuests));
         }
     }
 }
