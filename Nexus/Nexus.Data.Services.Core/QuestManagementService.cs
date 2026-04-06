@@ -127,6 +127,7 @@ namespace Nexus.Data.Services.Core
             quest.Description = model.Description;
             quest.Difficulty = model.Difficulty;
             quest.Status = model.Status;
+
             quest.RewardXp = QuestRewardHelper.GetRewardXp(model.Difficulty);
 
             dbContext.QuestInterests.RemoveRange(quest.QuestInterest);
@@ -150,6 +151,7 @@ namespace Nexus.Data.Services.Core
                 {
                     if (joiner.Profile != null)
                     {
+                        
                         joiner.Profile.ExperiencePoints += rewardXp;
                         dbContext.Update(joiner.Profile);
                     }
